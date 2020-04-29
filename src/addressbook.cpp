@@ -8,7 +8,7 @@
 
 AddressBookModel::AddressBookModel(QTableView *parent) : QAbstractTableModel(parent) 
 {
-    headers << tr("Label") << tr("Address") << tr("HushChatAddress");
+    headers << tr("Label") << tr("Address") << tr("HushChatAddress") << tr("cid");
     this->parent = parent;
     loadData();
 }
@@ -38,10 +38,10 @@ void AddressBookModel::loadData()
     );
 }
 
-void AddressBookModel::addNewLabel(QString label, QString addr, QString myAddr) 
+void AddressBookModel::addNewLabel(QString label, QString addr, QString myAddr, QString cid) 
 {
     //labels.push_back(QPair<QString, QString>(label, addr));
-    AddressBook::getInstance()->addAddressLabel(label, addr, myAddr);
+    AddressBook::getInstance()->addAddressLabel(label, addr, myAddr, cid);
     updateUi();
     
 }
@@ -59,7 +59,7 @@ void AddressBookModel::removeItemAt(int row)
     if (row >= labels.size())
         return;
 
-    AddressBook::getInstance()->removeAddressLabel(labels[row].getName(), labels[row].getPartnerAddress(), labels[row].getMyAddress());    
+    AddressBook::getInstance()->removeAddressLabel(labels[row].getName(), labels[row].getPartnerAddress(), labels[row].getMyAddress(),labels[row].getCid());    
     labels.clear();
     labels = AddressBook::getInstance()->getAllAddressLabels();
     dataChanged(index(0, 0), index(labels.size()-1, columnCount(index(0,0))-1));
@@ -70,7 +70,7 @@ ContactItem AddressBookModel::itemAt(int row)
 {
     if (row >= labels.size())
     {
-        ContactItem item = ContactItem("", "", "");
+        ContactItem item = ContactItem("", "", "", "");
         return item;
     }   
         
@@ -100,6 +100,7 @@ QVariant AddressBookModel::data(const QModelIndex &index, int role) const
             case 0: return labels.at(index.row()).getName();
             case 1: return labels.at(index.row()).getPartnerAddress();
             case 2: return labels.at(index.row()).getMyAddress();
+            case 3: return labels.at(index.row()).getCid();
         }
     }
 
@@ -190,16 +191,23 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
             QMessageBox::critical(
                 parent, 
                 QObject::tr("Success"), 
-                message, //todo traslate this shit
+                message, //todo translate this
                 QMessageBox::Ok
             );
            // ab.addr_chat->setText(myAddr);
             qDebug() << "new generated myAddr" << myAddr;
-            AddressBook::getInstance()->addAddressLabel(newLabel, ab.addr->text(), myAddr);
+            QString cid = QUuid::createUuid().toString(QUuid::WithoutBraces); // 
+            AddressBook::getInstance()->addAddressLabel(newLabel, ab.addr->text(), myAddr, cid);
         });
         model.updateUi(); //todo fix updating gui after adding 
 
     });
+
+    /// Generate CID for Contact
+
+    
+
+   //  AddressBook::getInstance()->addAddressLabel(newLabel, ab.addr->text(), cid);
 
     // Import Button
     QObject::connect(ab.btnImport, &QPushButton::clicked, [&] () {
@@ -236,7 +244,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
                 continue;
 
             // Add label, address.
-            model.addNewLabel(items.at(1), items.at(0), "");
+            model.addNewLabel(items.at(1), items.at(0), "", "");
             numImported++;
         }
 
@@ -247,7 +255,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         );
     });
 
-    auto fnSetTargetLabelAddr = [=] (QLineEdit* target, QString label, QString addr, QString myAddr) {
+    auto fnSetTargetLabelAddr = [=] (QLineEdit* target, QString label, QString addr, QString myAddr, QString cid) {
         target->setText(label % "/" % addr   % myAddr);
     };
 
@@ -263,8 +271,9 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         QString lbl  = model.itemAt(index.row()).getName();
         QString addr = model.itemAt(index.row()).getPartnerAddress();
         QString myAddr = model.itemAt(index.row()).getMyAddress();
+        QString cid = model.itemAt(index.row()).getCid();
         d.accept();
-        fnSetTargetLabelAddr(target, lbl, addr, myAddr);
+        fnSetTargetLabelAddr(target, lbl, addr, myAddr, cid);
     });
 
     // Right-Click
@@ -277,13 +286,14 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         QString lbl  = model.itemAt(index.row()).getName();
         QString addr = model.itemAt(index.row()).getPartnerAddress();
         QString myAddr = model.itemAt(index.row()).getMyAddress();
+        QString cid = model.itemAt(index.row()).getCid();
 
         QMenu menu(parent);
 
         if (target != nullptr)
             menu.addAction("Pick", [&] () {
                 d.accept();
-                fnSetTargetLabelAddr(target, lbl, addr, myAddr);
+                fnSetTargetLabelAddr(target, lbl, addr, myAddr, cid);
             });
 
         menu.addAction(QObject::tr("Copy address"), [&] () {
@@ -302,7 +312,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         auto selection = ab.addresses->selectionModel();
         if (selection && selection->hasSelection() && selection->selectedRows().size() > 0) {
             auto item = model.itemAt(selection->selectedRows().at(0).row());
-            fnSetTargetLabelAddr(target, item.getName(), item.getMyAddress(), item.getPartnerAddress());
+            fnSetTargetLabelAddr(target, item.getName(), item.getMyAddress(), item.getPartnerAddress(),  item.getCid());
         }
     };
 
@@ -348,7 +358,7 @@ void AddressBook::readFromStorage()
             //qDebug() << "0:" << stuff[i][0];
             //qDebug() << "1:" << stuff[i][1];
             //qDebug() << "2:" << stuff[i][2];
-            ContactItem contact = ContactItem(stuff[i][2], stuff[i][1], stuff[i][0]);
+            ContactItem contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3]);
             //qDebug() << "contact=" << contact.toQTString();
             allLabels.push_back(contact);
         }
@@ -383,6 +393,7 @@ void AddressBook::writeToStorage()
         c.push_back(item.getName());
         c.push_back(item.getPartnerAddress());
         c.push_back(item.getMyAddress());
+        c.push_back(item.getCid());
         contacts.push_back(c);
     }
     out << QString("v1") << contacts;
@@ -405,22 +416,22 @@ QString AddressBook::writeableFile()
 
 
 // Add a new address/label to the database
-void AddressBook::addAddressLabel(QString label, QString address, QString myAddr) 
+void AddressBook::addAddressLabel(QString label, QString address, QString myAddr, QString cid) 
 {
     Q_ASSERT(Settings::isValidAddress(address));
     // getName(), remove any existing label
     // Iterate over the list and remove the label/address
     for (int i=0; i < allLabels.size(); i++)
         if (allLabels[i].getName() == label)
-            removeAddressLabel(allLabels[i].getName(), allLabels[i].getPartnerAddress(),allLabels[i].getMyAddress());
+            removeAddressLabel(allLabels[i].getName(), allLabels[i].getPartnerAddress(),allLabels[i].getMyAddress(), allLabels[i].getCid());
 
-    ContactItem item = ContactItem(myAddr, address, label);
+    ContactItem item = ContactItem(label, address, myAddr, cid);
     allLabels.push_back(item);
     writeToStorage();
 }
 
 // Remove a new address/label from the database
-void AddressBook::removeAddressLabel(QString label, QString address, QString myAddr) 
+void AddressBook::removeAddressLabel(QString label, QString address, QString myAddr, QString cid) 
 {
     // Iterate over the list and remove the label/address
     for (int i=0; i < allLabels.size(); i++) 

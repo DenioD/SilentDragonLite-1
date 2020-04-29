@@ -991,11 +991,11 @@ void MainWindow::setupchatTab() {
 
 ///////// Set selected Zaddr for Chat with Doubleklick
 
-    QObject::connect(ui->listContactWidget, &QTableView::doubleClicked, [=] () {
+    QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
     
         QModelIndex index = ui->listContactWidget->currentIndex();
-        QString itemText = index.data(Qt::DisplayRole).toString();
-        ui->ContactZaddr->setText(itemText);
+        QString zaddr = index.data(Qt::DisplayRole).toString();
+        ui->ContactZaddr->setText(zaddr);
     
     });
 }
@@ -1296,7 +1296,7 @@ void MainWindow::setupReceiveTab() {
 
         if (!curLabel.isEmpty() && label.isEmpty()) {
             info = "Removed Label '" % curLabel % "'";
-            AddressBook::getInstance()->removeAddressLabel(curLabel, addr, "");
+            AddressBook::getInstance()->removeAddressLabel(curLabel, addr, "", "");
         }
         else if (!curLabel.isEmpty() && !label.isEmpty()) {
             info = "Updated Label '" % curLabel % "' to '" % label % "'";
@@ -1304,7 +1304,7 @@ void MainWindow::setupReceiveTab() {
         }
         else if (curLabel.isEmpty() && !label.isEmpty()) {
             info = "Added Label '" % label % "'";
-            AddressBook::getInstance()->addAddressLabel(label, addr, "");
+            AddressBook::getInstance()->addAddressLabel(label, addr, "", "");
         }
 
         // Update labels everywhere on the UI

@@ -14,7 +14,7 @@
    <string>SilentDragonLite</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../application.qrc">
+   <iconset>
     <normaloff>:/icons/res/icon.ico</normaloff>:/icons/res/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -1502,6 +1502,28 @@
          <string/>
         </property>
        </widget>
+       <widget class="QPushButton" name="sendChatButton_2">
+        <property name="geometry">
+         <rect>
+          <x>943</x>
+          <y>20</y>
+          <width>211</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Sicheren Kontakt hinzufügen</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -1714,8 +1736,6 @@
   <tabstop>minerFeeAmt</tabstop>
   <tabstop>sendToScrollArea</tabstop>
  </tabstops>
- <resources>
-  <include location="../application.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -11,14 +11,16 @@ class ContactItem
 		QString _myAddress;
 		QString _partnerAddress;
 		QString _name;
+		QString _cid;
 
 	public:
 		ContactItem();
-		ContactItem(QString myAddress, QString partnerAddress, QString name)
+		ContactItem(QString name, QString partnerAddress, QString myAddress, QString cid)
 		{
+			_name = name;
 			_myAddress = myAddress;
 			_partnerAddress = partnerAddress;
-			_name = name;
+			_cid = cid;
 		}
 
 		QString getName() const
@@ -36,6 +38,11 @@ class ContactItem
 			return _partnerAddress;
 		}
 
+		QString getCid() const
+		{
+			return _cid;
+		}
+
 		void setName(QString name)
 		{
 			_name = name;
@@ -51,9 +58,14 @@ class ContactItem
 			_partnerAddress = partnerAddress;
 		}
 
+		void setcid(QString cid)
+		{
+			_cid = cid;
+		}
+
 		QString toQTString()
 		{
-			return _name +  "|" +  _partnerAddress + "|" + _myAddress;
+			return _name +  "|" +  _partnerAddress + "|" + _myAddress + "|" + _cid;
 		}
 
 };
