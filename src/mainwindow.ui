@@ -1354,9 +1354,9 @@
        <widget class="QLabel" name="label_40">
         <property name="geometry">
          <rect>
-          <x>357</x>
-          <y>460</y>
-          <width>329</width>
+          <x>340</x>
+          <y>490</y>
+          <width>61</width>
           <height>17</height>
          </rect>
         </property>
@@ -1367,8 +1367,8 @@
        <widget class="MemoEdit" name="memoTxtChat">
         <property name="geometry">
          <rect>
-          <x>347</x>
-          <y>483</y>
+          <x>340</x>
+          <y>510</y>
           <width>901</width>
           <height>128</height>
          </rect>
@@ -1377,8 +1377,8 @@
        <widget class="QPushButton" name="btnInsertFrom">
         <property name="geometry">
          <rect>
-          <x>360</x>
-          <y>620</y>
+          <x>350</x>
+          <y>650</y>
           <width>158</width>
           <height>25</height>
          </rect>
@@ -1390,9 +1390,9 @@
        <widget class="QLabel" name="memoSizeChat">
         <property name="geometry">
          <rect>
-          <x>1150</x>
+          <x>1180</x>
           <y>460</y>
-          <width>91</width>
+          <width>47</width>
           <height>17</height>
          </rect>
         </property>
@@ -1417,6 +1417,9 @@
         </property>
        </widget>
        <widget class="QListWidget" name="listChatMemo">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>340</x>
@@ -1425,12 +1428,24 @@
           <height>371</height>
          </rect>
         </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::IgnoreAction</enum>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::NoSelection</enum>
+        </property>
        </widget>
        <widget class="QPushButton" name="sendChatButton">
         <property name="geometry">
          <rect>
           <x>1130</x>
-          <y>620</y>
+          <y>650</y>
           <width>114</width>
           <height>25</height>
          </rect>
@@ -1446,6 +1461,45 @@
         </property>
         <property name="flat">
          <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_42">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>490</y>
+          <width>67</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>To:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="ContactName">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>490</y>
+          <width>67</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="ContactZaddr">
+        <property name="geometry">
+         <rect>
+          <x>740</x>
+          <y>490</y>
+          <width>171</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </widget>

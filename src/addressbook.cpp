@@ -8,7 +8,7 @@
 
 AddressBookModel::AddressBookModel(QTableView *parent) : QAbstractTableModel(parent) 
 {
-    headers << tr("Label") << tr("Address");
+    headers << tr("Label") << tr("Address") << tr("HushChatAddress");
     this->parent = parent;
     loadData();
 }
@@ -59,7 +59,7 @@ void AddressBookModel::removeItemAt(int row)
     if (row >= labels.size())
         return;
 
-    AddressBook::getInstance()->removeAddressLabel(labels[row].getName(), labels[row].getPartnerAddress());    
+    AddressBook::getInstance()->removeAddressLabel(labels[row].getName(), labels[row].getPartnerAddress(), labels[row].getMyAddress());    
     labels.clear();
     labels = AddressBook::getInstance()->getAllAddressLabels();
     dataChanged(index(0, 0), index(labels.size()-1, columnCount(index(0,0))-1));
@@ -99,6 +99,7 @@ QVariant AddressBookModel::data(const QModelIndex &index, int role) const
         {
             case 0: return labels.at(index.row()).getName();
             case 1: return labels.at(index.row()).getPartnerAddress();
+            case 2: return labels.at(index.row()).getMyAddress();
         }
     }
 
@@ -192,6 +193,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
                 message, //todo traslate this shit
                 QMessageBox::Ok
             );
+           // ab.addr_chat->setText(myAddr);
             qDebug() << "new generated myAddr" << myAddr;
             AddressBook::getInstance()->addAddressLabel(newLabel, ab.addr->text(), myAddr);
         });
@@ -245,8 +247,8 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         );
     });
 
-    auto fnSetTargetLabelAddr = [=] (QLineEdit* target, QString label, QString addr) {
-        target->setText(label % "/" % addr);
+    auto fnSetTargetLabelAddr = [=] (QLineEdit* target, QString label, QString addr, QString myAddr) {
+        target->setText(label % "/" % addr   % myAddr);
     };
 
     // Double-Click picks the item
@@ -260,8 +262,9 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
 
         QString lbl  = model.itemAt(index.row()).getName();
         QString addr = model.itemAt(index.row()).getPartnerAddress();
+        QString myAddr = model.itemAt(index.row()).getMyAddress();
         d.accept();
-        fnSetTargetLabelAddr(target, lbl, addr);
+        fnSetTargetLabelAddr(target, lbl, addr, myAddr);
     });
 
     // Right-Click
@@ -273,13 +276,14 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
 
         QString lbl  = model.itemAt(index.row()).getName();
         QString addr = model.itemAt(index.row()).getPartnerAddress();
+        QString myAddr = model.itemAt(index.row()).getMyAddress();
 
         QMenu menu(parent);
 
         if (target != nullptr)
             menu.addAction("Pick", [&] () {
                 d.accept();
-                fnSetTargetLabelAddr(target, lbl, addr);
+                fnSetTargetLabelAddr(target, lbl, addr, myAddr);
             });
 
         menu.addAction(QObject::tr("Copy address"), [&] () {
@@ -298,7 +302,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         auto selection = ab.addresses->selectionModel();
         if (selection && selection->hasSelection() && selection->selectedRows().size() > 0) {
             auto item = model.itemAt(selection->selectedRows().at(0).row());
-            fnSetTargetLabelAddr(target, item.getName(), item.getPartnerAddress());
+            fnSetTargetLabelAddr(target, item.getName(), item.getMyAddress(), item.getPartnerAddress());
         }
     };
 
@@ -408,7 +412,7 @@ void AddressBook::addAddressLabel(QString label, QString address, QString myAddr
     // Iterate over the list and remove the label/address
     for (int i=0; i < allLabels.size(); i++)
         if (allLabels[i].getName() == label)
-            removeAddressLabel(allLabels[i].getName(), allLabels[i].getPartnerAddress());
+            removeAddressLabel(allLabels[i].getName(), allLabels[i].getPartnerAddress(),allLabels[i].getMyAddress());
 
     ContactItem item = ContactItem(myAddr, address, label);
     allLabels.push_back(item);
@@ -416,7 +420,7 @@ void AddressBook::addAddressLabel(QString label, QString address, QString myAddr
 }
 
 // Remove a new address/label from the database
-void AddressBook::removeAddressLabel(QString label, QString address) 
+void AddressBook::removeAddressLabel(QString label, QString address, QString myAddr) 
 {
     // Iterate over the list and remove the label/address
     for (int i=0; i < allLabels.size(); i++) 

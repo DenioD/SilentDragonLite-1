@@ -983,6 +983,64 @@ void MainWindow::setupTransactionsTab() {
     });
 }
 
+void MainWindow::setupchatTab() {
+       
+// Send button
+    QObject::connect(ui->sendChatButton, &QPushButton::clicked, this, &MainWindow::sendChatButton);
+
+
+///////// Set selected Zaddr for Chat with Doubleklick
+
+    QObject::connect(ui->listContactWidget, &QTableView::doubleClicked, [=] () {
+    
+        QModelIndex index = ui->listContactWidget->currentIndex();
+        QString itemText = index.data(Qt::DisplayRole).toString();
+        ui->ContactZaddr->setText(itemText);
+    
+    });
+}
+
+ChatMemoEdit::ChatMemoEdit(QWidget* parent) : QPlainTextEdit(parent) {
+    QObject::connect(this, &QPlainTextEdit::textChanged, this, &ChatMemoEdit::updateDisplay);
+}
+
+void ChatMemoEdit::updateDisplay() {
+    QString txt = this->toPlainText();
+    if (lenDisplayLabel)
+        lenDisplayLabel->setText(QString::number(txt.toUtf8().size()) + "/" + QString::number(maxlen));
+
+    if (txt.toUtf8().size() <= maxlen) {
+        // Everything is fine
+        if (sendChatButton)
+            sendChatButton->setEnabled(true);
+
+        if (lenDisplayLabel)
+            lenDisplayLabel->setStyleSheet("");
+    }
+    else {
+        // Overweight
+        if (sendChatButton)
+            sendChatButton->setEnabled(false);
+
+        if (lenDisplayLabel)
+            lenDisplayLabel->setStyleSheet("color: red;");
+    }
+}
+
+void ChatMemoEdit::setMaxLen(int len) {
+    this->maxlen = len;
+    updateDisplay();
+}
+
+void ChatMemoEdit::setLenDisplayLabel(QLabel* label_40) {
+    this->lenDisplayLabel = label_40;
+}
+
+void ChatMemoEdit::setSendChatButton(QPushButton* button) {
+    this->sendChatButton = button;
+}
+
+
 void MainWindow::updateChat()
 {
     rpc->refreshChat(ui->listChatMemo);
@@ -1238,7 +1296,7 @@ void MainWindow::setupReceiveTab() {
 
         if (!curLabel.isEmpty() && label.isEmpty()) {
             info = "Removed Label '" % curLabel % "'";
-            AddressBook::getInstance()->removeAddressLabel(curLabel, addr);
+            AddressBook::getInstance()->removeAddressLabel(curLabel, addr, "");
         }
         else if (!curLabel.isEmpty() && !label.isEmpty()) {
             info = "Updated Label '" % curLabel % "' to '" % label % "'";

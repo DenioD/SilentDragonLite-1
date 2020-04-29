@@ -46,7 +46,7 @@ public:
     void addAddressLabel(QString label, QString address, QString myAddr);
 
     // Remove a new address/label from the database
-    void removeAddressLabel(QString label, QString address);
+    void removeAddressLabel(QString label, QString address, QString myAddr);
 
     // Update a label/address
     void updateLabel(QString oldlabel, QString address, QString newlabel);

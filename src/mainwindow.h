@@ -76,6 +76,7 @@ public:
     Logger*      logger;
 
     void doClose();
+    QString createHeaderMemo(QString cid, QString zaddr, int version, int headerNumnber);
 
 public slots:
     void slot_change_theme(const QString& themeName);
@@ -152,6 +153,23 @@ private:
     RecurringPaymentInfo* sendTxRecurringInfo = nullptr;
 
     QMovie*      loadingMovie;
+};
+
+class ChatMemoEdit : public QPlainTextEdit
+{
+public:
+    ChatMemoEdit(QWidget* parent);
+
+    void setMaxLen(int len);
+    void setLenDisplayLabel(QLabel* label_40);
+    void setSendChatButton(QPushButton* button);
+    void includeReplyTo(QString replyToAddress);
+    void updateDisplay();
+
+private:
+    int             maxlen             = 512;
+    QLabel*         lenDisplayLabel    = nullptr;
+    QPushButton*    sendChatButton     = nullptr;
 };
 
 #endif // MAINWINDOW_H

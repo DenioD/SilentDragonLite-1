@@ -6,6 +6,8 @@
 #include "ui_mainwindow.h"
 #include "addressbook.h"
 #include "ui_memodialog.h"
+#include "addressbook.h"
+#include <QUuid>
 
 
 
@@ -60,6 +62,8 @@ void ChatModel::showMessages()
     }
 }
 
+
+
 void ChatModel::renderChatBox(QListWidget &view)
 {
     /*for(auto &c : this->chatItems)
@@ -72,6 +76,7 @@ void ChatModel::renderChatBox(QListWidget &view)
 
 void ChatModel::renderChatBox(QListWidget *view)
 {
+    
     qDebug() << "called ChatModel::renderChatBox(QListWidget *view)";
     QString line = "";
     while(view->count() > 0)
@@ -79,8 +84,15 @@ void ChatModel::renderChatBox(QListWidget *view)
         view->takeItem(0);
     }
 
+     //QModelIndex index = parent->listContactWidget->currentIndex();
+    // QString itemText = index.data(Qt::DisplayRole).toString();
+
+   
     for(auto &c : this->chatItems)
+   
     {
+
+       // if  ("" == QString(c.second.getAddress())){   ////// ToDo: render only memos from selected contact
         QDateTime myDateTime;
  
         myDateTime.setTime_t(c.second.getTimestamp());
@@ -90,54 +102,31 @@ void ChatModel::renderChatBox(QListWidget *view)
         line += QString(c.second.getMemo()) + QString("\n");
         view->addItem(line);
         line ="";
+  //  }
+  //  else{
+
+  //  }
     }
 }
 
-void MainWindow::setupchatTab() {
-       
-// Send button
-    QObject::connect(ui->sendChatButton, &QPushButton::clicked, this, &MainWindow::sendChatButton);
+QString MainWindow::createHeaderMemo(QString cid, QString zaddr, int version=0, int headerNumber=1)
+{
+    
+    QString header="";
+    QJsonDocument j;
+    QJsonObject h;
+    // We use short keynames to use less space for metadata and so allow
+    // the user to send more actual data in memos
+    h["h"]   = headerNumber;    // header number
+    h["v"]   = version;         // HushChat version
+    h["z"]   = zaddr;           // zaddr to respond to
+    h["cid"] = cid;             // conversation id
 
-    }
+    j.setObject(h);
+    header = j.toJson();
+    qDebug() << "made header=" << header;
 
-ChatMemoEdit::ChatMemoEdit(QWidget* parent) : QPlainTextEdit(parent) {
-    QObject::connect(this, &QPlainTextEdit::textChanged, this, &ChatMemoEdit::updateDisplay);
-}
-
-void ChatMemoEdit::updateDisplay() {
-    QString txt = this->toPlainText();
-    if (lenDisplayLabel)
-        lenDisplayLabel->setText(QString::number(txt.toUtf8().size()) + "/" + QString::number(maxlen));
-
-    if (txt.toUtf8().size() <= maxlen) {
-        // Everything is fine
-        if (sendChatButton)
-            sendChatButton->setEnabled(true);
-
-        if (lenDisplayLabel)
-            lenDisplayLabel->setStyleSheet("");
-    }
-    else {
-        // Overweight
-        if (sendChatButton)
-            sendChatButton->setEnabled(false);
-
-        if (lenDisplayLabel)
-            lenDisplayLabel->setStyleSheet("color: red;");
-    }
-}
-
-void ChatMemoEdit::setMaxLen(int len) {
-    this->maxlen = len;
-    updateDisplay();
-}
-
-void ChatMemoEdit::setLenDisplayLabel(QLabel* label) {
-    this->lenDisplayLabel = label;
-}
-
-void ChatMemoEdit::setSendChatButton(QPushButton* button) {
-    this->sendChatButton = button;
+    return header;
 }
 
 // Create a Tx from the current state of the Chat page. 
@@ -146,7 +135,14 @@ Tx MainWindow::createTxFromChatPage() {
     CAmount totalAmt;
     // For each addr/amt in the Chat tab
   {
-        QString addr = ""; // We need to set the reply Address for our Contact here
+
+     
+  
+    //	ui->ContactZaddr->setText("Zaddr");
+        
+        
+   
+       QString addr = ui->ContactZaddr->text().trimmed(); // We need to set the reply Address for our Contact here
         // Remove label if it exists
         addr = AddressBook::addressFromAddressLabel(addr);
         
@@ -156,15 +152,19 @@ Tx MainWindow::createTxFromChatPage() {
         CAmount amt;  
 
          
-            amt = CAmount::fromDecimalString("0.00001");
+            amt = CAmount::fromDecimalString("0");
             totalAmt = totalAmt + amt;
-       
+        QString cid = QString::number( time(NULL) % std::rand() ); // low entropy for testing!
+       // QString cid = QUuid::createUuid().toString(QUuid::WithoutBraces); // Needs to get a fix
+        QString hmemo= createHeaderMemo(cid,"Some ZADDR");
 
         QString memo = ui->memoTxtChat->toPlainText().trimmed();
-        //ui->chatmemoSize->setLenDisplayLabel()
+       // ui->memoSizeChat->setLenDisplayLabel();
         
        
-     tx.toAddrs.push_back(ToFields{addr, amt, memo,}) ;
+     tx.toAddrs.push_back(ToFields{addr, amt, hmemo}) ;
+     qDebug()<<hmemo;
+     tx.toAddrs.push_back( ToFields{addr, amt, memo});
 
          qDebug() << "pushback chattx";
    } 
