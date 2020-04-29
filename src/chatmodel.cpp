@@ -39,6 +39,16 @@ void ChatModel::setItems(std::vector<ChatItem> items)
     }
 }
 
+void ChatModel::setUi(MainWindow* ui)
+{
+    this->ui = ui;
+}
+
+MainWindow* ChatModel::getUi()
+{
+    return this->ui;
+}
+
 void ChatModel::clear()
 {
     this->chatItems.clear();

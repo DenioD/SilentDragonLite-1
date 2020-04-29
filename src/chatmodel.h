@@ -103,6 +103,7 @@ class ChatModel
     private:
         std::map<long, ChatItem> chatItems; 
         QTableView* parent;
+        MainWindow* ui;
 
     public:
         ChatModel() {};
@@ -111,6 +112,8 @@ class ChatModel
         std::map<long, ChatItem> getItems();
         void setItems(std::map<long, ChatItem> items);
         void setItems(std::vector<ChatItem> items);
+        void setUi(MainWindow* ui);
+        MainWindow getUi();
         void renderChatBox(QListWidget &view);
         void renderChatBox(QListWidget *view);
         void showMessages();
