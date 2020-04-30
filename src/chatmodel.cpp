@@ -76,8 +76,6 @@ void ChatModel::renderChatBox(QListWidget &view)
 
 void ChatModel::renderChatBox(QListWidget *view)
 {
-    
-    qDebug() << "called ChatModel::renderChatBox(QListWidget *view)";
     QString line = "";
     while(view->count() > 0)
     {

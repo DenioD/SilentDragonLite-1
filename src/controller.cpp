@@ -999,7 +999,6 @@ void Controller::refreshChat(QListWidget *listWidget)
 
 void Controller::refreshContacts(QListWidget *listWidget)
 {
-    qDebug() << "Called Controller::refreshContacts(QListWidget *listWidget)";
     contactModel->renderContactList(listWidget);
 }
 
