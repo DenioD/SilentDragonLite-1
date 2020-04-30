@@ -8,10 +8,9 @@ void ContactModel::renderContactList(QListWidget* view)
     {
         view->takeItem(0);
     }
+
 	for(auto &c : AddressBook::getInstance()->getAllAddressLabels())
     {
     	view->addItem(c.getName()); 
-        
-        
     }
 }

@@ -55,8 +55,19 @@ public:
 
     CAmount operator+ (const CAmount& other) const {
         return CAmount(this->amount + other.amount);
-    }  
+    }
 
+    CAmount operator += (const CAmount& other) // a += b  <---> a = a + b
+    {
+        this->amount = this->amount + other.amount;
+        return CAmount(this->amount);
+    } 
+
+    CAmount operator = (const CAmount& other)
+    {
+        this->amount = other.amount;
+    }   
+  
     CAmount operator- (const CAmount& other) const {
         return CAmount(this->amount - other.amount);
     }
