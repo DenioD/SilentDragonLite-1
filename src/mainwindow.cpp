@@ -987,7 +987,7 @@ void MainWindow::setupchatTab() {
        
 // Send button
     QObject::connect(ui->sendChatButton, &QPushButton::clicked, this, &MainWindow::sendChatButton);
-
+    QObject::connect(ui->safeContactRequest, &QPushButton::clicked, this, &MainWindow::safeContactRequest);
 
 ///////// Set selected Zaddr for Chat with Doubleklick
 

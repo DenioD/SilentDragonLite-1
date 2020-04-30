@@ -14,7 +14,7 @@
    <string>SilentDragonLite</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../application.qrc">
     <normaloff>:/icons/res/icon.ico</normaloff>:/icons/res/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -1356,7 +1356,7 @@
          <rect>
           <x>340</x>
           <y>490</y>
-          <width>61</width>
+          <width>331</width>
           <height>17</height>
          </rect>
         </property>
@@ -1372,19 +1372,6 @@
           <width>901</width>
           <height>128</height>
          </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btnInsertFrom">
-        <property name="geometry">
-         <rect>
-          <x>350</x>
-          <y>650</y>
-          <width>158</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Include Reply Address</string>
         </property>
        </widget>
        <widget class="QLabel" name="memoSizeChat">
@@ -1466,7 +1453,7 @@
        <widget class="QLabel" name="label_42">
         <property name="geometry">
          <rect>
-          <x>410</x>
+          <x>690</x>
           <y>490</y>
           <width>67</width>
           <height>17</height>
@@ -1502,7 +1489,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QPushButton" name="sendChatButton_2">
+       <widget class="QPushButton" name="safeContactRequest">
         <property name="geometry">
          <rect>
           <x>943</x>
@@ -1736,6 +1723,8 @@
   <tabstop>minerFeeAmt</tabstop>
   <tabstop>sendToScrollArea</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
  <connections/>
 </ui>

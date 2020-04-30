@@ -880,6 +880,7 @@ void Controller::refreshTransactions()
                     if (!o["memo"].is_null()) 
                     {
                         memo = QString::fromStdString(o["memo"]);
+
                         ChatItem item = ChatItem(
                                 datetime,
                                 address,
@@ -888,7 +889,7 @@ void Controller::refreshTransactions()
                                 true // is an outgoing message
                             );
                         chatModel->addMessage(item);
-                        
+
                     }
                         
                     
@@ -929,6 +930,7 @@ void Controller::refreshTransactions()
                 if (!it["memo"].is_null())
                 {
                     memo = QString::fromStdString(it["memo"]);
+            
                     ChatItem item = ChatItem(
                                 datetime,
                                 address,

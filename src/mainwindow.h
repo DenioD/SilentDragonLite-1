@@ -48,6 +48,7 @@ public:
 
     QString doSendTxValidations(Tx tx);
     QString doSendChatTxValidations(Tx tx);
+    QString doSendRequestTxValidations(Tx tx);
 
     void replaceWormholeClient(WormholeClient* newClient);
     bool isWebsocketListening();
@@ -76,7 +77,7 @@ public:
     Logger*      logger;
 
     void doClose();
-    QString createHeaderMemo(QString cid, QString zaddr, int version, int headerNumnber);
+    QString createHeaderMemo(QString safeContact, QString cid, QString zaddr, int version, int headerNumber);
 
 public slots:
     void slot_change_theme(const QString& themeName);
@@ -103,6 +104,7 @@ private:
     bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
 
     Tx   createTxFromChatPage();
+    Tx   createTxForSafeContactRequest();
 
     void encryptWallet();
     void removeWalletEncryption();
@@ -110,6 +112,7 @@ private:
     void cancelButton();
     void sendButton();
     void sendChatButton();
+    void safeContactRequest();
     void addAddressSection();
     void maxAmountChecked(int checked);
 
