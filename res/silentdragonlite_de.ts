@@ -17,12 +17,12 @@
 <context>
     <name>BalancesTableModel</name>
     <message>
-        <location filename="../src/balancestablemodel.cpp" line="141"/>
+        <location filename="../src/balancestablemodel.cpp" line="150"/>
         <source>Address</source>
         <translation>Adresse</translation>
     </message>
     <message>
-        <location filename="../src/balancestablemodel.cpp" line="142"/>
+        <location filename="../src/balancestablemodel.cpp" line="151"/>
         <source>Amount</source>
         <translation>Betrag</translation>
     </message>
@@ -47,29 +47,29 @@
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../src/controller.cpp" line="1149"/>
+        <location filename="../src/controller.cpp" line="974"/>
         <source>Wallet Password</source>
         <translation>Wallet Passwort</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1150"/>
+        <location filename="../src/controller.cpp" line="975"/>
         <source>Your wallet is encrypted.
 Please enter your wallet password</source>
         <translation>Ihr Wallet ist verschlüsselt. Bitte geben Sie das Passwort ein</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1153"/>
-        <location filename="../src/controller.cpp" line="1168"/>
+        <location filename="../src/controller.cpp" line="983"/>
+        <location filename="../src/controller.cpp" line="1003"/>
         <source>Wallet Decryption Failed</source>
         <translation>Entschlüsslung gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1154"/>
+        <location filename="../src/controller.cpp" line="984"/>
         <source>Please enter a valid password</source>
         <translation>Bitte geben Sie ein gültiges Passwort ein</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1224"/>
+        <location filename="../src/controller.cpp" line="1073"/>
         <source>Failed to unlock wallet</source>
         <translation>Konnte das Wallet nicht entsperren</translation>
     </message>
@@ -217,11 +217,11 @@ Please enter your wallet password</source>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="488"/>
-        <location filename="../src/mainwindow.cpp" line="893"/>
-        <location filename="../src/mainwindow.cpp" line="946"/>
+        <location filename="../src/mainwindow.cpp" line="894"/>
+        <location filename="../src/mainwindow.cpp" line="947"/>
         <location filename="../src/sendtab.cpp" line="292"/>
         <source>Memo</source>
-        <translation>Nachricht hinzufügen</translation>
+        <translation>Nachricht</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="536"/>
@@ -310,7 +310,7 @@ Please enter your wallet password</source>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="840"/>
-        <location filename="../src/mainwindow.cpp" line="1097"/>
+        <location filename="../src/mainwindow.cpp" line="1098"/>
         <source>Export Private Key</source>
         <translation>Private Key exportieren</translation>
     </message>
@@ -558,7 +558,7 @@ Please enter your wallet password</source>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1448"/>
-        <location filename="../src/mainwindow.cpp" line="708"/>
+        <location filename="../src/mainwindow.cpp" line="709"/>
         <source>Export transactions</source>
         <translation>Transaktionen exportieren</translation>
     </message>
@@ -594,7 +594,7 @@ Please enter your wallet password</source>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="383"/>
-        <location filename="../src/mainwindow.cpp" line="916"/>
+        <location filename="../src/mainwindow.cpp" line="917"/>
         <source>Copy txid</source>
         <translation>Transaktions ID kopieren</translation>
     </message>
@@ -623,7 +623,7 @@ Please enter your wallet password</source>
         <translation type="vanished">Starte SilentDragonLite neu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="535"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Some feedback about SilentDragonlite or Hush...</source>
         <translation>Etwas Feedback über SilentDragonLite...</translation>
     </message>
@@ -632,63 +632,63 @@ Please enter your wallet password</source>
         <translation type="vanished">Sende DenioD anonym Feedback über</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="537"/>
+        <location filename="../src/mainwindow.cpp" line="538"/>
         <source> or SilentDragonLite</source>
         <translation> oder SilentDragonLite</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="537"/>
+        <location filename="../src/mainwindow.cpp" line="538"/>
         <source>Send DenioD some private and shielded feedback about</source>
         <translation>Sende DenioD anonym Feedback über</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="618"/>
+        <location filename="../src/mainwindow.cpp" line="619"/>
         <source>Paste HUSH URI</source>
         <translation>Hush URI einfügen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="630"/>
+        <location filename="../src/mainwindow.cpp" line="631"/>
         <source>Error paying HUSH URI</source>
         <translation>Fehler bei HUSH URI</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="631"/>
+        <location filename="../src/mainwindow.cpp" line="632"/>
         <source>URI should be of the form &apos;hush:&lt;addr&gt;?amt=x&amp;memo=y</source>
         <translation>Die URI sollte folgendemaßen aussehen &apos;hush:&lt;addr&gt;?amt=x&amp;memo=y</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="714"/>
+        <location filename="../src/mainwindow.cpp" line="715"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="715"/>
+        <location filename="../src/mainwindow.cpp" line="716"/>
         <source>Error exporting transactions, file was not saved</source>
         <translation>Fehler beim exportieren der Transaktionen. Die Datei wurde nicht gespeichert</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="785"/>
+        <location filename="../src/mainwindow.cpp" line="786"/>
         <source>Error getting private keys</source>
         <translation>Fehler beim empfangen der private Keys</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="786"/>
+        <location filename="../src/mainwindow.cpp" line="787"/>
         <source>Error loading private keys: </source>
         <translation>Fehler beim laden der private Keys: </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="806"/>
+        <location filename="../src/mainwindow.cpp" line="807"/>
         <source>These are all the private keys for all the addresses in your wallet</source>
         <translation>Dies sind alle private Keys für ihr Wallet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="808"/>
+        <location filename="../src/mainwindow.cpp" line="809"/>
         <source>Private key for </source>
         <translation>Private Key für </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="752"/>
-        <location filename="../src/mainwindow.cpp" line="813"/>
+        <location filename="../src/mainwindow.cpp" line="753"/>
+        <location filename="../src/mainwindow.cpp" line="814"/>
         <source>Save File</source>
         <translation>Datei sichern</translation>
     </message>
@@ -775,7 +775,7 @@ Please use &apos;Remove Wallet Encryption&apos; if you want to remove the wallet
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="386"/>
-        <location filename="../src/mainwindow.cpp" line="927"/>
+        <location filename="../src/mainwindow.cpp" line="928"/>
         <source>Copy block explorer link</source>
         <translation>Blockexplorer Link kopieren</translation>
     </message>
@@ -794,72 +794,72 @@ Please use &apos;Remove Wallet Encryption&apos; if you want to remove the wallet
         <translation type="vanished">Bitte starten sie SilentDragonLite neu</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="748"/>
+        <location filename="../src/mainwindow.cpp" line="749"/>
         <source>This is your wallet seed. Please back it up carefully and safely.</source>
         <translation>Dies ist Ihr SilentDragonLite Seed. Bitte sichern Sie ihn sorgfältig.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="756"/>
-        <location filename="../src/mainwindow.cpp" line="817"/>
+        <location filename="../src/mainwindow.cpp" line="757"/>
+        <location filename="../src/mainwindow.cpp" line="818"/>
         <source>Unable to open file</source>
         <translation>Konnte die Datei nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="861"/>
-        <location filename="../src/mainwindow.cpp" line="922"/>
+        <location filename="../src/mainwindow.cpp" line="862"/>
+        <location filename="../src/mainwindow.cpp" line="923"/>
         <source>Copy address</source>
         <translation>Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="864"/>
-        <location filename="../src/mainwindow.cpp" line="918"/>
-        <location filename="../src/mainwindow.cpp" line="924"/>
+        <location filename="../src/mainwindow.cpp" line="865"/>
+        <location filename="../src/mainwindow.cpp" line="919"/>
+        <location filename="../src/mainwindow.cpp" line="925"/>
         <source>Copied to clipboard</source>
         <translation>In die Zwischenablage kopiert</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="867"/>
+        <location filename="../src/mainwindow.cpp" line="868"/>
         <source>Get private key</source>
         <translation>Private Key erhalten</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="873"/>
-        <location filename="../src/mainwindow.cpp" line="932"/>
+        <location filename="../src/mainwindow.cpp" line="874"/>
+        <location filename="../src/mainwindow.cpp" line="933"/>
         <source>View on block explorer</source>
         <translation>Auf dem Blockexplorer anschauen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="938"/>
+        <location filename="../src/mainwindow.cpp" line="939"/>
         <source>View Payment Request</source>
         <translation>Zahlungsanforderung ansehen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="945"/>
+        <location filename="../src/mainwindow.cpp" line="946"/>
         <source>View Memo</source>
         <translation>Nachricht ansehen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="960"/>
+        <location filename="../src/mainwindow.cpp" line="961"/>
         <source>Reply to </source>
         <translation>Antworten an </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1047"/>
+        <location filename="../src/mainwindow.cpp" line="1048"/>
         <source>Created new t-Addr</source>
         <translation>Neue sichtbare Adresse erstellen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1103"/>
+        <location filename="../src/mainwindow.cpp" line="1104"/>
         <source>Copy Address</source>
         <translation>Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1206"/>
+        <location filename="../src/mainwindow.cpp" line="1207"/>
         <source>Address has been previously used</source>
         <translation>Diese Adresse wurde schon einmal benutzt</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1208"/>
+        <location filename="../src/mainwindow.cpp" line="1209"/>
         <source>Address is unused</source>
         <translation>Adresse ist unbenutzt</translation>
     </message>
@@ -1109,152 +1109,152 @@ Anmerkung: Sie bnötigen 2 Bestätigungen</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/addressbook.cpp" line="110"/>
+        <location filename="../src/addressbook.cpp" line="123"/>
         <source>Pick</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="128"/>
+        <location filename="../src/addressbook.cpp" line="144"/>
         <source>Address or Label Error</source>
         <translation>Die Adresse oder die Bezeichnung gab einen Fehler</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="129"/>
+        <location filename="../src/addressbook.cpp" line="145"/>
         <source>Address or Label cannot be empty</source>
         <translation>Adresse oder Bezeichnung dürfen nicht leer sein</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="134"/>
+        <location filename="../src/addressbook.cpp" line="155"/>
         <source>Address Format Error</source>
         <translation>Adressen Format war falsch</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="135"/>
+        <location filename="../src/addressbook.cpp" line="156"/>
         <source>%1 doesn&apos;t seem to be a valid hush address.</source>
         <translation>%1 das scheint keine gültige Hush Adresse zu sein.</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="143"/>
+        <location filename="../src/addressbook.cpp" line="167"/>
         <source>Label Error</source>
         <translation>Bezeichnungs Fehler</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="144"/>
+        <location filename="../src/addressbook.cpp" line="168"/>
         <source>The label &apos;%1&apos; already exists. Please remove the existing label.</source>
         <translation>Die Bezeichnung ´&apos;%1&apos; existiert bereits. Bitte verwenden Sie eine andere Bezeichnung.</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="156"/>
+        <location filename="../src/addressbook.cpp" line="181"/>
         <source>Import Address Book</source>
         <translation>Importiere das Adressbuch</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="163"/>
+        <location filename="../src/addressbook.cpp" line="193"/>
         <source>Unable to open file</source>
         <translation>Kann die Datei nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="183"/>
+        <location filename="../src/addressbook.cpp" line="218"/>
         <source>Address Book Import Done</source>
         <translation>Importieren des Adressbuchs beendet</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="184"/>
+        <location filename="../src/addressbook.cpp" line="219"/>
         <source>Imported %1 new Address book entries</source>
         <translation>Habe %1 neue Adressen importiert</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="224"/>
+        <location filename="../src/addressbook.cpp" line="260"/>
         <source>Copy address</source>
         <translation>Kopiere Adresse</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="226"/>
+        <location filename="../src/addressbook.cpp" line="262"/>
         <source>Copied to clipboard</source>
         <translation>In die Zwischenablage kopiert</translation>
     </message>
     <message>
-        <location filename="../src/addressbook.cpp" line="229"/>
+        <location filename="../src/addressbook.cpp" line="265"/>
         <source>Delete label</source>
         <translation>Lösche Beschriftung</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="49"/>
+        <location filename="../src/connection.cpp" line="54"/>
         <source>Attempting to initialize library with </source>
         <translation>Versuche die Bibliothek zu starten mit </translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="53"/>
+        <location filename="../src/connection.cpp" line="59"/>
         <source>Using existing wallet.</source>
         <translation>Benutze existierendes Wallet.</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="62"/>
+        <location filename="../src/connection.cpp" line="75"/>
         <source>Create/restore wallet.</source>
         <translation>Wallet neu erstellen oder wiederherstellen.</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="153"/>
-        <location filename="../src/controller.cpp" line="793"/>
+        <location filename="../src/connection.cpp" line="167"/>
+        <location filename="../src/controller.cpp" line="559"/>
         <source>Connection Error</source>
         <translation>Verbsindungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="251"/>
-        <location filename="../src/controller.cpp" line="1196"/>
+        <location filename="../src/connection.cpp" line="275"/>
+        <location filename="../src/controller.cpp" line="1038"/>
         <location filename="../src/sendtab.cpp" line="901"/>
         <source>Transaction Error</source>
         <translation>Transaktionsfehler</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="251"/>
+        <location filename="../src/connection.cpp" line="276"/>
         <source>There was an error sending the transaction. The error was:</source>
         <translation>Es gab einen Fehler beim senden der Transaktion:</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="554"/>
-        <location filename="../src/controller.cpp" line="556"/>
+        <location filename="../src/controller.cpp" line="187"/>
+        <location filename="../src/controller.cpp" line="189"/>
         <source>No Connection</source>
         <translation>keine Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="793"/>
+        <location filename="../src/controller.cpp" line="560"/>
         <source>There was an error connecting to hushd. The error was</source>
         <translation>Es gab einen Fehler zum server zu verbinden</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1191"/>
+        <location filename="../src/controller.cpp" line="1030"/>
         <location filename="../src/recurring.cpp" line="599"/>
         <location filename="../src/sendtab.cpp" line="884"/>
         <source> Tx </source>
         <translation> Transaktion </translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1191"/>
+        <location filename="../src/controller.cpp" line="1030"/>
         <location filename="../src/recurring.cpp" line="599"/>
         <location filename="../src/sendtab.cpp" line="884"/>
         <source> failed</source>
         <translation> gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1194"/>
+        <location filename="../src/controller.cpp" line="1034"/>
         <location filename="../src/sendtab.cpp" line="892"/>
         <source>The transaction with id </source>
         <translation>Die Transaktion mit der ID </translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1194"/>
+        <location filename="../src/controller.cpp" line="1034"/>
         <location filename="../src/sendtab.cpp" line="892"/>
         <source> failed. The error was</source>
         <translation> ist gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1275"/>
+        <location filename="../src/controller.cpp" line="1130"/>
         <source>Update Available</source>
         <translation>Update verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1276"/>
+        <location filename="../src/controller.cpp" line="1131"/>
         <source>A new release v%1 is available! You have v%2.
 
 Would you like to visit the releases page?</source>
@@ -1263,22 +1263,22 @@ Would you like to visit the releases page?</source>
 Möchten Sie die Release Seite besuchen?</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1288"/>
+        <location filename="../src/controller.cpp" line="1150"/>
         <source>No updates available</source>
         <translation>keine Updates verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1289"/>
+        <location filename="../src/controller.cpp" line="1151"/>
         <source>You already have the latest release v%1</source>
         <translation>Sie haben bereits die neueste Version v%1</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1660"/>
+        <location filename="../src/controller.cpp" line="1527"/>
         <source>Please wait for SilentDragonLite to exit</source>
         <translation>Bitte warten Sie bis SilentDragonLite beendet ist</translation>
     </message>
     <message>
-        <location filename="../src/controller.cpp" line="1661"/>
+        <location filename="../src/controller.cpp" line="1528"/>
         <source>Waiting for hushd to exit</source>
         <translation>Warten auf beendigung der Serververbindung</translation>
     </message>
@@ -1756,7 +1756,7 @@ Möchten Sie die Release Seite besuchen?</translation>
     <message>
         <location filename="../src/settings.ui" line="27"/>
         <source>Connection</source>
-        <translation>Verbidnung</translation>
+        <translation>Verbindung</translation>
     </message>
     <message>
         <source>Server</source>

@@ -10,6 +10,43 @@
     <height>779</height>
    </rect>
   </property>
+  <property name="palette">
+   <palette>
+    <active>
+     <colorrole role="PlaceholderText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </active>
+    <inactive>
+     <colorrole role="PlaceholderText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </inactive>
+    <disabled>
+     <colorrole role="PlaceholderText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </disabled>
+   </palette>
+  </property>
   <property name="windowTitle">
    <string>SilentDragonLite</string>
   </property>
@@ -18,11 +55,11 @@
     <normaloff>:/icons/res/icon.ico</normaloff>:/icons/res/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_18">
-    <item>
+   <layout class="QFormLayout" name="formLayout">
+    <item row="0" column="0" colspan="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -389,7 +426,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1226</width>
-                <height>504</height>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -1324,6 +1361,514 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_6">
+       <attribute name="title">
+        <string>HushChat</string>
+       </attribute>
+       <widget class="QListView" name="listContactWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>120</y>
+          <width>341</width>
+          <height>521</height>
+         </rect>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>false</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_39">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>100</y>
+          <width>341</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Contactlist&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="memoTxtChat">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>560</y>
+          <width>921</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 11pt &quot;Noto Color Emoji&quot;;</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="contactNameMemo">
+        <property name="geometry">
+         <rect>
+          <x>460</x>
+          <y>20</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="sendChatButton">
+        <property name="geometry">
+         <rect>
+          <x>1170</x>
+          <y>560</y>
+          <width>91</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/icons/res/send-new-white.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>41</width>
+          <height>49</height>
+         </size>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="contactNameMemo_3">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>20</y>
+          <width>111</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Contact Name :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QListView" name="listChat">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>40</y>
+          <width>921</width>
+          <height>521</height>
+         </rect>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="resizeMode">
+         <enum>QListView::Adjust</enum>
+        </property>
+        <property name="modelColumn">
+         <number>0</number>
+        </property>
+        <property name="uniformItemSizes">
+         <bool>false</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="safeContactRequest">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>580</y>
+          <width>51</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="Dark">
+          <normalon>:/icons/res/add_contact.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>43</width>
+          <height>49</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushContact">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>41</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../application.qrc">
+          <normaloff>:/icons/res/notification.png</normaloff>:/icons/res/notification.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>33</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="sendContact">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>510</y>
+          <width>51</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="Dark">
+          <normalon>:/icons/res/add_contact.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>43</width>
+          <height>49</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="givemeZaddr">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>30</y>
+          <width>111</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string> New Addr</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../application.qrc">
+          <normaloff>:/icons/res/add_contact.png</normaloff>:/icons/res/add_contact.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>33</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_40">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>20</y>
+          <width>21</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="palette">
+         <palette>
+          <active>
+           <colorrole role="WindowText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Text">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="BrightText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>239</red>
+              <green>41</green>
+              <blue>41</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="ButtonText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="LinkVisited">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="ToolTipText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="PlaceholderText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="128">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </active>
+          <inactive>
+           <colorrole role="WindowText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Text">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="BrightText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>239</red>
+              <green>41</green>
+              <blue>41</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="ButtonText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="LinkVisited">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="ToolTipText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="PlaceholderText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="128">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </inactive>
+          <disabled>
+           <colorrole role="WindowText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>190</red>
+              <green>190</green>
+              <blue>190</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="Text">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>190</red>
+              <green>190</green>
+              <blue>190</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="BrightText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>239</red>
+              <green>41</green>
+              <blue>41</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="ButtonText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>190</red>
+              <green>190</green>
+              <blue>190</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="LinkVisited">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="ToolTipText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="255">
+              <red>204</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+           <colorrole role="PlaceholderText">
+            <brush brushstyle="SolidPattern">
+             <color alpha="128">
+              <red>0</red>
+              <green>0</green>
+              <blue>0</blue>
+             </color>
+            </brush>
+           </colorrole>
+          </disabled>
+         </palette>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>1</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -1497,7 +2042,7 @@
   <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
-   <header>addresscombo.h</header>
+   <header location="global">addresscombo.h</header>
   </customwidget>
   <customwidget>
    <class>QRCodeLabel</class>

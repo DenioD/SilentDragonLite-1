@@ -1,3 +1,5 @@
+﻿// Copyright 2019-2020 The Hush developers
+// GPLv3
 #include "mainwindow.h"
 #include "addressbook.h"
 #include "viewalladdresses.h"
@@ -14,6 +16,9 @@
 #include "settings.h"
 #include "version.h"
 #include "connection.h"
+#include "ui_contactrequest.h"
+#include "ui_requestContactDialog.h"
+#include "chatmodel.h"
 #include "requestdialog.h"
 #include "websockets.h"
 #include <QRegularExpression>
@@ -39,7 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
  
     ui->setupUi(this);
+
     logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite-wallet.log"));
+     ui->memoTxtChat->setAutoFillBackground(false);
+     ui->memoTxtChat->setPlaceholderText("Send Message");
+     ui->memoTxtChat->setTextColor(Qt::white);
 
     // Status Bar
     setupStatusBar();
@@ -152,6 +161,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupReceiveTab();
     setupBalancesTab();
     setuphushdTab();
+    setupchatTab();
 
     rpc = new Controller(this);
 
@@ -429,9 +439,6 @@ void MainWindow::setupSettingsModal() {
 
     this->slot_change_currency(currency_name);
 
-    ;
-
-
         // Setup theme combo
         int theme_index = settings.comboBoxTheme->findText(Settings::getInstance()->get_theme_name(), Qt::MatchExactly);
         settings.comboBoxTheme->setCurrentIndex(theme_index);
@@ -454,7 +461,7 @@ void MainWindow::setupSettingsModal() {
              // Tell the user to restart
             QMessageBox::information(this, tr("Currency Change"), tr("This change can take a few seconds."), QMessageBox::Ok);  
              });
-      
+
         // Check for updates
         settings.chkCheckUpdates->setChecked(Settings::getInstance()->getCheckForUpdates());
 
@@ -899,8 +906,21 @@ void MainWindow::setupTransactionsTab() {
     });
 
     // Set up context menu on transactions tab
+    auto theme = Settings::getInstance()->get_theme_name();
+    if (theme == "dark" || theme == "midnight") {
+    ui->listChat->setStyleSheet("background-image: url(:/icons/res/sdlogo.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat;background-size: cover");
+     }
+    if (theme == "default") {ui->listChat->setStyleSheet("background-image: url(:/icons/res/sdlogo2.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat;background-size: cover");}
+   
+    ui->listChat->setResizeMode(QListView::Adjust);
+    ui->listChat->setWordWrap(true);
+    ui->listChat->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->listChat->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->listChat->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->listChat->setMinimumSize(200,350);
+    ui->listChat->setItemDelegate(new ListViewDelegate());
+    ui->listChat->show();
     ui->transactionsTable->setContextMenuPolicy(Qt::CustomContextMenu);
-
     // Table right click
     QObject::connect(ui->transactionsTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
         QModelIndex index = ui->transactionsTable->indexAt(pos);
@@ -974,13 +994,142 @@ void MainWindow::setupTransactionsTab() {
                     qApp->processEvents();
 
                     // Click the memo button
-                    this->memoButtonClicked(1, true);
+                   this->memoButtonClicked(1, true);
                 });
             }
         }
 
         menu.exec(ui->transactionsTable->viewport()->mapToGlobal(pos));        
     });
+    
+}
+
+void MainWindow::setupchatTab() {
+
+          /////////////Setting Icons for Chattab and different themes
+       
+  auto theme = Settings::getInstance()->get_theme_name();
+        if (theme == "dark" || theme == "midnight") {
+            QPixmap send(":/icons/res/send-new-white.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+
+            QPixmap notification(":/icons/res/notification.png");
+            QIcon notificationIcon(notification);
+            ui->pushContact->setIcon(notificationIcon);
+
+            QPixmap addContact(":/icons/res/add_contact.png");
+            QIcon addContactIcon(addContact);
+            ui->safeContactRequest->setIcon(addContactIcon);
+
+            QPixmap newAddr(":/icons/res/add_contact.png");
+            QIcon addnewAddrIcon(newAddr);
+            ui->givemeZaddr->setIcon(addnewAddrIcon);
+
+            QPixmap sendContact(":/icons/res/upload.png");
+            QIcon addSendContactIcon(sendContact);
+            ui->sendContact->setIcon(addSendContactIcon);
+        }else{
+            QPixmap pixmap(":/icons/res/send-new.svg");
+            QIcon sendIcon(pixmap);
+            ui->sendChatButton->setIcon(sendIcon);
+
+            QPixmap notification(":/icons/res/notification.svg");
+            QIcon notificationIcon(notification);
+            ui->pushContact->setIcon(notificationIcon);
+
+            QPixmap addContact(":/icons/res/add_contact.svg");
+            QIcon addContactIcon(addContact);
+            ui->safeContactRequest->setIcon(addContact);
+
+            QPixmap newAddr(":/icons/res/add_contact.svg");
+            QIcon addnewAddrIcon(newAddr);
+            ui->givemeZaddr->setIcon(addnewAddrIcon);
+
+            QPixmap sendContact(":/icons/res/upload.svg");
+            QIcon addSendContactIcon(sendContact);
+            ui->sendContact->setIcon(addSendContactIcon);
+        }
+
+  
+
+
+    QObject::connect(ui->sendChatButton, &QPushButton::clicked, this, &MainWindow::sendChatButton);
+    QObject::connect(ui->sendContact, &QPushButton::clicked, this, &MainWindow::ContactRequest);
+    QObject::connect(ui->safeContactRequest, &QPushButton::clicked, this, &MainWindow::addContact);
+    QObject::connect(ui->pushContact, &QPushButton::clicked, this , &MainWindow::renderContactRequest);
+
+///////// Set selected Zaddr for Chat with Klick
+
+    QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
+
+    
+        QModelIndex index = ui->listContactWidget->currentIndex();
+        QString label_contact = index.data(Qt::DisplayRole).toString();
+        
+        for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
+        if (label_contact == p.getName()) {
+       // ui->ContactZaddr->setText(p.getPartnerAddress());
+      //  ui->MyZaddr->setText(p.getMyAddress());
+        ui->contactNameMemo->setText(p.getName());
+        ui->memoTxtChat->clear();
+        
+    rpc->refresh(true);
+   // updateChat();
+        }
+   });
+
+    
+
+}
+
+ChatMemoEdit::ChatMemoEdit(QWidget* parent) : QPlainTextEdit(parent) {
+    QObject::connect(this, &QPlainTextEdit::textChanged, this, &ChatMemoEdit::updateDisplay);
+}
+
+void ChatMemoEdit::updateDisplay() {
+    QString txt = this->toPlainText();
+    if (lenDisplayLabel)
+        lenDisplayLabel->setText(QString::number(txt.toUtf8().size()) + "/" + QString::number(maxlen));
+
+    if (txt.toUtf8().size() <= maxlen) {
+        // Everything is fine
+        if (sendChatButton)
+            sendChatButton->setEnabled(true);
+
+        if (lenDisplayLabel)
+            lenDisplayLabel->setStyleSheet("");
+    }
+    else {
+        // Overweight
+        if (sendChatButton)
+            sendChatButton->setEnabled(false);
+
+        if (lenDisplayLabel)
+            lenDisplayLabel->setStyleSheet("color: red;");
+    }
+}
+
+void ChatMemoEdit::setMaxLen(int len) {
+    this->maxlen = len;
+    updateDisplay();
+}
+
+void ChatMemoEdit::setSendChatButton(QPushButton* button) {
+    this->sendChatButton = button;
+}
+
+
+void MainWindow::updateChat()
+{
+    rpc->refreshChat(ui->listChat);
+    rpc->refresh(true);
+
+}
+
+void MainWindow::updateContacts()
+{
+    //rpc->refreshContacts(ui->listContactWidget);
 }
 
 void MainWindow::addNewZaddr(bool sapling) {
@@ -1214,6 +1363,7 @@ void MainWindow::setupReceiveTab() {
     // Receive tab add/update label
     QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
         QString addr = ui->listReceiveAddresses->currentText();
+       
         if (addr.isEmpty())
             return;
 
@@ -1227,7 +1377,7 @@ void MainWindow::setupReceiveTab() {
 
         if (!curLabel.isEmpty() && label.isEmpty()) {
             info = "Removed Label '" % curLabel % "'";
-            AddressBook::getInstance()->removeAddressLabel(curLabel, addr);
+            AddressBook::getInstance()->removeAddressLabel(curLabel, addr, "", "","" );
         }
         else if (!curLabel.isEmpty() && !label.isEmpty()) {
             info = "Updated Label '" % curLabel % "' to '" % label % "'";
@@ -1235,7 +1385,7 @@ void MainWindow::setupReceiveTab() {
         }
         else if (curLabel.isEmpty() && !label.isEmpty()) {
             info = "Added Label '" % label % "'";
-            AddressBook::getInstance()->addAddressLabel(label, addr);
+            AddressBook::getInstance()->addAddressLabel(label, addr, "", "", "");
         }
 
         // Update labels everywhere on the UI
@@ -1285,7 +1435,7 @@ void MainWindow::updateTAddrCombo(bool checked) {
         auto allTaddrs = this->rpc->getModel()->getAllTAddresses();
         QSet<QString> labels;
         for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
-            labels.insert(p.second);
+            labels.insert(p.getPartnerAddress());
         }
         std::for_each(allTaddrs.begin(), allTaddrs.end(), [=, &addrs] (auto& taddr) {
             // If the address is in the address book, add it. 
@@ -1405,4 +1555,15 @@ MainWindow::~MainWindow()
 
     delete wsserver;
     delete wormhole;
+}
+void MainWindow::on_givemeZaddr_clicked()
+{
+
+    bool sapling = true;
+    rpc->createNewZaddr(sapling, [=] (json reply) {
+                QString hushchataddr = QString::fromStdString(reply.get<json::array_t>()[0]);
+                QMessageBox::information(this, "Your new Hushchataddress",hushchataddr);
+            //    ui->listReceiveAddresses->insertItem(0, hushchataddr);
+              //  ui->listReceiveAddresses->setCurrentIndex(0);
+                });
 }

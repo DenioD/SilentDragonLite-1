@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>780</width>
+    <height>416</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Send a contact request</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1" colspan="2">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Choose a avatar for your contact :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please insert a Nickname for your contact :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="comboBoxAvatar">
+     <item>
+      <property name="text">
+       <string>Stag</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Stag.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Elsa</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>:/icons/res/Elsa.png</normalon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Denio</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Denio.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Duke</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Duke.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yoda</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Yoda.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Berg</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Berg.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sharpee</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Sharpee.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Garfield</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Garfield.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Snoopy</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Snoopy.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Popey</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Popey.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Pinguin</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Pinguin.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mickey</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Mickey.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>SDLogo</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/sdlogo2.png</activeon>
+       </iconset>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLineEdit" name="labelRequest"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please insert the Address of your contact :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLineEdit" name="zaddr"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Your HushChat Address</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLineEdit" name="myzaddr"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>The Conversation ID </string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="3">
+    <widget class="QLabel" name="cid">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QPushButton" name="cancel">
+     <property name="baseSize">
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
+    <widget class="QPushButton" name="sendRequestButton">
+     <property name="baseSize">
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Add Contact</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>396</x>
+     <y>262</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>389</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sendRequestButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>536</x>
+     <y>262</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>389</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>requestDialog</class>
+ <widget class="QDialog" name="requestDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1011</width>
+    <height>503</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Incoming contact request</string>
+  </property>
+  <widget class="QListView" name="requestContact">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>256</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>false</bool>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::SingleSelection</enum>
+   </property>
+  </widget>
+  <widget class="QListView" name="requestMemo">
+   <property name="geometry">
+    <rect>
+     <x>263</x>
+     <y>9</y>
+     <width>741</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::AdjustToContents</enum>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
+   <property name="resizeMode">
+    <enum>QListView::Adjust</enum>
+   </property>
+   <property name="modelColumn">
+    <number>0</number>
+   </property>
+   <property name="uniformItemSizes">
+    <bool>false</bool>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>276</x>
+     <y>296</y>
+     <width>101</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Request from :</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestZaddr">
+   <property name="geometry">
+    <rect>
+     <x>393</x>
+     <y>296</y>
+     <width>601</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>276</x>
+     <y>327</y>
+     <width>30</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cid :</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestCID">
+   <property name="geometry">
+    <rect>
+     <x>393</x>
+     <y>327</y>
+     <width>601</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>276</x>
+     <y>358</y>
+     <width>71</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>My Zaddr :</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestMyAddr">
+   <property name="geometry">
+    <rect>
+     <x>393</x>
+     <y>358</y>
+     <width>601</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>276</x>
+     <y>389</y>
+     <width>68</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Nickname</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestLabel">
+   <property name="geometry">
+    <rect>
+     <x>393</x>
+     <y>389</y>
+     <width>221</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>276</x>
+     <y>420</y>
+     <width>228</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Choose a avatar for your contact :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBoxAvatar">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>420</y>
+     <width>106</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Stag</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Stag.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Elsa</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normalon>:/icons/res/Elsa.png</normalon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Denio</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Denio.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Duke</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Duke.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Yoda</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Yoda.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Berg</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Berg.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Sharpee</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Sharpee.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Garfield</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Garfield.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Snoopy</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Snoopy.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Popey</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Popey.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Pinguin</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Pinguin.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Mickey</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Mickey.png</activeon>
+     </iconset>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>SDLogo</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/sdlogo2.png</activeon>
+     </iconset>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="cancel">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>470</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="baseSize">
+    <size>
+     <width>100</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>470</y>
+     <width>101</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add Contact</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

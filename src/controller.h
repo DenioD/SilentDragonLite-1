@@ -11,7 +11,10 @@
 #include "mainwindow.h"
 #include "liteinterface.h"
 #include "connection.h"
-
+#include "chatmodel.h"
+#include "Model/ContactRequestChatItem.h"
+#include "Model/ContactItem.h"
+#include "contactmodel.h"
 using json = nlohmann::json;
 
 struct WatchedTx {
@@ -70,6 +73,8 @@ public:
     void refreshGBPCAP();
     void refreshAUDCAP();
     
+    void refreshChat(QListView *listWidget);
+    void refreshContacts(QListView *listWidget);
     
     void executeStandardUITransaction(Tx tx); 
 
