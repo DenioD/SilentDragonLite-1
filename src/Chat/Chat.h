@@ -1,28 +1,36 @@
 #ifndef CHAT_H
 #define CHAT_H
 
+#include <QString>
+#include <QStandardItemModel>
+#include <QAbstractItemDelegate>
+#include <QPainter>
+#include <map>
+#include <vector>
+#include <QListView>
+#include "precompiled.h"
+#include "mainwindow.h"
+#include "controller.h"
+#include "settings.h"
+#include "camount.h"
+
+#include "../Model/ChatItem.h"
+
+
 class Chat // Chat Controller
 {
     private:
-        std::map<QString, ChatItem> chatItems; 
         QTableView* parent;
         Ui::MainWindow*             ui;
         MainWindow*                 main;
         std::map<QString, QString> cidMap;
         std::map<QString, QString> requestZaddrMap;
     public:
-        ChatModel() {};
-        ChatModel(std::map<QString, ChatItem> chatItems);
-        ChatModel(std::vector<ChatItem> chatItems);
-        QString generateChatItemID(ChatItem item); // helper
-        std::map<QString, ChatItem> getItems();
-        void setItems(std::map<QString, ChatItem> items);
-        QString zaddr();
-        void setItems(std::vector<ChatItem> items);
-        void renderChatBox(Ui::MainWindow* ui, QListView &view); // action
+        Chat();
+        //QString zaddr();
         void renderChatBox(Ui::MainWindow* ui, QListView *view); // action
        // void renderContactRequest();
-        void triggerRequest();
+        /*void triggerRequest();
         void showMessages();
         void clear();
         //void renderContactRequest(Ui::MainWindow* ui, QListView *view);
@@ -33,7 +41,7 @@ class Chat // Chat Controller
         QString getCidByTx(QString tx);
         QString getrequestZaddrByTx(QString tx);
         void killCidCache();
-        void killrequestZaddrCache();
+        void killrequestZaddrCache();*/
 
 };
 

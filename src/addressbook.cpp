@@ -156,7 +156,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
             ab.addr_chat->setText(myAddr);
         });
         model.updateUi(); //todo fix updating gui after adding 
-        rpc->refresh(true);
+        //rpc->refresh(true);
 
     // If there is a target then make it the addr for the "Add to" button
     if (target != nullptr && Settings::isValidAddress(target->text())) 

@@ -12,6 +12,7 @@
 #include "liteinterface.h"
 #include "connection.h"
 #include "chatmodel.h"
+#include "Chat/Chat.h"
 #include "Model/ContactRequestChatItem.h"
 #include "Model/ContactItem.h"
 #include "contactmodel.h"

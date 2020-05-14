@@ -16,6 +16,7 @@ DataStore<QString>* DataStore<QString>::instance = nullptr;
 template<>
 bool DataStore<QString>::instanced = false;*/
 ChatModel *chatModel = new ChatModel();
+Chat *chat = new Chat();
 ContactModel *contactModel = new ContactModel();
 
 using json = nlohmann::json;
@@ -866,22 +867,14 @@ void Controller::refreshTransactions() {
                     QString memo;
                     if (!o["memo"].is_null()) {
                         memo = QString::fromStdString(o["memo"]);
-                    }  
+                     
 
-                        QString cid;
-                        QString contact;
-                   
-                    for(auto &c : AddressBook::getInstance()->getAllAddressLabels())
-                    {
-                     if (address == c.getPartnerAddress()){
-                          contact = c.getName();
-                     }else{ contact = "";}   
-                    
+                        QString cid; 
 
                         ChatItem item = ChatItem(
                                 datetime,
                                 address,
-                                contact,
+                                QString(""),
                                 memo,
                                 QString(""),
                                 QString(""),
@@ -889,7 +882,8 @@ void Controller::refreshTransactions() {
                                 txid,
                                 true 
                             );
-                        //DataStore::getChatDataStore()->setData(chatModel->generateChatItemID(item), item);
+                                qDebug()<<"Memo : " <<memo;
+
                         DataStore::getChatDataStore()->setData(ChatIDGenerator::getInstance()->generateID(item), item);
                     
                         }                              
@@ -897,6 +891,7 @@ void Controller::refreshTransactions() {
                     items.push_back(TransactionItemDetail{address, amount, memo});
                     total_amount = total_amount + amount;
                 }
+                
 
                 {
                      QList<QString> addresses;
@@ -943,18 +938,18 @@ void Controller::refreshTransactions() {
                    // int position;
                     QString requestZaddr;
 
-                if (memo.startsWith("{")) {
+                if ((memo.startsWith("{")) && (!it["memo"].is_null())) {
 
-                QJsonDocument doc = QJsonDocument::fromJson(memo.toUtf8());
+                QJsonDocument headermemo = QJsonDocument::fromJson(memo.toUtf8());
 
-                  cid = doc["cid"].toString();
-                  type = doc["t"].toString();
-                  requestZaddr =  doc["z"].toString();
+                  cid = headermemo["cid"].toString();
+                  type = headermemo["t"].toString();
+                  requestZaddr =  headermemo["z"].toString();
 
                     chatModel->addCid(txid, cid);
                     chatModel->addrequestZaddr(txid, requestZaddr);
 
-                }
+               // }
              
                 if (chatModel->getCidByTx(txid) != QString("0xdeadbeef")){
 
@@ -976,21 +971,13 @@ void Controller::refreshTransactions() {
                             requestZaddr = "";
                     }                 
                              
-                QString contact;
-                for(auto &c : AddressBook::getInstance()->getAllAddressLabels())
-                {
             
-                if (address == c.getMyAddress()){
-                    contact = c.getName();
-
-                }else{ contact = "";}
-                
               //  position = it["position"].get<json::number_integer_t>();
 
                     ChatItem item = ChatItem(
                                 datetime,
                                 address,
-                                contact,
+                                QString(""),
                                 memo,
                                 requestZaddr,
                                 type,
@@ -998,7 +985,8 @@ void Controller::refreshTransactions() {
                                 txid,
                                 false
                             );
-
+                                qDebug()<<"CID : " <<cid;
+                                qDebug()<<"Memo : " <<memo;
                     DataStore::getChatDataStore()->setData(ChatIDGenerator::getInstance()->generateID(item), item);
                  } 
             }
@@ -1022,7 +1010,7 @@ void Controller::refreshTransactions() {
 
          // Update model data, which updates the table view
         transactionsTableModel->replaceData(txdata);    
-        chatModel->renderChatBox(ui, ui->listChat);   
+        chat->renderChatBox(ui, ui->listChat);   
         refreshContacts(
             ui->listContactWidget
             
@@ -1032,7 +1020,7 @@ void Controller::refreshTransactions() {
 
 void Controller::refreshChat(QListView *listWidget)
 {
-    chatModel->renderChatBox(ui, listWidget);
+    chat->renderChatBox(ui, listWidget);
   
 }
 

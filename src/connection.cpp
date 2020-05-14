@@ -59,7 +59,7 @@ void ConnectionLoader::doAutoConnect()
 {
     qDebug() << "Doing autoconnect";
     auto config = std::shared_ptr<ConnectionConfig>(new ConnectionConfig());
-    config->dangerous = true;
+    config->dangerous = false;
     config->server = Settings::getInstance()->getSettings().server;
 
     // Initialize the library

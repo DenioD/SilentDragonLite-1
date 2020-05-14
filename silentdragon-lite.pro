@@ -78,7 +78,8 @@ SOURCES += \
     src/Model/ChatItem.cpp \
     src/Model/ContactRequestChatItem.cpp \
     src/Model/ContactItem.cpp \
-    src/Chat/Helper/ChatIDGenerator.cpp
+    src/Chat/Helper/ChatIDGenerator.cpp \
+    src/Chat/Chat.cpp
 
 HEADERS += \
     src/firsttimewizard.h \

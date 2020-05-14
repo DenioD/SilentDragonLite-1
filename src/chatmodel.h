@@ -30,18 +30,13 @@ class ChatModel
         ChatModel() {};
         ChatModel(std::map<QString, ChatItem> chatItems);
         ChatModel(std::vector<ChatItem> chatItems);
-        //QString generateChatItemID(ChatItem item);
         std::map<QString, ChatItem> getItems();
         void setItems(std::map<QString, ChatItem> items);
         QString zaddr();
         void setItems(std::vector<ChatItem> items);
-        void renderChatBox(Ui::MainWindow* ui, QListView &view);
-        void renderChatBox(Ui::MainWindow* ui, QListView *view);
-       // void renderContactRequest();
         void triggerRequest();
         void showMessages();
         void clear();
-        //void renderContactRequest(Ui::MainWindow* ui, QListView *view);
         void addMessage(ChatItem item);
         void addMessage(QString timestamp, ChatItem item);
         void addCid(QString tx, QString cid);
