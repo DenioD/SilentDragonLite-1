@@ -97,7 +97,7 @@ void MainWindow::renderContactRequest(){
        QStandardItemModel* contactRequest = new QStandardItemModel();
 
     {
-            for (auto &c : DataStore::getChatDataStore()->getAllRawChatItems())
+            for (auto &c : DataStore::getChatDataStore()->getAllContactRequests())
             {
 
                 QStandardItem* Items = new QStandardItem(c.second.getAddress());

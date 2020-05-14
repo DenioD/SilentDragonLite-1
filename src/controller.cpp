@@ -855,8 +855,7 @@ void Controller::refreshTransactions() {
                 for (auto o: it["outgoing_metadata"].get<json::array_t>()) {
                     
                      QString address;
-                     
-
+    
                     address = QString::fromStdString(o["address"]);
                 
                     // Sent items are -ve
@@ -867,7 +866,6 @@ void Controller::refreshTransactions() {
                     QString memo;
                     if (!o["memo"].is_null()) {
                         memo = QString::fromStdString(o["memo"]);
-                     
 
                         QString cid; 
 
@@ -892,7 +890,6 @@ void Controller::refreshTransactions() {
                     total_amount = total_amount + amount;
                 }
                 
-
                 {
                      QList<QString> addresses;
                     for (auto item : items) {
@@ -926,7 +923,6 @@ void Controller::refreshTransactions() {
                     memo
                 });
 
-
                 TransactionItem tx{
                     "Receive", datetime, address, txid,confirmations, items
                 };
@@ -935,12 +931,14 @@ void Controller::refreshTransactions() {
                 
                     QString type;
                     QString cid;
-                   // int position;
+                    int position;
                     QString requestZaddr;
 
-                if ((memo.startsWith("{")) && (!it["memo"].is_null())) {
+                if (!it["memo"].is_null()) {
 
-                QJsonDocument headermemo = QJsonDocument::fromJson(memo.toUtf8());
+                if (memo.startsWith("{")) {
+
+                  QJsonDocument headermemo = QJsonDocument::fromJson(memo.toUtf8());
 
                   cid = headermemo["cid"].toString();
                   type = headermemo["t"].toString();
@@ -949,31 +947,23 @@ void Controller::refreshTransactions() {
                     chatModel->addCid(txid, cid);
                     chatModel->addrequestZaddr(txid, requestZaddr);
 
-               // }
-             
+                }       
+            
                 if (chatModel->getCidByTx(txid) != QString("0xdeadbeef")){
 
                         cid = chatModel->getCidByTx(txid);
 
-                }
-                    else{
-
-                     cid = "";
+                }else{
+                    cid = "";
                     }
     
                 if (chatModel->getrequestZaddrByTx(txid) != QString("0xdeadbeef")){
 
                         requestZaddr = chatModel->getrequestZaddrByTx(txid);
-
-                }
-                  
-                    else{
+                }else{
                             requestZaddr = "";
                     }                 
-                             
-            
-              //  position = it["position"].get<json::number_integer_t>();
-
+                position = it["position"].get<json::number_integer_t>(); 
                     ChatItem item = ChatItem(
                                 datetime,
                                 address,
@@ -985,8 +975,8 @@ void Controller::refreshTransactions() {
                                 txid,
                                 false
                             );
-                                qDebug()<<"CID : " <<cid;
-                                qDebug()<<"Memo : " <<memo;
+                            qDebug()<< "Position : " << position;
+
                     DataStore::getChatDataStore()->setData(ChatIDGenerator::getInstance()->generateID(item), item);
                  } 
             }
