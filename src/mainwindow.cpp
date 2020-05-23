@@ -293,18 +293,51 @@ void MainWindow::encryptWallet() {
         auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
         QString source_file = dir.filePath("addresslabels.dat");
         QString target_enc_file = dir.filePath("addresslabels.dat.enc");
-        QString target_dec_file = dir.filePath("addresslabels.dat.dec");
+        //QString target_dec_file = dir.filePath("addresslabels.dat.dec");
         FileEncryption::encrypt(target_enc_file, source_file, key);
-        FileEncryption::decrypt(target_dec_file, target_enc_file, key);
+       // FileEncryption::decrypt(target_dec_file, target_enc_file, key);
 
-    d.exec();
+        d.exec();
 
     }
 
 }
 
 void MainWindow::removeWalletEncryption() {
-    // Check if wallet is already encrypted
+    QDialog d(this);
+    Ui_encryptionDialog ed;
+    ed.setupUi(&d);
+
+    // Handle edits on the password box
+    auto fnPasswordEdited = [=](const QString&) {
+        // Enable the OK button if the passwords match.
+        if (!ed.txtPassword->text().isEmpty() && 
+                ed.txtPassword->text() == ed.txtConfirmPassword->text()) {
+            ed.lblPasswordMatch->setText("");
+            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        } else {
+            ed.lblPasswordMatch->setText(tr("Passwords don't match"));
+            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        }
+
+    };
+
+    QObject::connect(ed.txtConfirmPassword, &QLineEdit::textChanged, fnPasswordEdited);
+    QObject::connect(ed.txtPassword, &QLineEdit::textChanged, fnPasswordEdited);
+
+    if (d.exec() == QDialog::Accepted) 
+    {
+        const unsigned char* key=PASSWD::hash(ed.txtPassword->text());
+        PASSWD::show_hex_buff((unsigned char*) key);
+        auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        QString target_enc_file = dir.filePath("addresslabels.dat.enc");
+        QString target_dec_file = dir.filePath("addresslabels.dat");
+        FileEncryption::decrypt(target_dec_file, target_enc_file, key);
+
+        d.exec();
+
+    }
+    /*// Check if wallet is already encrypted
     auto encStatus = rpc->getModel()->getEncryptionStatus();
     if (!encStatus.first) {
         QMessageBox::information(this, tr("Wallet is not encrypted"), 
@@ -317,6 +350,8 @@ void MainWindow::removeWalletEncryption() {
     bool ok;
     QString password = QInputDialog::getText(this, tr("Wallet Password"), 
                             tr("Please enter your wallet password"), QLineEdit::Password, "", &ok);
+    
+    qDebug() << password;
 
     // If cancel was pressed, just return
     if (!ok) {
@@ -356,7 +391,7 @@ void MainWindow::removeWalletEncryption() {
                     QMessageBox::Ok
                 );
             }
-    });            
+    });     */       
 }
 
 void MainWindow::setupStatusBar() {

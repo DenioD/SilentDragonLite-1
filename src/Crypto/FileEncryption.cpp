@@ -42,9 +42,9 @@ int FileEncryption::encrypt(QString target_file, QString source_file, const unsi
             0, 
             tag
         );
-
         fwrite(cipher_data, 1, (size_t) cipher_len, target);
     } 
+
     while (! eof);
 
     fclose(target);
