@@ -20,6 +20,8 @@ class FileSystem
         static FileSystem* getInstance();
         QList<ContactItem> readContacts(QString file);
         void writeContacts(QString file, QString data);
+        bool fileExists(QString file);
+        bool pathExists(QString path);
 
         //converter
         QList<ContactItem> readContactsOldFormat(QString file);

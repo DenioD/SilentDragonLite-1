@@ -83,6 +83,12 @@ SOURCES += \
     src/Chat/Helper/ChatIDGenerator.cpp \
     src/Chat/Chat.cpp \
     src/FileSystem/FileSystem.cpp \
+    src/FileSystem/Contact/Context/ContactFSContext.cpp \
+    src/FileSystem/Contact/ContactFS.cpp \
+    src/FileSystem/Contact/V1A/ContactFSV1AStrategy.cpp \
+    src/FileSystem/Contact/V1B/ContactFSV1BStrategy.cpp \
+    src/FileSystem/Contact/V2/ContactFSV2Strategy.cpp \
+    src/FileSystem/Contact/V3/ContactFSV3Strategy.cpp \
     src/Crypto/FileEncryption.cpp \
     src/Crypto/passwd.cpp
 

@@ -6,6 +6,7 @@
 #include <QList>
 #include "../Crypto/passwd.h"
 #include "addressbook.h"
+#include "./Contact/ContactFS.h"
 
 FileSystem::FileSystem()
 {
@@ -89,7 +90,8 @@ void FileSystem::writeContactsOldFormat(QString file, QList<ContactItem> contact
 
 QList<ContactItem> FileSystem::readContactsOldFormat(QString file)
 {
-    QList<ContactItem> contacts;
+    return ContactFS::readContacts(file);
+    /*QList<ContactItem> contacts;
     QFile _file(file);
     if (_file.exists()) 
     {
@@ -165,7 +167,19 @@ QList<ContactItem> FileSystem::readContactsOldFormat(QString file)
         qDebug() << "No Hush contacts found on disk!";
     }
 
-    return contacts;
+    return contacts;*/
+}
+
+bool FileSystem::fileExists(QString file)
+{
+    QFileInfo info(file);
+    return info.exists() && info.isFile();
+}
+
+bool FileSystem::pathExists(QString path)
+{
+    QFileInfo info(path);
+    return info.exists() && info.isDir();
 }
 
 FileSystem::~FileSystem()
