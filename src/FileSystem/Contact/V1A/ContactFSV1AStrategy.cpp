@@ -16,16 +16,17 @@ QList<ContactItem> ContactFSV1AStrategy::read(QString file)
     in >> stuff;
 
     qDebug() << "Stuff: " << stuff;
+    ContactItem contact;
     for (int i=0; i < stuff.size(); i++) 
     {
-        ContactItem contact = ContactItem(
+        contact = ContactItem(
             stuff[i].first, 
             stuff[i].second
         );
         contacts.push_back(contact);
         qDebug() << "Contact: " << contact.toQTString();
     }
-
+    
     _file.close();
     return contacts;
 }
