@@ -1,3 +1,6 @@
+// Copyright 2019-2020 The Hush developers
+// GPLv3
+
 #ifndef RPCCLIENT_H
 #define RPCCLIENT_H
 
@@ -11,7 +14,11 @@
 #include "mainwindow.h"
 #include "liteinterface.h"
 #include "connection.h"
-
+#include "chatmodel.h"
+#include "Chat/Chat.h"
+#include "Model/ContactRequestChatItem.h"
+#include "Model/ContactItem.h"
+#include "contactmodel.h"
 using json = nlohmann::json;
 
 struct WatchedTx {
@@ -33,7 +40,10 @@ public:
     Connection* getConnection() { return zrpc->getConnection(); }
     void setConnection(Connection* c);
     void refresh(bool force = false);
-    void refreshAddresses();    
+    void refreshAddresses(); 
+    int getLag();   
+    void setLag(int lag);
+    int _lag;
     
     void checkForUpdate(bool silent = true);
     void refreshZECPrice();
@@ -70,6 +80,8 @@ public:
     void refreshGBPCAP();
     void refreshAUDCAP();
     
+    void refreshChat(QListView *listWidget, QLabel *label);
+    void refreshContacts(QListView *listWidget);
     
     void executeStandardUITransaction(Tx tx); 
 

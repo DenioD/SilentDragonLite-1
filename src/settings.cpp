@@ -225,12 +225,8 @@ QString Settings::get_currency_name() {
 }
 
 void Settings::set_currency_name(QString currency_name) {
-    QSettings().setValue("options/currency_name", currency_name);
-
-  
-    
+    QSettings().setValue("options/currency_name", currency_name);  
 }
-
 
 QString Settings::get_theme_name() {
     // Load from the QT Settings.
@@ -240,6 +236,9 @@ QString Settings::get_theme_name() {
 void Settings::set_theme_name(QString theme_name) {
     QSettings().setValue("options/theme_name", theme_name);
 }
+
+
+
 
 
 //=================================

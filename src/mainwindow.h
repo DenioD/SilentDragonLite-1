@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "recurring.h"
 
+
 // Forward declare to break circular dependency.
 class Controller;
 class Settings;
@@ -47,18 +48,29 @@ public:
     QRegExpValidator*   getAmountValidator() { return amtValidator; }
 
     QString doSendTxValidations(Tx tx);
+    QString doSendChatTxValidations(Tx tx);
+    QString doSendRequestTxValidations(Tx tx);
+    QString getCid();
+    QString getPassword();
+    void setPassword(QString Password);
 
     void replaceWormholeClient(WormholeClient* newClient);
     bool isWebsocketListening();
     void createWebsocket(QString wormholecode);
     void stopWebsocket();
+    void saveContact();
+    void saveandsendContact();
+    void showRequesthush();
+   // void setmaxlenChat(int len);
+   // void updateDisplay();
+    
 
     void balancesReady();
     void payhushURI(QString uri = "", QString myAddr = "");
 
     void updateLabels();
     void updateTAddrCombo(bool checked);
-
+    
     // Disable recurring on mainnet
     void disableRecurring();
 
@@ -71,37 +83,68 @@ public:
     QLabel*             statusIcon;
     QLabel*             loadingLabel;
     QWidget*            hushdtab;
+    //ChatItem* currentChatItem;
+    
 
     Logger*      logger;
 
     void doClose();
+    void doClosePw();
+    QString createHeaderMemo(QString type, QString cid, QString zaddr, int version, int headerNumber);
 
 public slots:
     void slot_change_theme(const QString& themeName);
     void slot_change_currency(const QString& currencyName);
+    
      
-private:    
+private slots:
+    
+
+    void on_givemeZaddr_clicked();
+
+private:
+
+    bool fileExists(QString path);
     void closeEvent(QCloseEvent* event);
+    void closeEventpw(QCloseEvent* event);
+
 
     void setupSendTab();
     void setupTransactionsTab();
     void setupReceiveTab();
     void setupBalancesTab();
     void setuphushdTab();
+    void setupchatTab();
+    void renderContactRequest();
+  //  void setLenDisplayLabel(QLabel* label);
+    
+    void updateContacts();
+    void updateChat();
 
     void setupSettingsModal();
     void setupStatusBar();
     
     void clearSendForm();
+    QString _password;
 
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
 
+    Tx   createTxFromChatPage();
+    Tx   createTxForSafeContactRequest();
+
+
     void encryptWallet();
     void removeWalletEncryption();
+    void removeWalletEncryptionStartUp();
 
     void cancelButton();
     void sendButton();
+    void sendChat();
+    void addContact();
+    void ContactRequest();
+    
+    
     void addAddressSection();
     void maxAmountChecked(int checked);
 
@@ -131,13 +174,18 @@ private:
     void restoreSavedStates();
     bool eventFilter(QObject *object, QEvent *event);
 
+  
+
+
     bool            uiPaymentsReady    = false;
     QString         pendingURIPayment;
 
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
 
+
     Controller*         rpc             = nullptr;
+    
     QCompleter*         labelCompleter  = nullptr;
     QRegExpValidator*   amtValidator    = nullptr;
     QRegExpValidator*   feesValidator   = nullptr;
@@ -146,5 +194,22 @@ private:
 
     QMovie*      loadingMovie;
 };
+
+class ChatMemoEdit : public QTextEdit
+{
+public:
+    ChatMemoEdit(QWidget* parent);
+
+    void setMaxLenChat(int len);
+    void setLenDisplayLabelChat(QLabel* label);
+    void SetSendChatButton(QPushButton* button);
+    void updateDisplayChat();
+
+private:
+    int             maxlenchat             = 512;
+    QLabel*         lenDisplayLabelchat    = nullptr;
+    QPushButton*    sendChatButton     = nullptr;
+};
+
 
 #endif // MAINWINDOW_H

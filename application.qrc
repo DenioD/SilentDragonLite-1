@@ -8,10 +8,53 @@
         <file>res/paymentreq.gif</file>
         <file>res/icon.ico</file>
         <file>res/mail.png</file>
+        <file>res/darkwing.png</file>
+        <file>res/sdlogo.png</file>
+        <file>res/sdlogo2.png</file>
+        <file>res/Berg.png</file>
+        <file>res/Denio.png</file>
+        <file>res/Duke.png</file>
+        <file>res/Sharpee.png</file>
+        <file>res/Yoda.png</file>
+        <file>res/Mickey.png</file>
+        <file>res/Snoopy.png</file>
+        <file>res/Popey.png</file>
+        <file>res/Garfield.png</file>
+        <file>res/Pinguin.png</file>
+        <file>res/Stag.png</file>
+        <file>res/Elsa.png</file>
+        <file>res/send.png</file>
+        <file>res/send.svg</file>
+        <file>res/addcontact.svg</file>
+        <file>res/send-new.svg</file>
+        <file>res/add_contact.svg</file>
+        <file>res/notification.svg</file>
+        <file>res/send-new-white.png</file>
+        <file>res/add_contact.png</file>
+        <file>res/notification.png</file>
+        <file>res/rahmen-message.png</file>
+        <file>res/message-icon.svg</file>
+        <file>res/lock_green.png</file>
+        <file>res/lock_orange.png</file>
+        <file>res/unlocked.png</file>
+        <file>res/getAddrWhite.png</file>
+        <file>res/send-white.png</file>
+        <file>res/requestWhite.png</file>
+        <file>res/addContactWhite.png</file>
+        <file>res/getAddrBlack.png</file>
+        <file>res/sendBlack.png</file>
+        <file>res/requestBlack.png</file>
+        <file>res/addContactBlack.png</file>
+        <file>res/unknownBlack.png</file>
+        <file>res/unknownWhite.png</file>
+       
     </qresource>
     <qresource prefix="/img">
         <file>res/hushdlogo.gif</file>
-        <file>res/logobig.gif</file>
+        <file>res/silentdragonlite-animated.gif</file>
+        <file>res/silentdragonlite-animated-dark.gif</file>
+        <file>res/silentdragonlite-animated-startup.gif</file>
+        <file>res/silentdragonlite-animated-startup-dark.gif</file>
     </qresource>
     <qresource prefix="/translations">
     <file>res/silentdragonlite_de.qm</file>
@@ -21,12 +64,14 @@
     <file>res/silentdragonlite_it.qm</file>
     <file>res/silentdragonlite_hr.qm</file>
     <file>res/silentdragonlite_fa.qm</file>
+    <file>res/silentdragonlite_id.qm</file>
     </qresource>
     <qresource prefix="/css">
         <file>res/css/blue.css</file>
         <file>res/css/dark.css</file>
         <file>res/css/default.css</file>
         <file>res/css/light.css</file>
+        <file>res/css/midnight.css</file>
     </qresource>
     <qresource prefix="/images/blue">
         <file>res/images/blue/unchecked.png</file>

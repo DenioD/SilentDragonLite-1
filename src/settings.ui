@@ -115,6 +115,11 @@
          <string>dark</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>midnight</string>
+        </property>
+       </item>
       </widget>
       <widget class="QCheckBox" name="chkFetchPrices">
        <property name="geometry">

@@ -5,6 +5,7 @@
 #include "ui_connection.h"
 #include "precompiled.h"
 
+
 using json = nlohmann::json;
 
 class Controller;

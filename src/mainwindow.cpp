@@ -1,3 +1,6 @@
+﻿// Copyright 2019-2020 The Hush developers
+// GPLv3
+
 #include "mainwindow.h"
 #include "addressbook.h"
 #include "viewalladdresses.h"
@@ -14,16 +17,40 @@
 #include "settings.h"
 #include "version.h"
 #include "connection.h"
+#include "ui_contactrequest.h"
+#include "ui_requestContactDialog.h"
+#include "chatmodel.h"
 #include "requestdialog.h"
+#include "ui_startupencryption.h" 
+#include "ui_removeencryption.h"
 #include "websockets.h"
+#include "sodium.h"
+#include "sodium/crypto_generichash_blake2b.h"
 #include <QRegularExpression>
+#include "FileSystem/FileSystem.h"
+#include "Crypto/passwd.h"
+#include "Crypto/FileEncryption.h"
 
 using json = nlohmann::json;
+
+
+
+#ifdef Q_OS_WIN
+auto dirwallet = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet.dat");
+auto dirwalletenc = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet-enc.dat");
+auto dirwalletbackup = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet.datBackup");
+#endif
+#ifdef Q_OS_UNIX
+auto dirwallet = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".silentdragonlite/silentdragonlite-wallet.dat");
+auto dirwalletenc = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".silentdragonlite/silentdragonlite-wallet-enc.dat");
+auto dirwalletbackup = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".silentdragonlite/silentdragonlite-wallet.datBackup");
+#endif
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+   
 	// Include css    
     QString theme_name;
     try
@@ -32,15 +59,28 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     catch (...)
     {
-        theme_name = "default";
+        theme_name = "dark";
     }
 
     this->slot_change_theme(theme_name);
 
  
     ui->setupUi(this);
-    logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite-wallet.log"));
 
+    logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite-wallet.log"));
+      // Check for encryption
+ 
+       
+ 
+    if(fileExists(dirwalletenc))
+    {
+        this->removeWalletEncryptionStartUp();
+    }
+
+     ui->memoTxtChat->setAutoFillBackground(false);
+     ui->memoTxtChat->setPlaceholderText("Send Message");
+     ui->memoTxtChat->setTextColor(Qt::white);
+    
     // Status Bar
     setupStatusBar();
     
@@ -152,6 +192,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupReceiveTab();
     setupBalancesTab();
     setuphushdTab();
+    setupchatTab();
 
     rpc = new Controller(this);
 
@@ -166,6 +207,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
         createWebsocket(wormholecode);
     }
+}
+
+bool MainWindow::fileExists(QString path) 
+{
+    QFileInfo check_file(path);
+    return (check_file.exists() && check_file.isFile());
 }
  
 void MainWindow::createWebsocket(QString wormholecode) {
@@ -221,6 +268,10 @@ void MainWindow::doClose() {
     closeEvent(nullptr);
 }
 
+void MainWindow::doClosePw() {
+    closeEventpw(nullptr);
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
     QSettings s;
 
@@ -229,6 +280,78 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     s.setValue("tratablegeom", ui->transactionsTable->horizontalHeader()->saveState());
 
     s.sync();
+
+    
+    // Let the RPC know to shut down any running service.
+    rpc->shutdownhushd();
+
+// Check is encryption is ON for SDl
+    if(fileExists(dirwalletenc)) 
+   
+    {
+        // delete old file before
+
+        //auto dirHome =  QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        QFile fileoldencryption(dirwalletenc);
+        fileoldencryption.remove();
+
+         // Encrypt our wallet.dat 
+         QString str = this->getPassword();
+         //   QString str = ed.txtPassword->text(); // data comes from user inputs
+         int length = str.length();
+
+    char *sequence = NULL;
+    sequence = new char[length+1];
+    strncpy(sequence, str.toLocal8Bit(), length +1);
+
+    #define MESSAGE ((const unsigned char *) sequence)
+    #define MESSAGE_LEN length
+
+    unsigned char hash[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+    crypto_hash_sha256(hash,MESSAGE, MESSAGE_LEN);
+
+    #define PASSWORD sequence
+    #define KEY_LEN crypto_box_SEEDBYTES
+
+   
+
+ /////////we use the Hash of the Password as Salt, not perfect but still a good solution.
+
+    unsigned char key[KEY_LEN];
+
+    if (crypto_pwhash
+    (key, sizeof key, PASSWORD, strlen(PASSWORD), hash,
+     crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE,
+     crypto_pwhash_ALG_DEFAULT) != 0) {
+    /* out of memory */
+}
+   
+        auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+       // auto dirHome =  QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        QString source_file = dir.filePath("addresslabels.dat");
+        QString target_enc_file = dir.filePath("addresslabels.dat.enc");
+        QString sourceWallet_file = dirwallet;
+        QString target_encWallet_file = dirwalletenc;
+     
+        FileEncryption::encrypt(target_enc_file, source_file, key);
+        FileEncryption::encrypt(target_encWallet_file, sourceWallet_file, key);      
+
+        ///////////////// we rename the plaintext wallet.dat to Backup, for testing. 
+
+        QFile wallet(dirwallet);
+        QFile address(dir.filePath("addresslabels.dat"));
+        wallet.remove();
+        address.remove();
+    }
+    
+
+    // Bubble up
+    if (event)
+        QMainWindow::closeEvent(event);
+}
+
+void MainWindow::closeEventpw(QCloseEvent* event) {
 
     // Let the RPC know to shut down any running service.
     rpc->shutdownhushd();
@@ -240,124 +363,299 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 
 
 void MainWindow::encryptWallet() {
-    // Check if wallet is already encrypted
-    auto encStatus = rpc->getModel()->getEncryptionStatus();
-    if (encStatus.first) {
-        QMessageBox::information(this, tr("Wallet is already encrypted"), 
-                    tr("Your wallet is already encrypted with a password.\nPlease use 'Remove Wallet Encryption' if you want to remove the wallet encryption."),
-                    QMessageBox::Ok
-                );
-        return;
-    }
 
     QDialog d(this);
     Ui_encryptionDialog ed;
     ed.setupUi(&d);
 
     // Handle edits on the password box
+    
+    
     auto fnPasswordEdited = [=](const QString&) {
         // Enable the OK button if the passwords match.
+        QString password = ed.txtPassword->text();
+        
         if (!ed.txtPassword->text().isEmpty() && 
-                ed.txtPassword->text() == ed.txtConfirmPassword->text()) {
+                ed.txtPassword->text() == ed.txtConfirmPassword->text() && password.size() >= 16) {
+            ed.lblPasswordMatch->setText("");
+            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        } else {
+            ed.lblPasswordMatch->setText(tr("Passphrase don't match or You have entered too few letters (16 minimum)"));
+            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        }
+
+    };
+
+    QObject::connect(ed.txtConfirmPassword, &QLineEdit::textChanged, fnPasswordEdited);
+    QObject::connect(ed.txtPassword, &QLineEdit::textChanged, fnPasswordEdited);
+
+    if (d.exec() == QDialog::Accepted) 
+    {
+
+    QString str = ed.txtPassword->text(); // data comes from user inputs
+    int length = str.length();
+    this->setPassword(str);
+
+    char *sequence = NULL;
+    sequence = new char[length+1];
+    strncpy(sequence, str.toLocal8Bit(), length +1);
+
+    #define MESSAGE ((const unsigned char *) sequence)
+    #define MESSAGE_LEN length
+
+    unsigned char hash[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+    crypto_hash_sha256(hash,MESSAGE, MESSAGE_LEN);
+
+    #define PASSWORD sequence
+    #define KEY_LEN crypto_box_SEEDBYTES
+
+   
+
+ /////////we use the Hash of the Password as Salt, not perfect but still a good solution.
+
+    unsigned char key[KEY_LEN];
+
+    if (crypto_pwhash
+    (key, sizeof key, PASSWORD, strlen(PASSWORD), hash,
+     crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE,
+     crypto_pwhash_ALG_DEFAULT) != 0) {
+    /* out of memory */
+}
+
+        auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        auto dirHome =  QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        QString source_file = dir.filePath("addresslabels.dat");
+        QString target_enc_file = dir.filePath("addresslabels.dat.enc");
+        QString sourceWallet_file = dirwallet;
+        QString target_encWallet_file = dirwalletenc;
+     
+        FileEncryption::encrypt(target_enc_file, source_file, key);
+        FileEncryption::encrypt(target_encWallet_file, sourceWallet_file, key);
+
+        QFile wallet(dirwallet);
+        QFile address(dir.filePath("addresslabels.dat"));
+        wallet.rename(dirwalletbackup);
+        address.rename(dir.filePath("addresslabels.datBackup"));
+    }
+}
+
+void MainWindow::removeWalletEncryption() {
+    QDialog d(this);
+    Ui_removeencryption ed;
+    ed.setupUi(&d);
+
+     auto fnPasswordEdited = [=](const QString&) {
+        QString password = ed.txtPassword->text();
+        // Enable the OK button if the passwords match.
+        if (!ed.txtPassword->text().isEmpty() && 
+                ed.txtPassword->text() == ed.txtConfirmPassword->text() && password.size() >= 16) {
             ed.lblPasswordMatch->setText("");
             ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
         } else {
             ed.lblPasswordMatch->setText(tr("Passwords don't match"));
             ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
         }
+
     };
 
     QObject::connect(ed.txtConfirmPassword, &QLineEdit::textChanged, fnPasswordEdited);
     QObject::connect(ed.txtPassword, &QLineEdit::textChanged, fnPasswordEdited);
 
-    ed.txtPassword->setText("");
-    ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    if (d.exec() == QDialog::Accepted) 
+    {
+    QString str = ed.txtPassword->text(); // data comes from user inputs
+    int length = str.length();
 
-    auto fnShowError = [=](QString title, const json& res) {
-        QMessageBox::critical(this, title,
-            tr("Error was:\n") + QString::fromStdString(res.dump()),
-            QMessageBox::Ok
-        );
-    };
+    char *sequence = NULL;
+    sequence = new char[length+1];
+    strncpy(sequence, str.toLocal8Bit(), length +1);
 
-    if (d.exec() == QDialog::Accepted) {
-        rpc->encryptWallet(ed.txtPassword->text(), [=](json res) {
-            if (isJsonResultSuccess(res)) {
-                // Save the wallet
-                rpc->saveWallet([=] (json reply) {
-                    if (isJsonResultSuccess(reply)) {
-                        QMessageBox::information(this, tr("Wallet Encrypted"), 
-                            tr("Your wallet was successfully encrypted! The password will be needed to send funds or export private keys."),
-                            QMessageBox::Ok
-                        );
-                    } else {
-                        fnShowError(tr("Wallet Encryption Failed"), reply);
-                    }
-                });
+    #define MESSAGE ((const unsigned char *) sequence)
+    #define MESSAGE_LEN length
 
-                // And then refresh the UI
-                rpc->refresh(true);
-            } else {
-                fnShowError(tr("Wallet Encryption Failed"), res);
-            }
-        });
+    unsigned char hash[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+    crypto_hash_sha256(hash,MESSAGE, MESSAGE_LEN);
+
+    #define PASSWORD sequence
+    #define KEY_LEN crypto_box_SEEDBYTES
+
+   
+
+ /////////we use the Hash of the Password as Salt, not perfect but still a good solution.
+
+    unsigned char key[KEY_LEN];
+
+    if (crypto_pwhash
+    (key, sizeof key, PASSWORD, strlen(PASSWORD), hash,
+     crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE,
+     crypto_pwhash_ALG_DEFAULT) != 0) {
+    /* out of memory */
+}
+        
+
+  
+        auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        auto dirHome =  QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        QString target_encwallet_file = dirwalletenc;
+        QString target_decwallet_file = dirwallet;
+        QString target_encaddr_file = dir.filePath("addresslabels.dat.enc");
+        QString target_decaddr_file = dir.filePath("addresslabels.dat");
+
+        FileEncryption::decrypt(target_decwallet_file, target_encwallet_file, key);
+        FileEncryption::decrypt(target_decaddr_file, target_encaddr_file, key);
+    
+     QFile filencrypted(dirwalletenc);
+     QFile wallet(dirwallet);
+       
+    if (wallet.size() > 0)
+    {
+      
+         QMessageBox::information(this, tr("Wallet decryption Success"),
+                    QString("Successfully delete the encryption"),
+                    QMessageBox::Ok
+                );   
+
+        filencrypted.remove();  
+
+        }else{
+            
+             qDebug()<<"verschlüsselung gescheitert ";
+        
+         QMessageBox::critical(this, tr("Wallet Encryption Failed"),
+                    QString("False password, please try again"),
+                    QMessageBox::Ok
+                );
+                 this->removeWalletEncryption();
+        }    
+
     }
+   
 }
 
-void MainWindow::removeWalletEncryption() {
-    // Check if wallet is already encrypted
-    auto encStatus = rpc->getModel()->getEncryptionStatus();
-    if (!encStatus.first) {
-        QMessageBox::information(this, tr("Wallet is not encrypted"), 
-                    tr("Your wallet is not encrypted with a password."),
+void MainWindow::removeWalletEncryptionStartUp() {
+   QDialog d(this);
+    Ui_startup ed;
+    ed.setupUi(&d);
+
+    // Handle edits on the password box
+    
+    auto fnPasswordEdited = [=](const QString&) {
+        QString password = ed.txtPassword->text();
+        // Enable the OK button if the passwords match.
+        if (!ed.txtPassword->text().isEmpty() && 
+                ed.txtPassword->text() == ed.txtConfirmPassword->text() && password.size() >= 16) {
+            ed.lblPasswordMatch->setText("");
+            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        } else {
+            ed.lblPasswordMatch->setText(tr("Passwords don't match or under-lettered"));
+            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        }
+
+    };
+
+    QObject::connect(ed.txtConfirmPassword, &QLineEdit::textChanged, fnPasswordEdited);
+    QObject::connect(ed.txtPassword, &QLineEdit::textChanged, fnPasswordEdited);
+
+    if (d.exec() == QDialog::Accepted) 
+    {
+        QString str = ed.txtPassword->text(); // data comes from user inputs
+        int length = str.length();
+        this->setPassword(str);
+        char *sequence = NULL;
+        sequence = new char[length+1];
+        strncpy(sequence, str.toLocal8Bit(), length +1);
+
+        #define MESSAGE ((const unsigned char *) sequence)
+        #define MESSAGE_LEN length
+
+        unsigned char hash[crypto_secretstream_xchacha20poly1305_KEYBYTES];
+
+        crypto_hash_sha256(hash,MESSAGE, MESSAGE_LEN);
+
+        #define PASSWORD sequence
+         #define KEY_LEN crypto_box_SEEDBYTES
+
+   
+
+ /////////we use the Hash of the Password as Salt, not perfect but still a good solution.
+
+        unsigned char key[KEY_LEN];
+
+      if (crypto_pwhash  
+      (key, sizeof key, PASSWORD, strlen(PASSWORD), hash,
+      crypto_pwhash_OPSLIMIT_SENSITIVE, crypto_pwhash_MEMLIMIT_SENSITIVE,
+      crypto_pwhash_ALG_DEFAULT) != 0) {
+    /* out of memory */
+        }
+
+  
+    {
+        auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        auto dirHome =  QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        QString target_encwallet_file = dirwalletenc;
+        QString target_decwallet_file = dirwallet;
+        QString target_encaddr_file = dir.filePath("addresslabels.dat.enc");
+        QString target_decaddr_file = dir.filePath("addresslabels.dat");
+
+        FileEncryption::decrypt(target_decwallet_file, target_encwallet_file, key);
+        FileEncryption::decrypt(target_decaddr_file, target_encaddr_file, key);
+
+    } 
+
+     auto dirHome =  QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+     QFile wallet(dirwallet);
+     //QFile backup(dirHome.filePath(".silentdragonlite/silentdragonlite-wallet.datBACKUP"));*/
+    
+    if (wallet.size() > 0)
+    {
+        if  (fileExists(dirwalletbackup))
+
+        {
+
+                 QMessageBox::warning(this, tr("You have still Plaintextdata on your disk!"),
+                    QString("WARNING: Delete it only if you have a backup of your Wallet Seed."),
+                    QMessageBox::Ok
+                );   
+                          // backup.remove(); 
+
+        }
+      
+         QMessageBox::information(this, tr("Wallet Encryption Success"),
+                    QString("SDL is ready to Rock"),
+                    QMessageBox::Ok
+                );    
+
+             
+        }else{
+
+             qDebug()<<"verschlüsselung gescheitert ";
+        
+         QMessageBox::critical(this, tr("Wallet Encryption Failed"),
+                    QString("false password please try again"),
                     QMessageBox::Ok
                 );
-        return;
+                 this->removeWalletEncryptionStartUp();
+        }    
+
+    }else{
+
+        this->doClosePw();
     }
+  
+}
 
-    bool ok;
-    QString password = QInputDialog::getText(this, tr("Wallet Password"), 
-                            tr("Please enter your wallet password"), QLineEdit::Password, "", &ok);
+QString MainWindow::getPassword()
+{
 
-    // If cancel was pressed, just return
-    if (!ok) {
-        return;
-    }
+    return _password;
+}
 
-    if (password.isEmpty()) {
-        QMessageBox::critical(this, tr("Wallet Decryption Failed"),
-            tr("Please enter a password to decrypt your wallet!"),
-            QMessageBox::Ok
-        );
-        return;
-    }
+void MainWindow::setPassword(QString password)
+{
 
-    rpc->removeWalletEncryption(password, [=] (json res) {
-        if (isJsonResultSuccess(res)) {
-                // Save the wallet
-                rpc->saveWallet([=] (json reply) {
-                    if(isJsonResultSuccess(reply)) {
-                        QMessageBox::information(this, tr("Wallet Encryption Removed"), 
-                            tr("Your wallet was successfully decrypted! You will no longer need a password to send funds or export private keys."),
-                            QMessageBox::Ok
-                        );
-                    } else {
-                        QMessageBox::critical(this, tr("Wallet Decryption Failed"),
-                            QString::fromStdString(reply["error"].get<json::string_t>()),
-                            QMessageBox::Ok
-                        );
-                    }
-                });
-
-                // And then refresh the UI
-                rpc->refresh(true);
-            } else {
-                QMessageBox::critical(this, tr("Wallet Decryption Failed"),
-                    QString::fromStdString(res["error"].get<json::string_t>()),
-                    QMessageBox::Ok
-                );
-            }
-    });            
+    _password = password;
 }
 
 void MainWindow::setupStatusBar() {
@@ -429,9 +727,6 @@ void MainWindow::setupSettingsModal() {
 
     this->slot_change_currency(currency_name);
 
-    ;
-
-
         // Setup theme combo
         int theme_index = settings.comboBoxTheme->findText(Settings::getInstance()->get_theme_name(), Qt::MatchExactly);
         settings.comboBoxTheme->setCurrentIndex(theme_index);
@@ -454,7 +749,7 @@ void MainWindow::setupSettingsModal() {
              // Tell the user to restart
             QMessageBox::information(this, tr("Currency Change"), tr("This change can take a few seconds."), QMessageBox::Ok);  
              });
-      
+
         // Check for updates
         settings.chkCheckUpdates->setChecked(Settings::getInstance()->getCheckForUpdates());
 
@@ -899,8 +1194,22 @@ void MainWindow::setupTransactionsTab() {
     });
 
     // Set up context menu on transactions tab
+    auto theme = Settings::getInstance()->get_theme_name();
+    if (theme == "dark" || theme == "midnight") {
+    ui->listChat->setStyleSheet("background-image: url(:/icons/res/sdlogo.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat;background-size: cover");
+     }
+    if (theme == "default") {ui->listChat->setStyleSheet("background-image: url(:/icons/res/sdlogo2.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat;background-size: cover");}
+   
+    ui->listChat->setResizeMode(QListView::Adjust);
+    ui->listChat->setWordWrap(true);
+    ui->listChat->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->listChat->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->listChat->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->listChat->setMinimumSize(200,350);
+    ui->listChat->setItemDelegate(new ListViewDelegate());
+    ui->listChat->show();
+    
     ui->transactionsTable->setContextMenuPolicy(Qt::CustomContextMenu);
-
     // Table right click
     QObject::connect(ui->transactionsTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
         QModelIndex index = ui->transactionsTable->indexAt(pos);
@@ -974,13 +1283,149 @@ void MainWindow::setupTransactionsTab() {
                     qApp->processEvents();
 
                     // Click the memo button
-                    this->memoButtonClicked(1, true);
+                   this->memoButtonClicked(1, true);
                 });
             }
         }
 
         menu.exec(ui->transactionsTable->viewport()->mapToGlobal(pos));        
     });
+    
+}
+
+void MainWindow::setupchatTab() {
+
+          /////////////Setting Icons for Chattab and different themes
+       
+  auto theme = Settings::getInstance()->get_theme_name();
+        if (theme == "dark" || theme == "midnight") {
+            QPixmap send(":/icons/res/send-white.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+
+            QPixmap notification(":/icons/res/requestWhite.png");
+            QIcon notificationIcon(notification);
+            ui->pushContact->setIcon(notificationIcon);
+
+            QPixmap addContact(":/icons/res/addContactWhite.png");
+            QIcon addContactIcon(addContact);
+            ui->safeContactRequest->setIcon(addContactIcon);
+
+            QPixmap newAddr(":/icons/res/getAddrWhite.png");
+            QIcon addnewAddrIcon(newAddr);
+            ui->givemeZaddr->setIcon(addnewAddrIcon);
+
+            ui->memoTxtChat->setTextColor("White");
+
+        }else{
+            
+            QPixmap send(":/icons/res/sendBlack.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+
+            QPixmap notification(":/icons/res/requestBlack.png");
+            QIcon notificationIcon(notification);
+            ui->pushContact->setIcon(notificationIcon);
+
+            QPixmap addContact(":/icons/res/addContactBlack.png");
+            QIcon addContactIcon(addContact);
+            ui->safeContactRequest->setIcon(addContactIcon);
+
+            QPixmap newAddr(":/icons/res/getAddrBlack.png");
+            QIcon addnewAddrIcon(newAddr);
+            ui->givemeZaddr->setIcon(addnewAddrIcon);
+
+            ui->memoTxtChat->setTextColor("Black");
+        }
+
+    QObject::connect(ui->sendChatButton, &QPushButton::clicked, this, &MainWindow::sendChat);
+    QObject::connect(ui->safeContactRequest, &QPushButton::clicked, this, &MainWindow::addContact);
+    QObject::connect(ui->pushContact, &QPushButton::clicked, this , &MainWindow::renderContactRequest);
+
+///////// Set selected Zaddr for Chat with Klick
+
+    QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
+
+    
+        QModelIndex index = ui->listContactWidget->currentIndex();
+        QString label_contact = index.data(Qt::DisplayRole).toString();
+        
+        for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
+        if (label_contact == p.getName()) {
+        ui->contactNameMemo->setText(p.getName());    
+        rpc->refresh(true);
+
+        }
+   });
+
+    QMenu* contextMenu;
+     QAction* requestAction;
+     QAction* editAction;
+     QAction* HushAction;
+     QAction* requestHushAction;
+     QAction* subatomicAction;
+     contextMenu = new QMenu(ui->listContactWidget);
+     requestAction = new QAction("Send a contact request - coming soon",contextMenu);
+     editAction = new QAction("Delete this contact",contextMenu);
+     HushAction = new QAction("Send a friend some Hush - coming soon",contextMenu);
+     requestHushAction = new QAction("Request some Hush - coming soon",contextMenu);
+     subatomicAction = new QAction("Make a subatomic swap with a friend- coming soon",contextMenu);
+     ui->listContactWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+     ui->listContactWidget->addAction(requestAction);
+     ui->listContactWidget->addAction(editAction);
+     ui->listContactWidget->addAction(HushAction);
+     ui->listContactWidget->addAction(requestHushAction);
+     ui->listContactWidget->addAction(subatomicAction);
+      QObject::connect(requestHushAction, &QAction::triggered, [=]() {
+          QModelIndex index = ui->listContactWidget->currentIndex();
+        QString label_contact = index.data(Qt::DisplayRole).toString();
+        
+        for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
+        if (label_contact == p.getName()) {
+        ui->contactNameMemo->setText(p.getName());    
+        rpc->refresh(true);
+
+        }
+   
+     MainWindow::showRequesthush();
+     }); 
+
+      QObject::connect(editAction, &QAction::triggered, [=]() {
+          QModelIndex index = ui->listContactWidget->currentIndex();
+        QString label_contact = index.data(Qt::DisplayRole).toString();
+        
+        for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
+        if (label_contact == p.getName()) {
+        
+            QString label1 = p.getName();
+            QString addr = p.getPartnerAddress();
+            QString myzaddr =  p.getMyAddress();
+            QString cid = p.getCid();
+            QString avatar = p.getAvatar();
+
+
+     AddressBook::getInstance()->removeAddressLabel(label1, addr, myzaddr, cid,avatar);
+     rpc->refreshContacts(
+            ui->listContactWidget);
+     rpc->refresh(true);
+        }    
+     });
+
+    
+ui->memoTxtChat->setLenDisplayLabelChat(ui->memoSizeChat);
+}
+
+
+
+void MainWindow::updateChat()
+{
+    rpc->refreshChat(ui->listChat,ui->memoSizeChat);
+    rpc->refresh(true);
+}
+
+void MainWindow::updateContacts()
+{
+    
 }
 
 void MainWindow::addNewZaddr(bool sapling) {
@@ -1214,6 +1659,7 @@ void MainWindow::setupReceiveTab() {
     // Receive tab add/update label
     QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
         QString addr = ui->listReceiveAddresses->currentText();
+       
         if (addr.isEmpty())
             return;
 
@@ -1227,7 +1673,7 @@ void MainWindow::setupReceiveTab() {
 
         if (!curLabel.isEmpty() && label.isEmpty()) {
             info = "Removed Label '" % curLabel % "'";
-            AddressBook::getInstance()->removeAddressLabel(curLabel, addr);
+            AddressBook::getInstance()->removeAddressLabel(curLabel, addr, "", "","" );
         }
         else if (!curLabel.isEmpty() && !label.isEmpty()) {
             info = "Updated Label '" % curLabel % "' to '" % label % "'";
@@ -1235,7 +1681,7 @@ void MainWindow::setupReceiveTab() {
         }
         else if (curLabel.isEmpty() && !label.isEmpty()) {
             info = "Added Label '" % label % "'";
-            AddressBook::getInstance()->addAddressLabel(label, addr);
+            AddressBook::getInstance()->addAddressLabel(label, addr, "", "", "");
         }
 
         // Update labels everywhere on the UI
@@ -1285,7 +1731,7 @@ void MainWindow::updateTAddrCombo(bool checked) {
         auto allTaddrs = this->rpc->getModel()->getAllTAddresses();
         QSet<QString> labels;
         for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
-            labels.insert(p.second);
+            labels.insert(p.getPartnerAddress());
         }
         std::for_each(allTaddrs.begin(), allTaddrs.end(), [=, &addrs] (auto& taddr) {
             // If the address is in the address book, add it. 
@@ -1377,7 +1823,7 @@ void MainWindow::slot_change_theme(const QString& theme_name)
     }
     catch (...)
     {
-        saved_theme_name = "default";
+        saved_theme_name = "dark";
     }
 
     QFile qFile(":/css/res/css/" + saved_theme_name +".css");
@@ -1405,4 +1851,15 @@ MainWindow::~MainWindow()
 
     delete wsserver;
     delete wormhole;
+}
+void MainWindow::on_givemeZaddr_clicked()
+{
+
+    bool sapling = true;
+    rpc->createNewZaddr(sapling, [=] (json reply) {
+                QString hushchataddr = QString::fromStdString(reply.get<json::array_t>()[0]);
+                QMessageBox::information(this, "Your new Hushchataddress",hushchataddr);
+            //    ui->listReceiveAddresses->insertItem(0, hushchataddr);
+              //  ui->listReceiveAddresses->setCurrentIndex(0);
+                });
 }

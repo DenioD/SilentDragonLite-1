@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ChatBubblePartner</class>
+ <widget class="QWidget" name="ChatBubblePartner">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>646</width>
+    <height>76</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+	background: #c8e1ff;
+	border: 1px solid #fefefe;
+	border-radius: 3px;
+}
+QLabel
+{
+	background: none;
+	border: none;
+}</string>
+  </property>
+  <widget class="QLabel" name="lblMessage">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>611</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Lorem ipsum dolor sit amet</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lblTimestamp">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>611</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>12/03/2020 12:34</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

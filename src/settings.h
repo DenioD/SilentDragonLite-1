@@ -67,6 +67,8 @@ public:
     void set_currency_name(QString currency_name);
 
 
+
+
     bool    isSaplingActive();
 
     void    setZECPrice(double p) { ZECPrice = p; }

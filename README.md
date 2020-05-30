@@ -26,7 +26,7 @@ SilentDragonLite does automatic note and utxo management, which means it doesn't
 ## Compiling from source
 * SilentDragonLite is written in C++ 14, and can be compiled with g++/clang++/visual c++. 
 * It also depends on Qt5, which you can get from [here](https://www.qt.io/download). 
-* You'll need Rust v1.37 +
+* You'll need Rust v1.41 +
 
 ## Building on Linux
 

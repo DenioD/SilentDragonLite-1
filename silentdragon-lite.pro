@@ -13,6 +13,7 @@ PRECOMPILED_HEADER = src/precompiled.h
 QT += widgets
 QT += websockets
 
+
 TARGET = SilentDragonLite
 
 TEMPLATE = app
@@ -32,6 +33,7 @@ mac: LIBS+= -Wl,-dead_strip_dylibs
 mac: LIBS+= -Wl,-bind_at_load
 
 RESOURCES     = application.qrc
+
 
 MOC_DIR = bin
 OBJECTS_DIR = bin
@@ -65,7 +67,24 @@ SOURCES += \
     src/datamodel.cpp \
     src/controller.cpp \
     src/liteinterface.cpp \
-    src/camount.cpp
+    src/camount.cpp \
+    src/chatbubbleme.cpp \
+    src/chatbubblepartner.cpp \
+    src/chatmodel.cpp \
+    src/contactmodel.cpp \
+    src/DataStore/DataStore.cpp \
+    src/DataStore/ChatDataStore.cpp \
+    src/DataStore/SietchDataStore.cpp \
+    src/DataStore/ContactDataStore.cpp \
+    src/Model/ChatItem.cpp \
+    src/Model/ContactRequestChatItem.cpp \
+    src/Model/ContactItem.cpp \
+    src/Model/ContactRequest.cpp \
+    src/Chat/Helper/ChatIDGenerator.cpp \
+    src/Chat/Chat.cpp \
+    src/FileSystem/FileSystem.cpp \
+    src/Crypto/FileEncryption.cpp \
+    src/Crypto/passwd.cpp
 
 HEADERS += \
     src/firsttimewizard.h \
@@ -94,10 +113,16 @@ HEADERS += \
     src/controller.h \
     src/liteinterface.h \
     src/camount.h \
-    lib/silentdragonlitelib.h 
+    lib/silentdragonlitelib.h \ 
+    src/chatbubbleme.h \
+    src/chatbubblepartner.h \
+    src/chatmodel.h \
+    src/contactmodel.h
 
 FORMS += \
+    src/contactrequest.ui \
     src/encryption.ui \
+    src/hushrequest.ui \
     src/mainwindow.ui \
     src/migration.ui \
     src/newseed.ui \
@@ -109,15 +134,20 @@ FORMS += \
     src/confirm.ui \
     src/privkey.ui \
     src/memodialog.ui \ 
+    src/startupencryption.ui \
     src/viewalladdresses.ui \
     src/connection.ui \
     src/addressbook.ui \
     src/mobileappconnector.ui \
     src/createhushconfdialog.ui \
     src/recurringdialog.ui \
+    src/requestContactDialog.ui \
     src/newrecurring.ui \
     src/requestdialog.ui \
-    src/recurringmultiple.ui 
+    src/removeencryption.ui \
+    src/recurringmultiple.ui \ 
+    src/chatbubbleme.ui \
+    src/chatbubblepartner.ui
 
 
 TRANSLATIONS = res/silentdragonlite_es.ts \
@@ -129,6 +159,7 @@ TRANSLATIONS = res/silentdragonlite_es.ts \
                res/silentdragonlite_hr.ts \
                res/silentdragonlite_sr.ts \
                res/silentdragonlite_fa.ts \
+               res/silentdragonlite_id.ts \
                res/silentdragonlite_tr.ts 
              
 include(singleapplication/singleapplication.pri)
