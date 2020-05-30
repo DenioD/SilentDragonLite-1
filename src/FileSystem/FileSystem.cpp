@@ -103,7 +103,7 @@ QList<ContactItem> FileSystem::readContactsOldFormat(QString file)
         {
             ContactItem contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3],stuff[i][4]);
             contacts.push_back(contact);
-            i++;
+           
         }
         
         _file.close();

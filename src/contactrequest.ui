@@ -42,7 +42,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <activeon>:/icons/res/sdlogo.png</activeon>
+        <activeon>:/icons/res/SDLogo.png</activeon>
        </iconset>
       </property>
      </item>

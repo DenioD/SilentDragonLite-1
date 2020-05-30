@@ -922,8 +922,6 @@ void Controller::refreshTransactions() {
                             isNotarized = false;
                         }
 
-                        qDebug()<<"Conf : " << confirmations;
-
                         ChatItem item = ChatItem(
                                 datetime,
                                 address,
@@ -1078,7 +1076,6 @@ void Controller::refreshTransactions() {
             }
              }
         }
-        qDebug()<<"get Lag" << getLag();
 
         // Calculate the total unspent amount that's pending. This will need to be 
         // shown in the UI so the user can keep track of pending funds
@@ -1098,10 +1095,7 @@ void Controller::refreshTransactions() {
          // Update model data, which updates the table view
         transactionsTableModel->replaceData(txdata);    
         chat->renderChatBox(ui, ui->listChat,ui->memoSizeChat);   
-      //  refreshContacts(
-        //    ui->listContactWidget
-            
-       // );
+
          });
 }
 
