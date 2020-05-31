@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     catch (...)
     {
-        theme_name = "default";
+        theme_name = "dark";
     }
 
     this->slot_change_theme(theme_name);
@@ -1823,7 +1823,7 @@ void MainWindow::slot_change_theme(const QString& theme_name)
     }
     catch (...)
     {
-        saved_theme_name = "default";
+        saved_theme_name = "dark";
     }
 
     QFile qFile(":/css/res/css/" + saved_theme_name +".css");

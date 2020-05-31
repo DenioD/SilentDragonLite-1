@@ -1177,7 +1177,7 @@ version = "0.1.0"
 dependencies = [
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.66 (registry+https://github.com/rust-lang/crates.io-index)",
- "silentdragonlitelib 0.1.0 (git+https://github.com/DenioD/silentdragonlite-cli?rev=d196ad938a22810c0b6b4164e6bf8f1db0409763)",
+ "silentdragonlitelib 0.1.0 (git+https://github.com/DenioD/silentdragonlite-cli?rev=d2887d07879a93bdd9b2c8bd12504bb977e82fe0)",
 ]
 
 [[package]]
@@ -1640,7 +1640,7 @@ dependencies = [
 [[package]]
 name = "silentdragonlitelib"
 version = "0.1.0"
-source = "git+https://github.com/DenioD/silentdragonlite-cli?rev=d196ad938a22810c0b6b4164e6bf8f1db0409763#d196ad938a22810c0b6b4164e6bf8f1db0409763"
+source = "git+https://github.com/DenioD/silentdragonlite-cli?rev=d2887d07879a93bdd9b2c8bd12504bb977e82fe0#d2887d07879a93bdd9b2c8bd12504bb977e82fe0"
 dependencies = [
  "base58 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bellman 0.1.0 (git+https://github.com/MyHush/librustzcash.git?rev=1a0204113d487cdaaf183c2967010e5214ff9e37)",
@@ -2631,7 +2631,7 @@ dependencies = [
 "checksum serde_yaml 0.8.11 (registry+https://github.com/rust-lang/crates.io-index)" = "691b17f19fc1ec9d94ec0b5864859290dff279dbd7b03f017afda54eb36c3c35"
 "checksum sha2 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)" = "27044adfd2e1f077f649f59deb9490d3941d674002f7d062870a60ebe9bd47a0"
 "checksum signal-hook-registry 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "94f478ede9f64724c5d173d7bb56099ec3e2d9fc2774aac65d34b8b890405f41"
-"checksum silentdragonlitelib 0.1.0 (git+https://github.com/DenioD/silentdragonlite-cli?rev=d196ad938a22810c0b6b4164e6bf8f1db0409763)" = "<none>"
+"checksum silentdragonlitelib 0.1.0 (git+https://github.com/DenioD/silentdragonlite-cli?rev=d2887d07879a93bdd9b2c8bd12504bb977e82fe0)" = "<none>"
 "checksum slab 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "c111b5bd5695e56cffe5129854aa230b39c93a305372fdbb2668ca2394eea9f8"
 "checksum smallvec 0.6.13 (registry+https://github.com/rust-lang/crates.io-index)" = "f7b0758c52e15a8b5e3691eae6cc559f08eee9406e548a4477ba4e67770a82b6"
 "checksum socket2 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)" = "e8b74de517221a2cb01a53349cf54182acdc31a074727d3079068448c0676d85"
