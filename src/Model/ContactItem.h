@@ -11,11 +11,11 @@ using json = nlohmann::json;
 class ContactItem
 {
 private:
-    QString _myAddress = "";
-    QString _partnerAddress = "";
-    QString _name = "";
-    QString _cid = "";
-    QString _avatar = ":/icons/res/sdlogo.png";
+    QString _myAddress;
+    QString _partnerAddress;
+    QString _name;
+    QString _cid;
+    QString _avatar;
     
 public:
     ContactItem();

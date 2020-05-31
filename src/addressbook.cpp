@@ -39,9 +39,7 @@ void AddressBookModel::loadData()
     parent->horizontalHeader()->restoreState(
         QSettings().value(
             "addresstablegeometry"
-        ).toByteArray()
-
-        
+        ).toByteArray()      
     );
     
 }
@@ -241,8 +239,13 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
             return;
         
         
-        rpc->refresh(true);
+       // rpc->refresh(true);
          model.updateUi();
+
+        rpc->refreshContacts(
+        parent->ui->listContactWidget
+            
+        );
 
     });
 
@@ -380,7 +383,7 @@ AddressBook::AddressBook()
 
 void AddressBook::readFromStorage() 
 {
-    /*QFile file(AddressBook::writeableFile());
+    QFile file(AddressBook::writeableFile());
 
     if (file.exists()) 
     {
@@ -394,40 +397,44 @@ void AddressBook::readFromStorage()
                 QList<QList<QString>> stuff;
         in >> stuff;
         //qDebug() << "Stuff: " << stuff;
+        
         for (int i=0; i < stuff.size(); i++) 
         {
-                //qDebug() << "0:" << stuff[i][0];
+            //qDebug() << "0:" << stuff[i][0];
             //qDebug() << "1:" << stuff[i][1];
             //qDebug() << "2:" << stuff[i][2];
             ContactItem contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3],stuff[i][4]);
             //qDebug() << "contact=" << contact.toQTString();
             allLabels.push_back(contact);
         }
-
-        {
-          qDebug() << "Read " << version << " Hush contacts from disk...";
-        
+ 
+        qDebug() << "Read " << version << " Hush contacts from disk...";
         file.close();
     }
-    }else{ 
-        {
-            qDebug() << "No Hush contacts found on disk!";
-        }
-    }*/
-    allLabels = FileSystem::getInstance()->readContacts(AddressBook::writeableFile());
+    else 
+    {
+        qDebug() << "No Hush contacts found on disk!";
+    }
 
-    // test to see if the contact items in datastore are correctly dumped to json
-    DataStore::getContactDataStore()->dump(); 
+    // Special. 
+    // Add the default silentdragon donation address if it isn't already present
+    // QList<QString> allAddresses;
+    // std::transform(allLabels.begin(), allLabels.end(), 
+    //     std::back_inserter(allAddresses), [=] (auto i) { return i.getPartnerAddress(); });
+    // if (!allAddresses.contains(Settings::getDonationAddr(true))) {
+    //     allLabels.append(QPair<QString, QString>("silentdragon donation", Settings::getDonationAddr(true)));
+    // }
 }
+
 
 void AddressBook::writeToStorage() 
 {
     //FileSystem::getInstance()->writeContacts(AddressBook::writeableFile(), DataStore::getContactDataStore()->dump());
     
-    FileSystem::getInstance()->writeContactsOldFormat(AddressBook::writeableFile(), allLabels);
+   // FileSystem::getInstance()->writeContactsOldFormat(AddressBook::writeableFile(), allLabels);
     
     
-    /*QFile file(AddressBook::writeableFile());
+    QFile file(AddressBook::writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
     QDataStream out(&file);   // we will serialize the data into the file
     QList<QList<QString>> contacts;
@@ -442,7 +449,7 @@ void AddressBook::writeToStorage()
         contacts.push_back(c);
     }
     out << QString("v1") << contacts;
-    file.close();*/
+    file.close();
 }
 
 QString AddressBook::writeableFile() 

@@ -38,31 +38,11 @@
     <widget class="QComboBox" name="comboBoxAvatar">
      <item>
       <property name="text">
-       <string>Stag</string>
+       <string>SDLogo</string>
       </property>
       <property name="icon">
        <iconset>
-        <activeon>:/icons/res/Stag.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Elsa</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normalon>:/icons/res/Elsa.png</normalon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Denio</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Denio.png</activeon>
+        <activeon>:/icons/res/SDLogo.png</activeon>
        </iconset>
       </property>
      </item>
@@ -78,11 +58,11 @@
      </item>
      <item>
       <property name="text">
-       <string>Yoda</string>
+       <string>Denio</string>
       </property>
       <property name="icon">
        <iconset>
-        <activeon>:/icons/res/Yoda.png</activeon>
+        <activeon>:/icons/res/Denio.png</activeon>
        </iconset>
       </property>
      </item>
@@ -98,11 +78,41 @@
      </item>
      <item>
       <property name="text">
+       <string>Stag</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Stag.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>Sharpee</string>
       </property>
       <property name="icon">
        <iconset>
         <activeon>:/icons/res/Sharpee.png</activeon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Elsa</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>:/icons/res/Elsa.png</normalon>
+       </iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yoda</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <activeon>:/icons/res/Yoda.png</activeon>
        </iconset>
       </property>
      </item>
@@ -153,16 +163,6 @@
       <property name="icon">
        <iconset>
         <activeon>:/icons/res/Mickey.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>SDLogo</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/sdlogo2.png</activeon>
        </iconset>
       </property>
      </item>

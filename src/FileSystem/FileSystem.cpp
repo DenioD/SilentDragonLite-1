@@ -1,7 +1,5 @@
-// Copyright 2019-2020 The Hush developers
-// GPLv3
-
 #include "FileSystem.h"
+
 #include <QString>
 #include <QList>
 #include "../Crypto/passwd.h"
@@ -24,9 +22,9 @@ FileSystem* FileSystem::getInstance()
     return FileSystem::instance;
 }
 
-QList<ContactItem> FileSystem::readContacts(QString file)
+/*QList<ContactItem> FileSystem::readContacts(QString file)
 {
-    return this->readContactsOldFormat(file); //will be called if addresses are in the old dat-format
+    //return this->readContactsOldFormat(file); //will be called if addresses are in the old dat-format
 
     QFile _file(file);
     if (_file.exists()) 
@@ -84,7 +82,7 @@ void FileSystem::writeContactsOldFormat(QString file, QList<ContactItem> contact
         c.push_back(item.getAvatar());
         _contacts.push_back(c);
     }
-    out << QString("v2") << _contacts;
+    out << QString("v0") << _contacts;
     _file.close();
 }
 
@@ -98,68 +96,20 @@ QList<ContactItem> FileSystem::readContactsOldFormat(QString file)
         contacts.clear();
         _file.open(QIODevice::ReadOnly);
         QDataStream in(&_file);    // read the data serialized from the file
-        if(in.status() == QDataStream::ReadCorruptData)
+        QString version;
+        in >> version;
+        qDebug() << "Read " << version << " Hush contacts from disk...";
+        qDebug() << "Detected old addressbook format";
+        QList<QList<QString>> stuff;
+        in >> stuff;
+        //qDebug() << "Stuff: " << stuff;
+        for (int i=0; i < stuff.size(); i++) 
         {
-            qDebug() << "Error reading contacts! ---> Your hush contacts from disk maybe corrupted";
-            QFile::rename(file, file +  QString(".corrupted"));
-            QMessageBox::critical(
-                    nullptr, 
-                    QObject::tr("Error reading contacts!"), 
-                    QObject::tr("Your hush contacts from disk maybe corrupted"), 
-                    QMessageBox::Ok
-                );
+            ContactItem contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3],stuff[i][4]);
+            contacts.push_back(contact);
+           
         }
-        else    
-        {
-            QString version;
-            in >> version;
-            if(version == "v1")
-            {
-                qDebug() << "Detected old addressbook format";
-                // Convert old addressbook format v1 to v2
-                QList<QPair<QString,QString>> stuff;
-                in >> stuff;
-                qDebug() << "Stuff: " << stuff;
-                for (int i=0; i < stuff.size(); i++) 
-                {
-                    ContactItem contact = ContactItem(stuff[i].first, stuff[i].second);
-                    contacts.push_back(contact);
-                    qDebug() << "contact=" << contact.toQTString();
-                }
-                
-            }
-            else
-            {
-                qDebug() << "Read " << version << " Hush contacts from disk...";
-                QList<QList<QString>> stuff;
-                in >> stuff;
-                qDebug() << "Dataarray size: " << stuff.size();
-                if(stuff.size() == 0)
-                    return contacts;
-
-                for (int i= 0; i < stuff.size(); i++) 
-                {
-                    qDebug() << stuff[i].size();
-                    ContactItem contact;
-                    if(stuff[i].size() == 4)
-                    {
-                        contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3]);
-                    }
-                    else
-                    {
-                        contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3],stuff[i][4]);
-                    }
-                    
-                    qDebug() << contact.toQTString();
-                    contacts.push_back(contact);
-                }
-
-                
-            }
-
-            qDebug() << "Hush contacts readed from disk...";
-        }
-            
+        
         _file.close();
     }
     else
@@ -187,7 +137,7 @@ FileSystem::~FileSystem()
     this->instance = nullptr;
     this->instanced = false;
     delete this->instance;
-}
+}*/
 
 FileSystem *FileSystem::instance = nullptr;
 bool FileSystem::instanced = false;
