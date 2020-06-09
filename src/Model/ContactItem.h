@@ -16,6 +16,7 @@ private:
     QString _name;
     QString _cid;
     QString _avatar;
+    QString _pubkey;
     
 public:
     ContactItem();

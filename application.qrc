@@ -55,6 +55,8 @@
         <file>res/silentdragonlite-animated-dark.gif</file>
         <file>res/silentdragonlite-animated-startup.gif</file>
         <file>res/silentdragonlite-animated-startup-dark.gif</file>
+        <file>res/loaderblack.gif</file>
+        <file>res/loaderwhite.gif</file>
     </qresource>
     <qresource prefix="/translations">
     <file>res/silentdragonlite_de.qm</file>

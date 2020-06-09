@@ -115,55 +115,58 @@ void MainWindow::renderContactRequest(){
 
        QStandardItemModel* contactRequest = new QStandardItemModel();
 
+        
+
             for (auto &c : DataStore::getChatDataStore()->getAllNewContactRequests())
-
-
 
             {
 
-                QStandardItem* Items = new QStandardItem(QString("Unknown Sender"));
+                QStandardItem* Items = new QStandardItem(QString(c.second.getRequestZaddr()));
                 contactRequest->appendRow(Items);
-                requestContact.requestContact->setModel(contactRequest);
-                
+                requestContact.requestContact->setModel(contactRequest);  
                 Items->setData(QIcon(addnewAddrIcon),Qt::DecorationRole);
                 requestContact.requestContact->setIconSize(QSize(40,50));
                 requestContact.requestContact->setUniformItemSizes(true);
                 requestContact.requestContact->show();
                 requestContact.zaddrnew->setVisible(false);
-                requestContact.zaddrnew->setText(c.second.getAddress());
+                requestContact.zaddrnew->setText(c.second.getRequestZaddr());
+              
 
+           
             }
+
 
             QStandardItemModel* contactRequestOld = new QStandardItemModel();
 
-             for (auto &p : AddressBook::getInstance()->getAllAddressLabels())
               for (auto &c : DataStore::getChatDataStore()->getAllOldContactRequests())
             {
-               if (p.getPartnerAddress() == c.second.getRequestZaddr())
-               {
-                QStandardItem* Items = new QStandardItem(p.getName());
+                QStandardItem* Items = new QStandardItem(c.second.getContact());
                 contactRequestOld->appendRow(Items);
                 requestContact.requestContactOld->setModel(contactRequestOld);
                 requestContact.zaddrold->setVisible(false);
-                requestContact.zaddrold->setText(c.second.getAddress());
-                requestContact.requestContactOld->show();
-               }else{}
+                requestContact.zaddrold->setText(c.second.getRequestZaddr());
+                
+      
             }
+
        
 
         QObject::connect(requestContact.requestContact, &QTableView::clicked, [&] () {
 
-    for (auto &c : DataStore::getChatDataStore()->getAllRawChatItems()){
+            for (auto &c : DataStore::getChatDataStore()->getAllRawChatItems()){
         QModelIndex index = requestContact.requestContact->currentIndex();
         QString label_contact = index.data(Qt::DisplayRole).toString();
         QStandardItemModel* contactMemo = new QStandardItemModel();
+
+
+    
            
-        if  ((c.second.isOutgoing() == false) && (requestContact.zaddrnew->text() == c.second.getAddress()) && (c.second.getType() != "Cont"))
+        if  ((c.second.isOutgoing() == false) && (label_contact == c.second.getContact()))
         
         {
 
           QStandardItem* Items = new QStandardItem(c.second.getMemo());
-             contactMemo->appendRow(Items);
+            contactMemo->appendRow(Items);
             requestContact.requestMemo->setModel(contactMemo);   
             requestContact.requestMemo->show();
            
@@ -171,21 +174,25 @@ void MainWindow::renderContactRequest(){
             requestContact.requestCID->setVisible(false);
             requestContact.requestZaddr->setText(c.second.getRequestZaddr());
             requestContact.requestMyAddr->setText(c.second.getAddress());
-            }else{}
-        }
+
+            }else{
+
+            }
     
-    
+    }
             
    });
+
+  
 
    QObject::connect(requestContact.requestContactOld, &QTableView::clicked, [&] () {
 
     for (auto &c : DataStore::getChatDataStore()->getAllRawChatItems()){
-       /* QModelIndex index = requestContact.requestContactOld->currentIndex();
-        QString label_contactold = index.data(Qt::DisplayRole).toString();*/
+        QModelIndex index = requestContact.requestContactOld->currentIndex();
+        QString label_contactold = index.data(Qt::DisplayRole).toString();
         QStandardItemModel* contactMemo = new QStandardItemModel();
            
-        if  ((c.second.isOutgoing() == false) && (requestContact.zaddrold->text() == c.second.getAddress()) && (c.second.getType() != "Cont"))
+          if  ((c.second.isOutgoing() == false) && (label_contactold == c.second.getContact()))
         
         {
 
@@ -198,7 +205,10 @@ void MainWindow::renderContactRequest(){
             requestContact.requestCID->setVisible(false);
             requestContact.requestZaddr->setText(c.second.getRequestZaddr());
             requestContact.requestMyAddr->setText(c.second.getAddress());
-            }else{}
+
+            }else{
+
+            }
         }
     
     
@@ -237,7 +247,7 @@ void MainWindow::renderContactRequest(){
             return;
         } 
 
-                qDebug()<<"Beginn kopiert" <<cid << addr << newLabel << myAddr;
+
                 AddressBook::getInstance()->addAddressLabel(newLabel, addr, myAddr, cid, avatar);
                   rpc->refreshContacts(
                   ui->listContactWidget);
@@ -254,6 +264,18 @@ void ChatModel::addCid(QString tx, QString cid)
 {
     this->cidMap[tx] = cid;
 }
+
+void ChatModel::addHeader(QString tx, QString headerbytes)
+{
+    this->headerMap[tx] = headerbytes;
+}
+
+void ChatModel::addMemo(QString tx, QString memo)
+{
+    this->OldMemoByTx[tx] = memo;
+}
+
+
 
 void ChatModel::addrequestZaddr(QString tx, QString requestZaddr)
 {
@@ -275,6 +297,39 @@ QString ChatModel::getCidByTx(QString tx)
     if(this->cidMap.count(tx) > 0)
     {
         return this->cidMap[tx];
+    }
+
+    return QString("0xdeadbeef");
+}
+
+QString ChatModel::getMemoByTx(QString tx)
+{
+    for(auto& pair : this->OldMemoByTx)
+    {
+
+    }
+
+    if(this->OldMemoByTx.count(tx) > 0)
+    {
+        return this->OldMemoByTx[tx];
+    }
+
+    return QString("0xdeadbeef");
+}
+
+
+
+
+QString ChatModel::getHeaderByTx(QString tx)
+{
+    for(auto& pair : this->headerMap)
+    {
+
+    }
+
+    if(this->headerMap.count(tx) > 0)
+    {
+        return this->headerMap[tx];
     }
 
     return QString("0xdeadbeef");
@@ -324,8 +379,12 @@ void ChatModel::killConfirmationCache()
 {
     this->confirmationsMap.clear();
 }
+void ChatModel::killMemoCache()
+{
+    this->OldMemoByTx.clear();
+}
 
-QString MainWindow::createHeaderMemo(QString type, QString cid, QString zaddr,  int version=0, int headerNumber=1)
+QString MainWindow::createHeaderMemo(QString type, QString cid, QString zaddr, QString headerbytes, QString publickey, int version=0, int headerNumber=1)
 {
     
     QString header="";
@@ -338,13 +397,16 @@ QString MainWindow::createHeaderMemo(QString type, QString cid, QString zaddr,  
     h["z"]   = zaddr;           // zaddr to respond to
     h["cid"] = cid;             // conversation id
     h["t"] = type;       // Memo or incoming contact request
+    h["e"] = headerbytes;       // Memo or incoming contact request
+    h["p"] = publickey;       // Memo or incoming contact request
+
 
     j.setObject(h);
     header = j.toJson();
-    qDebug() << "made header=" << header;
     return header;
    
 }
+
 
 // Create a Tx from the current state of the Chat page. 
 Tx MainWindow::createTxFromChatPage() {
@@ -370,16 +432,98 @@ Tx MainWindow::createTxFromChatPage() {
             QString type = "Memo";
             QString addr = c.getPartnerAddress();
            
-     
-        QString hmemo= createHeaderMemo(type,cid,myAddr);
-        QString memo = ui->memoTxtChat->toPlainText().trimmed();     
-     
-     tx.toAddrs.push_back(ToFields{addr, amt, hmemo});
-     tx.toAddrs.push_back(ToFields{addr, amt, memo});
+   
 
-     
+             /////////User input for chatmemos
+        QString memoplain = ui->memoTxtChat->toPlainText().trimmed();
 
-         qDebug() << "pushback chattx";
+  /////////We convert the user input from QString to unsigned char*, so we can encrypt it later
+        int lengthmemo = memoplain.length();
+
+        char *memoplainchar = NULL;
+         memoplainchar = new char[lengthmemo+1];
+         strncpy(memoplainchar, memoplain.toLocal8Bit(), lengthmemo +1);
+
+           /////////We convert the CID from QString to unsigned char*, so we can encrypt it later
+        int lengthcid = cid.length();
+
+          char *cidchar = NULL;
+         cidchar = new char[lengthcid+1];
+         strncpy(cidchar, cid.toLocal8Bit(), lengthcid +1);
+
+  
+
+            QString pubkey = this->getPubkeyByAddress(addr);
+            QString passphrase = DataStore::getChatDataStore()->getPassword();
+            QString hashEncryptionKey = passphrase;
+            int length = hashEncryptionKey.length();
+
+
+ ////////////////Generate the secretkey for our message encryption
+
+              char *hashEncryptionKeyraw = NULL;
+                    hashEncryptionKeyraw = new char[length+1];
+                    strncpy(hashEncryptionKeyraw, hashEncryptionKey.toLocal8Bit(), length +1);
+
+        #define MESSAGEAS1 ((const unsigned char *) hashEncryptionKeyraw)
+        #define MESSAGEAS1_LEN length
+        unsigned char hash[crypto_kx_SEEDBYTES];
+
+            crypto_hash_sha256(hash,MESSAGEAS1, MESSAGEAS1_LEN);
+
+
+        unsigned char sk[crypto_kx_SECRETKEYBYTES];
+        unsigned char pk[crypto_kx_PUBLICKEYBYTES];
+        unsigned char server_rx[crypto_kx_SESSIONKEYBYTES], server_tx[crypto_kx_SESSIONKEYBYTES];
+      
+                if (crypto_kx_seed_keypair(pk,sk,
+                           hash) !=0) {
+                           }
+         ////////////////Get the pubkey from Bob, so we can create the share key
+
+        const QByteArray pubkeyBobArray = QByteArray::fromHex(pubkey.toLatin1());
+        const unsigned char *pubkeyBob = reinterpret_cast<const unsigned char *>(pubkeyBobArray.constData());
+                    /////Create the shared key for sending the message
+
+            if (crypto_kx_server_session_keys(server_rx, server_tx,
+                                  pk, sk, pubkeyBob) != 0) {
+            /* Suspicious client public key, bail out */
+             }
+
+    
+
+    ////////////Now lets encrypt the message Alice send to Bob//////////////////////////////
+             #define MESSAGE (const unsigned char *) memoplainchar
+             #define MESSAGE_LEN lengthmemo
+             #define CIPHERTEXT_LEN (crypto_secretstream_xchacha20poly1305_ABYTES + MESSAGE_LEN)
+             unsigned char ciphertext[CIPHERTEXT_LEN];
+             unsigned char header[crypto_secretstream_xchacha20poly1305_HEADERBYTES];
+
+            crypto_secretstream_xchacha20poly1305_state state;
+
+            /* Set up a new stream: initialize the state and create the header */
+            crypto_secretstream_xchacha20poly1305_init_push(&state, header, server_tx);
+
+
+             /* Now, encrypt the first chunk. `c1` will contain an encrypted,
+            * authenticated representation of `MESSAGE_PART1`. */
+            crypto_secretstream_xchacha20poly1305_push
+            (&state, ciphertext, NULL, MESSAGE, MESSAGE_LEN, NULL, 0, crypto_secretstream_xchacha20poly1305_TAG_FINAL);
+
+            ////Create the HM for this message
+            QString headerbytes = QByteArray(reinterpret_cast<const char*>(header), crypto_secretstream_xchacha20poly1305_HEADERBYTES).toHex();
+            QString publickeyAlice = QByteArray(reinterpret_cast<const char*>(pk), crypto_kx_PUBLICKEYBYTES).toHex();
+
+
+            QString hmemo= createHeaderMemo(type,cid,myAddr,headerbytes,publickeyAlice);
+
+             /////Ciphertext Memo
+            QString memo = QByteArray(reinterpret_cast<const char*>(ciphertext), CIPHERTEXT_LEN).toHex();
+         
+   
+             tx.toAddrs.push_back(ToFields{addr, amt, hmemo});
+             tx.toAddrs.push_back(ToFields{addr, amt, memo});
+
    } 
    }
 
@@ -387,7 +531,6 @@ Tx MainWindow::createTxFromChatPage() {
 
      return tx;
 
-     qDebug() << "ChatTx created";
 }
 
 void MainWindow::sendChat() {
@@ -398,9 +541,8 @@ void MainWindow::sendChat() {
     // might not be valid yet.
  
    QString Name = ui->contactNameMemo->text();
-   int sizename = Name.size();
-        qDebug()<< sizename;
-      if (ui->contactNameMemo->text().trimmed().isEmpty() || ui->memoTxtChat->toPlainText().trimmed().isEmpty()) {
+
+      if ((ui->contactNameMemo->text().isEmpty()) || (ui->memoTxtChat->toPlainText().trimmed().isEmpty())) {
      
         QMessageBox msg(QMessageBox::Critical, tr("You have to select a contact and insert a Memo"),
         tr("You have selected no Contact from Contactlist,\n")  + tr("\nor your Memo is empty"),
@@ -410,14 +552,14 @@ void MainWindow::sendChat() {
         return;
     }
 
-    int max = 512;
+    int max = 235;
     QString chattext = ui->memoTxtChat->toPlainText();
     int size = chattext.size();
 
     if (size > max){
      
         QMessageBox msg(QMessageBox::Critical, tr("Your Message is too long"),
-        tr("You can only write messages with 512 character maximum \n")  + tr("\n Please reduce your message to 512 character."),
+        tr("You can only write messages with 235 character maximum \n")  + tr("\n Please reduce your message to 235 character."),
         QMessageBox::Ok, this);
 
         msg.exec();
@@ -437,47 +579,57 @@ void MainWindow::sendChat() {
 
         // abort the Tx
         return;
-        qDebug() << "Tx aborted";
     }
 
-        // Create a new Dialog to show that we are computing/sending the Tx
-        auto d = new QDialog(this);
-        auto connD = new Ui_ConnectionDialog();
-        connD->setupUi(d);
-        QMovie *movie1 = new QMovie(":/img/res/silentdragonlite-animated.gif");;
-        QMovie *movie2 = new QMovie(":/img/res/silentdragonlite-animated-dark.gif");;
+        auto movie = new QMovie(this);
+        auto movie1 = new QMovie(this);
+        movie->setFileName(":/img/res/loaderblack.gif");
+        movie1->setFileName(":/img/res/loaderwhite.gif");
+     
         auto theme = Settings::getInstance()->get_theme_name();
         if (theme == "dark" || theme == "midnight") {
-            movie2->setScaledSize(QSize(512,512));
-            connD->topIcon->setMovie(movie2);
-            movie2->start();
+
+        connect(movie, &QMovie::frameChanged, [=]{
+        ui->sendChatButton->setIcon(movie->currentPixmap());
+        });      
+        movie->start();
+        ui->sendChatButton->show();
+        ui->sendChatButton->setEnabled(false);
+             
         } else {
-            movie1->setScaledSize(QSize(512,512));
-            connD->topIcon->setMovie(movie1);
-            movie1->start();
+
+        connect(movie1, &QMovie::frameChanged, [=]{
+        ui->sendChatButton->setIcon(movie1->currentPixmap());
+        });      
+        movie1->start();
+        ui->sendChatButton->show();
+        ui->sendChatButton->setEnabled(false);
         }
 
-        connD->status->setText(tr("Please wait..."));
-        connD->statusDetail->setText(tr("Your Message will be sent"));
-
-        d->show();
         ui->memoTxtChat->clear();
         
-
         // And send the Tx
         rpc->executeTransaction(tx, 
             [=] (QString txid) { 
                 ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
-
-                connD->status->setText(tr("Done!"));
-                connD->statusDetail->setText(txid);
                 
 
-                QTimer::singleShot(1000, [=]() {
-                    d->accept();
-                    d->close();
-                    delete connD;
-                    delete d;
+            QTimer::singleShot(1000, [=]() {
+         
+            if (theme == "dark" || theme == "midnight") {
+            QPixmap send(":/icons/res/send-white.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+            movie->stop();
+            ui->sendChatButton->setEnabled(true);
+             }else{
+            
+            QPixmap send(":/icons/res/sendBlack.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+            movie1->stop();
+            ui->sendChatButton->setEnabled(true);
+             }
                     
                   });
                 
@@ -490,19 +642,33 @@ void MainWindow::sendChat() {
             [=] (QString opid, QString errStr) {
                 ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
                 
-                d->accept();
-                d->close();
-                delete connD;
-                delete d;
-
                 if (!opid.isEmpty())
                     errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr;            
 
-                QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
+                QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);
+                         movie->stop();
+      
+              
+            if (theme == "dark" || theme == "midnight") {
+            QPixmap send(":/icons/res/send-white.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+            movie->stop();
+            ui->sendChatButton->setEnabled(true);
+             }else{
+            
+            QPixmap send(":/icons/res/sendBlack.png");
+            QIcon sendIcon(send);
+            ui->sendChatButton->setIcon(sendIcon);
+            movie1->stop();
+            ui->sendChatButton->setEnabled(true);
+             }
+                    
+                   
+                           
             }
         );
 
-      //  rpc->refresh(true);
     }        
 
 QString MainWindow::doSendChatTxValidations(Tx tx) {
@@ -542,6 +708,7 @@ void::MainWindow::addContact()
     request.setupUi(&dialog);
     Settings::saveRestore(&dialog);
 
+QObject::connect(request.newZaddr, &QPushButton::clicked, [&] () { 
  try 
     {   
     bool sapling = true;
@@ -551,7 +718,6 @@ void::MainWindow::addContact()
         request.myzaddr->setText(myAddr);
         ui->listReceiveAddresses->insertItem(0, myAddr); 
         ui->listReceiveAddresses->setCurrentIndex(0);
-        qDebug() << "new generated myAddr add Contact" << myAddr;
     });
 
     }catch(...)
@@ -560,6 +726,7 @@ void::MainWindow::addContact()
             
             qDebug() << QString("Caught something nasty with myZaddr Contact");
        }
+});
 
         QString cid = QUuid::createUuid().toString(QUuid::WithoutBraces);
 
@@ -567,7 +734,7 @@ void::MainWindow::addContact()
         
         QString addr = request.zaddr->text();
         QString myAddr = request.myzaddr->text().trimmed();
-        QString memo = request.memorequest->text().trimmed();
+        QString memo = request.memorequest->toPlainText().trimmed();
         QString avatar = QString(":/icons/res/") + request.comboBoxAvatar->currentText() + QString(".png");
         QString label = request.labelRequest->text().trimmed();
 
@@ -604,6 +771,7 @@ Tx MainWindow::createTxForSafeContactRequest()
     CAmount totalAmt;
     QString amtStr = "0";
     CAmount amt;  
+    QString headerbytes = "";
     amt = CAmount::fromDecimalString("0");
     totalAmt = totalAmt + amt;
    
@@ -612,27 +780,51 @@ Tx MainWindow::createTxForSafeContactRequest()
             QString type = "Cont";
             QString addr = contactRequest.getReceiverAddress();
 
-            QString hmemo= createHeaderMemo(type,cid,myAddr);
+            
             QString memo = contactRequest.getMemo();
+          //  QString privkey = rpc->fetchPrivKey(myAddr);
+            QString passphrase = DataStore::getChatDataStore()->getPassword();
+            QString hashEncryptionKey =  passphrase;
+            int length = hashEncryptionKey.length();
+
+ ////////////////Generate the secretkey for our message encryption
+      char *hashEncryptionKeyraw = NULL;
+                    hashEncryptionKeyraw = new char[length+1];
+                    strncpy(hashEncryptionKeyraw, hashEncryptionKey.toLocal8Bit(), length +1);
+        #define MESSAGEAS1 ((const unsigned char *) hashEncryptionKeyraw)
+        #define MESSAGEAS1_LEN length
+
+   
+             unsigned char hash[crypto_kx_SEEDBYTES];
+
+            crypto_hash_sha256(hash,MESSAGEAS1, MESSAGEAS1_LEN);
+
+
+             unsigned char sk[crypto_kx_SECRETKEYBYTES];
+             unsigned char pk[crypto_kx_PUBLICKEYBYTES];
+      
+                if (crypto_kx_seed_keypair(pk,sk,
+                           hash) !=0) {
+                           }
+
+            QString publicKey = QByteArray(reinterpret_cast<const char*>(pk), crypto_kx_PUBLICKEYBYTES).toHex();
+
+            QString hmemo= createHeaderMemo(type,cid,myAddr,"", publicKey);
 
      
             tx.toAddrs.push_back(ToFields{addr, amt, hmemo});
             tx.toAddrs.push_back(ToFields{addr, amt, memo});
-            qDebug() << "pushback chattx";
             tx.fee = Settings::getMinerFee();
         
 }
         
     return tx;
-    qDebug() << "RequestTx created";
 }
 
 void MainWindow::ContactRequest() {
 
     if (contactRequest.getReceiverAddress().isEmpty() || contactRequest.getMemo().isEmpty()) {
      
-  // auto addr = "";
-  //  if (! Settings::isZAddress(AddressBook::addressFromAddressLabel(addr->text()))) {
         QMessageBox msg(QMessageBox::Critical, tr("You have to select a contact and insert a Memo"),
         tr("You have selected no Contact from Contactlist,\n")  + tr("\nor your Memo is empty"),
         QMessageBox::Ok, this);
@@ -641,7 +833,17 @@ void MainWindow::ContactRequest() {
         return;
     }
 
-    int max = 512;
+     if (contactRequest.getSenderAddress().size() > 80) {
+     
+        QMessageBox msg(QMessageBox::Critical, tr("Missing HushChat Address"),
+        tr("You have to create your HushChat address to send a contact request,\n"),
+        QMessageBox::Ok, this);
+
+        msg.exec();
+        return;
+    }
+
+    int max = 235;
     QString chattext = contactRequest.getMemo();;
     int size = chattext.size();
 
@@ -650,7 +852,7 @@ void MainWindow::ContactRequest() {
   // auto addr = "";
   //  if (! Settings::isZAddress(AddressBook::addressFromAddressLabel(addr->text()))) {
         QMessageBox msg(QMessageBox::Critical, tr("Your Message is too long"),
-        tr("You can only write messages with 512 character maximum \n")  + tr("\n Please reduce your message to 512 character."),
+        tr("You can only write messages with 235 character maximum \n")  + tr("\n Please reduce your message to 235 character."),
         QMessageBox::Ok, this);
 
         msg.exec();
@@ -670,15 +872,14 @@ void MainWindow::ContactRequest() {
 
         // abort the Tx
         return;
-        qDebug() << "Tx aborted";
     }
 
         // Create a new Dialog to show that we are computing/sending the Tx
         auto d = new QDialog(this);
         auto connD = new Ui_ConnectionDialog();
         connD->setupUi(d);
-        QMovie *movie1 = new QMovie(":/img/res/silentdragonlite-animated.gif");;
-        QMovie *movie2 = new QMovie(":/img/res/silentdragonlite-animated-dark.gif");;
+        QMovie *movie1 = new QMovie(":/img/res/silentdragonlite-animated.gif");
+        QMovie *movie2 = new QMovie(":/img/res/silentdragonlite-animated-dark.gif");
         auto theme = Settings::getInstance()->get_theme_name();
         if (theme == "dark" || theme == "midnight") {
             movie2->setScaledSize(QSize(512,512));

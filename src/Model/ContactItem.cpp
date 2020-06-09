@@ -19,6 +19,7 @@ ContactItem::ContactItem(QString name, QString partnerAddress, QString myAddress
     _myAddress = myAddress;
     _partnerAddress = partnerAddress;
     _cid = cid;
+
 }
 
 ContactItem::ContactItem(QString name, QString partnerAddress, QString myAddress, QString cid, QString avatar)
@@ -28,6 +29,7 @@ ContactItem::ContactItem(QString name, QString partnerAddress, QString myAddress
     _partnerAddress = partnerAddress;
     _cid = cid;
     _avatar = avatar; 
+ 
 }
 
 QString ContactItem::getName() const

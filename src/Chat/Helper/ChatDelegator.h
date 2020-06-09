@@ -37,7 +37,7 @@ class ListViewDelegate : public QAbstractItemDelegate
         inline QSize sizeHint(QStyleOptionViewItem const &option, QModelIndex const &index) const;
 };
 
-inline ListViewDelegate::ListViewDelegate(QObject *parent): QAbstractItemDelegate(parent), d_radius(5), d_toppadding(5), d_bottompadding(3), d_leftpadding(5), d_rightpadding(7), d_verticalmargin(5), d_horizontalmargin(10), d_pointerwidth(10), d_pointerheight(17), d_widthfraction(.7)
+inline ListViewDelegate::ListViewDelegate(QObject *parent): QAbstractItemDelegate(parent), d_radius(5), d_toppadding(5), d_bottompadding(3), d_leftpadding(5), d_rightpadding(5), d_verticalmargin(5), d_horizontalmargin(10), d_pointerwidth(4), d_pointerheight(17), d_widthfraction(.6)
 {
 
 }
@@ -56,7 +56,6 @@ inline void ListViewDelegate::paint(QPainter *painter, QStyleOptionViewItem cons
     qreal bodyheight = bodydoc.size().height();
     int outgoing = index.data(Qt::UserRole + 1).toInt();
     int outdate = index.data(Qt::UserRole + 1).toInt();
-    int indate = index.data(Qt::UserRole + 1).toInt();
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
 

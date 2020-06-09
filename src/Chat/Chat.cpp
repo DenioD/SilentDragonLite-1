@@ -66,7 +66,7 @@ void Chat::renderChatBox(Ui::MainWindow *ui, QListView *view, QLabel *label)
 
                 Items->setData(OUTGOING, Qt::UserRole + 1);
                 chat->appendRow(Items);
-                ui->listChat->setModel(chat);   
+                ui->listChat->setModel(chat);
             
        
             }

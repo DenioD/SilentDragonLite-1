@@ -27,21 +27,7 @@ class Chat // Chat Controller
         std::map<QString, QString> requestZaddrMap;
     public:
         Chat();
-        //QString zaddr();
         void renderChatBox(Ui::MainWindow* ui, QListView *view, QLabel *label); // action
-       // void renderContactRequest();
-        /*void triggerRequest();
-        void showMessages();
-        void clear();
-        //void renderContactRequest(Ui::MainWindow* ui, QListView *view);
-        void addMessage(ChatItem item);
-        void addMessage(QString timestamp, ChatItem item);
-        void addCid(QString tx, QString cid);
-        void addrequestZaddr(QString tx, QString requestZaddr);
-        QString getCidByTx(QString tx);
-        QString getrequestZaddrByTx(QString tx);
-        void killCidCache();
-        void killrequestZaddrCache();*/
 
 };
 

@@ -80,6 +80,7 @@ public:
     void refreshGBPCAP();
     void refreshAUDCAP();
     
+    
     void refreshChat(QListView *listWidget, QLabel *label);
     void refreshContacts(QListView *listWidget);
     

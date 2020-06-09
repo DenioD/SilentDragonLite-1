@@ -7,201 +7,55 @@
     <x>0</x>
     <y>0</y>
     <width>780</width>
-    <height>427</height>
+    <height>351</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>780</width>
+    <height>351</height>
+   </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>780</width>
-    <height>427</height>
+    <height>351</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Send a contact request</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="2" colspan="2">
-    <widget class="QLabel" name="label_6">
+   <item row="8" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Choose a avatar for your contact :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Insert a memo for your request:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Please insert a Nickname for your contact :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QComboBox" name="comboBoxAvatar">
-     <item>
-      <property name="text">
-       <string>SDLogo</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/SDLogo.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Duke</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Duke.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Denio</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Denio.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Berg</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Berg.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Stag</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Stag.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Sharpee</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Sharpee.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Elsa</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normalon>:/icons/res/Elsa.png</normalon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Yoda</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Yoda.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Garfield</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Garfield.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Snoopy</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Snoopy.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Popey</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Popey.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pinguin</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Pinguin.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mickey</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Mickey.png</activeon>
-       </iconset>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QLineEdit" name="labelRequest"/>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Please insert the Address of your contact :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="4">
+   <item row="5" column="0" colspan="6">
     <widget class="QLineEdit" name="zaddr">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>650</width>
        <height>25</height>
       </size>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>650</width>
-       <height>25</height>
-      </size>
-     </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Your HushChat Address :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="4">
+   <item row="7" column="0" colspan="5" alignment="Qt::AlignLeft">
     <widget class="QLabel" name="myzaddr">
      <property name="minimumSize">
       <size>
@@ -220,73 +74,211 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0" rowspan="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="3" column="0" colspan="6">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>148</height>
-      </size>
-     </property>
-    </spacer>
+     <item>
+      <widget class="QLineEdit" name="labelRequest">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>250</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maxLength">
+        <number>25</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxAvatar">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>SDLogo</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/SDLogo.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Duke</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Duke.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Denio</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Denio.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Berg</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Berg.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Stag</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Stag.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Sharpee</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Sharpee.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Elsa</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/icons/res/Elsa.png</normalon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Yoda</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Yoda.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Garfield</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Garfield.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Snoopy</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Snoopy.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Popey</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Popey.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Pinguin</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Pinguin.png</activeon>
+         </iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Mickey</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <activeon>:/icons/res/Mickey.png</activeon>
+         </iconset>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Insert a memo for your request&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1" colspan="3">
-    <widget class="QLineEdit" name="memorequest">
-     <property name="minimumSize">
-      <size>
-       <width>500</width>
-       <height>71</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>500</width>
-       <height>71</height>
-      </size>
-     </property>
-     <property name="contextMenuPolicy">
-      <enum>Qt::NoContextMenu</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhSensitiveData</set>
-     </property>
-     <property name="maxLength">
-      <number>512</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="dragEnabled">
-      <bool>false</bool>
-     </property>
-     <property name="placeholderText">
-      <string>Add some memo to your request</string>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
+   <item row="11" column="3">
     <widget class="QPushButton" name="cancel">
-     <property name="maximumSize">
-      <size>
-       <width>80</width>
-       <height>25</height>
-      </size>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="baseSize">
       <size>
@@ -305,41 +297,157 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>278</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="9" column="3" colspan="2">
+   <item row="11" column="4" colspan="2">
     <widget class="QPushButton" name="sendRequestButton">
-     <property name="maximumSize">
-      <size>
-       <width>300</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="text">
-      <string>Add Contact and send request</string>
+      <string>Add Contact and Send Request</string>
      </property>
      <property name="autoDefault">
       <bool>false</bool>
      </property>
      <property name="flat">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Insert the address of your contact:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="6">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Your HushChat Address:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="newZaddr">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Create New Address</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" colspan="6">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <item alignment="Qt::AlignLeft">
+      <widget class="QLabel" name="label_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Insert a nickname for your contact:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Choose an avatar for your contact:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="9" column="0" colspan="6">
+    <widget class="QTextEdit" name="memorequest">
+     <property name="placeholderText">
+      <string>Add a memo to your request</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="memoSizeChat">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>0/512</string>
      </property>
     </widget>
    </item>

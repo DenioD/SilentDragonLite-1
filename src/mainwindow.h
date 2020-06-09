@@ -5,13 +5,14 @@
 
 #include "logger.h"
 #include "recurring.h"
-
+#include "firsttimewizard.h"
 
 // Forward declare to break circular dependency.
 class Controller;
 class Settings;
 class WSServer;
 class WormholeClient;
+class ChatModel;
 
 using json = nlohmann::json;
 
@@ -52,7 +53,13 @@ public:
     QString doSendRequestTxValidations(Tx tx);
     QString getCid();
     QString getPassword();
+    std::map<QString, QString> pubkeyMap;
+    QString getPubkeyByAddress(QString requestZaddr);
     void setPassword(QString Password);
+    void addPubkey(QString requestZaddr, QString pubkey);
+    
+    
+    
 
     void replaceWormholeClient(WormholeClient* newClient);
     bool isWebsocketListening();
@@ -61,10 +68,7 @@ public:
     void saveContact();
     void saveandsendContact();
     void showRequesthush();
-   // void setmaxlenChat(int len);
-   // void updateDisplay();
-    
-
+  
     void balancesReady();
     void payhushURI(QString uri = "", QString myAddr = "");
 
@@ -90,7 +94,7 @@ public:
 
     void doClose();
     void doClosePw();
-    QString createHeaderMemo(QString type, QString cid, QString zaddr, int version, int headerNumber);
+    QString createHeaderMemo(QString type, QString cid, QString zaddr,QString headerbytes,QString publickey, int version, int headerNumber);
 
 public slots:
     void slot_change_theme(const QString& themeName);
@@ -107,6 +111,7 @@ private:
     bool fileExists(QString path);
     void closeEvent(QCloseEvent* event);
     void closeEventpw(QCloseEvent* event);
+    QString _password;
 
 
     void setupSendTab();
@@ -116,7 +121,6 @@ private:
     void setuphushdTab();
     void setupchatTab();
     void renderContactRequest();
-  //  void setLenDisplayLabel(QLabel* label);
     
     void updateContacts();
     void updateChat();
@@ -125,7 +129,7 @@ private:
     void setupStatusBar();
     
     void clearSendForm();
-    QString _password;
+    
 
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
@@ -206,7 +210,7 @@ public:
     void updateDisplayChat();
 
 private:
-    int             maxlenchat             = 512;
+    int             maxlenchat             = 235;
     QLabel*         lenDisplayLabelchat    = nullptr;
     QPushButton*    sendChatButton     = nullptr;
 };

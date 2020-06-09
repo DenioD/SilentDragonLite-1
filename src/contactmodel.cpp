@@ -11,7 +11,25 @@
 #include "settings.h"
 #include "controller.h"
 
+void ContactModel::addLabel(QString addr, QString label)
+{
+    this->AddressMap[addr] = label;
+}
 
+QString ContactModel::getContactbyAddress(QString addr)
+{
+    for(auto& pair : this->AddressMap)
+    {
+
+    }
+
+    if(this->AddressMap.count(addr) > 0)
+    {
+        return this->AddressMap[addr];
+    }
+
+    return QString("0xdeadbeef");
+}
 
 void ContactModel::renderContactList(QListView* view)
 {    
@@ -19,22 +37,20 @@ void ContactModel::renderContactList(QListView* view)
          
 	for(auto &c : AddressBook::getInstance()->getAllAddressLabels())
     {
+            QString avatar = c.getAvatar();
 
-
-          QString avatar = c.getAvatar();
-
-             QStandardItem* Items1 = new QStandardItem(c.getName());
-             Items1->setData(QIcon(avatar),Qt::DecorationRole);
+            QStandardItem* Items1 = new QStandardItem(c.getName());
+            Items1->setData(QIcon(avatar),Qt::DecorationRole);
              
-             contact->appendRow(Items1); 
-             view->setModel(contact);
-             view->setIconSize(QSize(60,70));
-             view->setUniformItemSizes(true);
-             view->setDragDropMode(QAbstractItemView::DropOnly);      
-             view->show();
-             
-           
-        
+            contact->appendRow(Items1); 
+            view->setModel(contact);
+            view->setIconSize(QSize(60,70));
+            view->setUniformItemSizes(true);
+            view->setDragDropMode(QAbstractItemView::DropOnly);      
+            view->show();
+            QString addr = c.getPartnerAddress();
+            QString label = c.getName();
+            this->addLabel(addr, label);     
     }
 }
 

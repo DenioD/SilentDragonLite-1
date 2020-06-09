@@ -25,6 +25,11 @@ class ChatDataStore
         std::map<QString, ChatItem> getAllNewContactRequests();
         std::map<QString, ChatItem> getAllOldContactRequests();
         std::map<QString, ChatItem> getAllMemos();
+        QString getPassword();
+
+        void setPassword(QString Password);
+        QString _password;
+    
         QString dump();
 
         ~ChatDataStore()

@@ -30,6 +30,8 @@
 #include "FileSystem/FileSystem.h"
 #include "Crypto/passwd.h"
 #include "Crypto/FileEncryption.h"
+#include "DataStore/DataStore.h"
+#include "firsttimewizard.h"
 
 using json = nlohmann::json;
 
@@ -40,7 +42,12 @@ auto dirwallet = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLo
 auto dirwalletenc = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet-enc.dat");
 auto dirwalletbackup = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet.datBackup");
 #endif
-#ifdef Q_OS_UNIX
+#ifdef Q_OS_MACOS
+auto dirwallet = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet.dat");
+auto dirwalletenc = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet-enc.dat");
+auto dirwalletbackup = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite/silentdragonlite-wallet.datBackup");
+#endif
+#ifdef Q_OS_LINUX
 auto dirwallet = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".silentdragonlite/silentdragonlite-wallet.dat");
 auto dirwalletenc = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".silentdragonlite/silentdragonlite-wallet-enc.dat");
 auto dirwalletbackup = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".silentdragonlite/silentdragonlite-wallet.datBackup");
@@ -281,12 +288,13 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 
     s.sync();
 
-    
+
     // Let the RPC know to shut down any running service.
     rpc->shutdownhushd();
+    int passphraselenght = DataStore::getChatDataStore()->getPassword().length();
 
 // Check is encryption is ON for SDl
-    if(fileExists(dirwalletenc)) 
+    if(passphraselenght > 0) 
    
     {
         // delete old file before
@@ -296,7 +304,7 @@ void MainWindow::closeEvent(QCloseEvent* event) {
         fileoldencryption.remove();
 
          // Encrypt our wallet.dat 
-         QString str = this->getPassword();
+         QString str = DataStore::getChatDataStore()->getPassword();
          //   QString str = ed.txtPassword->text(); // data comes from user inputs
          int length = str.length();
 
@@ -356,9 +364,7 @@ void MainWindow::closeEventpw(QCloseEvent* event) {
     // Let the RPC know to shut down any running service.
     rpc->shutdownhushd();
 
-    // Bubble up
-    if (event)
-        QMainWindow::closeEvent(event);
+
 }
 
 
@@ -392,13 +398,13 @@ void MainWindow::encryptWallet() {
     if (d.exec() == QDialog::Accepted) 
     {
 
-    QString str = ed.txtPassword->text(); // data comes from user inputs
-    int length = str.length();
-    this->setPassword(str);
+    QString passphrase = ed.txtPassword->text(); // data comes from user inputs
+    int length = passphrase.length();
+    DataStore::getChatDataStore()->setPassword(passphrase);
 
     char *sequence = NULL;
     sequence = new char[length+1];
-    strncpy(sequence, str.toLocal8Bit(), length +1);
+    strncpy(sequence, passphrase.toLocal8Bit(), length +1);
 
     #define MESSAGE ((const unsigned char *) sequence)
     #define MESSAGE_LEN length
@@ -437,6 +443,11 @@ void MainWindow::encryptWallet() {
         QFile address(dir.filePath("addresslabels.dat"));
         wallet.rename(dirwalletbackup);
         address.rename(dir.filePath("addresslabels.datBackup"));
+
+           QMessageBox::information(this, tr("Wallet Encryption Success"),
+                    QString("Successfully encrypt your wallet"),
+                    QMessageBox::Ok
+                ); 
     }
 }
 
@@ -444,6 +455,14 @@ void MainWindow::removeWalletEncryption() {
     QDialog d(this);
     Ui_removeencryption ed;
     ed.setupUi(&d);
+
+    if (fileExists(dirwalletenc) == false) {
+        QMessageBox::information(this, tr("Wallet is not encrypted"), 
+                    tr("Your wallet is not encrypted with a passphrase."),
+                    QMessageBox::Ok
+                );
+        return;
+    }
 
      auto fnPasswordEdited = [=](const QString&) {
         QString password = ed.txtPassword->text();
@@ -520,9 +539,7 @@ void MainWindow::removeWalletEncryption() {
         filencrypted.remove();  
 
         }else{
-            
-             qDebug()<<"verschlüsselung gescheitert ";
-        
+               
          QMessageBox::critical(this, tr("Wallet Encryption Failed"),
                     QString("False password, please try again"),
                     QMessageBox::Ok
@@ -538,34 +555,15 @@ void MainWindow::removeWalletEncryptionStartUp() {
    QDialog d(this);
     Ui_startup ed;
     ed.setupUi(&d);
-
-    // Handle edits on the password box
     
-    auto fnPasswordEdited = [=](const QString&) {
-        QString password = ed.txtPassword->text();
-        // Enable the OK button if the passwords match.
-        if (!ed.txtPassword->text().isEmpty() && 
-                ed.txtPassword->text() == ed.txtConfirmPassword->text() && password.size() >= 16) {
-            ed.lblPasswordMatch->setText("");
-            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-        } else {
-            ed.lblPasswordMatch->setText(tr("Passwords don't match or under-lettered"));
-            ed.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-        }
-
-    };
-
-    QObject::connect(ed.txtConfirmPassword, &QLineEdit::textChanged, fnPasswordEdited);
-    QObject::connect(ed.txtPassword, &QLineEdit::textChanged, fnPasswordEdited);
-
     if (d.exec() == QDialog::Accepted) 
     {
-        QString str = ed.txtPassword->text(); // data comes from user inputs
-        int length = str.length();
-        this->setPassword(str);
+        QString password = ed.txtPassword->text(); // data comes from user inputs
+        int length = password.length();
+        DataStore::getChatDataStore()->setPassword(password);
         char *sequence = NULL;
         sequence = new char[length+1];
-        strncpy(sequence, str.toLocal8Bit(), length +1);
+        strncpy(sequence, password.toLocal8Bit(), length +1);
 
         #define MESSAGE ((const unsigned char *) sequence)
         #define MESSAGE_LEN length
@@ -614,7 +612,7 @@ void MainWindow::removeWalletEncryptionStartUp() {
 
         {
 
-                 QMessageBox::warning(this, tr("You have still Plaintextdata on your disk!"),
+                 QMessageBox::information(this, tr("You have still Plaintextdata on your disk!"),
                     QString("WARNING: Delete it only if you have a backup of your Wallet Seed."),
                     QMessageBox::Ok
                 );   
@@ -629,8 +627,6 @@ void MainWindow::removeWalletEncryptionStartUp() {
 
              
         }else{
-
-             qDebug()<<"verschlüsselung gescheitert ";
         
          QMessageBox::critical(this, tr("Wallet Encryption Failed"),
                     QString("false password please try again"),
@@ -666,6 +662,7 @@ void MainWindow::setupStatusBar() {
     loadingMovie->start();
     loadingLabel->setAttribute(Qt::WA_NoSystemBackground);
     loadingLabel->setMovie(loadingMovie);
+    
 
     ui->statusBar->addPermanentWidget(loadingLabel);
     loadingLabel->setVisible(false);
@@ -1062,6 +1059,27 @@ void MainWindow::exportSeed() {
     });
 }
 
+void MainWindow::addPubkey(QString requestZaddr, QString pubkey)
+{
+    this->pubkeyMap[requestZaddr] = pubkey;
+}
+
+QString MainWindow::getPubkeyByAddress(QString requestZaddr)
+{
+    for(auto& pair : this->pubkeyMap)
+    {
+
+    }
+
+    if(this->pubkeyMap.count(requestZaddr) > 0)
+    {
+        return this->pubkeyMap[requestZaddr];
+    }
+
+    return QString("0xdeadbeef");
+}
+
+
 void MainWindow::exportAllKeys() {
     exportKeys("");
 }
@@ -1141,7 +1159,6 @@ void MainWindow::setupBalancesTab() {
     ui->lblSyncWarning->setVisible(false);
     ui->lblSyncWarningReceive->setVisible(false);
 
-
     // Setup context menu on balances tab
     ui->balancesTable->setContextMenuPolicy(Qt::CustomContextMenu);
     QObject::connect(ui->balancesTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
@@ -1173,6 +1190,8 @@ void MainWindow::setupBalancesTab() {
 
         menu.exec(ui->balancesTable->viewport()->mapToGlobal(pos));            
     });
+
+   qDebug()<<"PW :"<<DataStore::getChatDataStore()->getPassword();
 }
 
 void MainWindow::setuphushdTab() {    
@@ -1337,28 +1356,127 @@ void MainWindow::setupchatTab() {
 
             ui->memoTxtChat->setTextColor("Black");
         }
-
+    
     QObject::connect(ui->sendChatButton, &QPushButton::clicked, this, &MainWindow::sendChat);
     QObject::connect(ui->safeContactRequest, &QPushButton::clicked, this, &MainWindow::addContact);
     QObject::connect(ui->pushContact, &QPushButton::clicked, this , &MainWindow::renderContactRequest);
 
-///////// Set selected Zaddr for Chat with Klick
+    ui->contactNameMemo->setText("");   
 
-    QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
+    /////Copy Chatmessages
+
+     QMenu* contextMenuChat;
+     QAction* copymessage;
+     QAction* viewexplorer;
+     QAction* copytxid;
+     contextMenuChat = new QMenu(ui->listChat);
+     copymessage = new QAction("Copy message to clipboard",contextMenuChat);
+     viewexplorer = new QAction("View on block explorer",contextMenuChat);
+     copytxid = new QAction("Copy txid to clipboard ",contextMenuChat);
+    
+ QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
+
+     ui->listChat->setContextMenuPolicy(Qt::ActionsContextMenu);
+     ui->listChat->addAction(copymessage);
+     ui->listChat->addAction(viewexplorer);
+     ui->listChat->addAction(copytxid);
+
+     QObject::connect(copymessage, &QAction::triggered, [=] {
 
     
-        QModelIndex index = ui->listContactWidget->currentIndex();
-        QString label_contact = index.data(Qt::DisplayRole).toString();
-        
-        for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
-        if (label_contact == p.getName()) {
-        ui->contactNameMemo->setText(p.getName());    
-        rpc->refresh(true);
+    QModelIndex index = ui->listChat->currentIndex();
+    QString memo_chat = index.data(Qt::DisplayRole).toString();
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    int startPos = memo_chat.indexOf("<p>") + 3;
+    int endPos = memo_chat.indexOf("</p>");
+    int length = endPos - startPos;
+    QString copymemo = memo_chat.mid(startPos, length);
+   
+    clipboard->setText(copymemo);
+    ui->statusBar->showMessage(tr("Copied message to clipboard"), 3 * 1000);   
 
-        }
-   });
+});
+    QObject::connect(copytxid, &QAction::triggered, [=] {
 
-    QMenu* contextMenu;
+    QModelIndex index = ui->listChat->currentIndex();
+    QString memo_chat = index.data(Qt::DisplayRole).toString();
+    QClipboard *clipboard = QGuiApplication::clipboard();
+
+    int startPos = memo_chat.indexOf("<p>") + 3;
+    int endPos = memo_chat.indexOf("</p>");
+    int length = endPos - startPos;
+    QString copymemo = memo_chat.mid(startPos, length);
+    int startPosT = memo_chat.indexOf("<small>") + 7;
+    int endPosT = memo_chat.indexOf("<b>");
+    int lengthT = endPosT - startPosT;
+
+    QString time = memo_chat.mid(startPosT, lengthT);
+
+    for (auto &c : DataStore::getChatDataStore()->getAllRawChatItems()){
+
+    if (c.second.getMemo() == copymemo)
+    {
+    int timestamp =  c.second.getTimestamp();
+    QDateTime myDateTime;
+    QString lock;
+    myDateTime.setTime_t(timestamp);
+    QString timestamphtml = myDateTime.toString("yyyy-MM-dd hh:mm");
+
+    if(timestamphtml == time)
+
+    {
+    clipboard->setText(c.second.getTxid());
+    ui->statusBar->showMessage(tr("Copied Txid to clipboard"), 3 * 1000);  
+    }else{}
+
+    }
+   
+}
+
+});
+
+    QObject::connect(viewexplorer, &QAction::triggered, [=] {
+
+    QModelIndex index = ui->listChat->currentIndex();
+    QString memo_chat = index.data(Qt::DisplayRole).toString();
+
+    int startPos = memo_chat.indexOf("<p>") + 3;
+    int endPos = memo_chat.indexOf("</p>");
+    int length = endPos - startPos;
+    QString copymemo = memo_chat.mid(startPos, length);
+    int startPosT = memo_chat.indexOf("<small>") + 7;
+    int endPosT = memo_chat.indexOf("<b>");
+    int lengthT = endPosT - startPosT;
+
+    QString time = memo_chat.mid(startPosT, lengthT);
+
+    for (auto &c : DataStore::getChatDataStore()->getAllRawChatItems()){
+
+    if (c.second.getMemo() == copymemo)
+    {
+    int timestamp =  c.second.getTimestamp();
+    QDateTime myDateTime;
+    QString lock;
+    myDateTime.setTime_t(timestamp);
+    QString timestamphtml = myDateTime.toString("yyyy-MM-dd hh:mm");
+
+    if(timestamphtml == time)
+
+    {
+
+     Settings::openTxInExplorer(c.second.getTxid());
+    
+    }else{}
+
+    }
+   
+}
+});
+
+});
+
+///////// Add contextmenu 
+     QMenu* contextMenu;
      QAction* requestAction;
      QAction* editAction;
      QAction* HushAction;
@@ -1370,15 +1488,22 @@ void MainWindow::setupchatTab() {
      HushAction = new QAction("Send a friend some Hush - coming soon",contextMenu);
      requestHushAction = new QAction("Request some Hush - coming soon",contextMenu);
      subatomicAction = new QAction("Make a subatomic swap with a friend- coming soon",contextMenu);
+
+
+///////// Set selected Zaddr for Chat with click
+
+    QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
+
      ui->listContactWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
      ui->listContactWidget->addAction(requestAction);
      ui->listContactWidget->addAction(editAction);
      ui->listContactWidget->addAction(HushAction);
      ui->listContactWidget->addAction(requestHushAction);
      ui->listContactWidget->addAction(subatomicAction);
-      QObject::connect(requestHushAction, &QAction::triggered, [=]() {
+
+     QObject::connect(requestHushAction, &QAction::triggered, [=]() {
           QModelIndex index = ui->listContactWidget->currentIndex();
-        QString label_contact = index.data(Qt::DisplayRole).toString();
+          QString label_contact = index.data(Qt::DisplayRole).toString();
         
         for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
         if (label_contact == p.getName()) {
@@ -1386,11 +1511,11 @@ void MainWindow::setupchatTab() {
         rpc->refresh(true);
 
         }
-   
-     MainWindow::showRequesthush();
+        MainWindow::showRequesthush();
+     
      }); 
 
-      QObject::connect(editAction, &QAction::triggered, [=]() {
+          QObject::connect(editAction, &QAction::triggered, [=]() {
           QModelIndex index = ui->listContactWidget->currentIndex();
         QString label_contact = index.data(Qt::DisplayRole).toString();
         
@@ -1411,11 +1536,19 @@ void MainWindow::setupchatTab() {
         }    
      });
 
+        QModelIndex index = ui->listContactWidget->currentIndex();
+        QString label_contact = index.data(Qt::DisplayRole).toString();
+        
+        for(auto &p : AddressBook::getInstance()->getAllAddressLabels())
+        if (label_contact == p.getName()) {
+        ui->contactNameMemo->setText(p.getName());    
+        rpc->refresh(true);
     
+        }
+   });
+   
 ui->memoTxtChat->setLenDisplayLabelChat(ui->memoSizeChat);
 }
-
-
 
 void MainWindow::updateChat()
 {
@@ -1858,8 +1991,11 @@ void MainWindow::on_givemeZaddr_clicked()
     bool sapling = true;
     rpc->createNewZaddr(sapling, [=] (json reply) {
                 QString hushchataddr = QString::fromStdString(reply.get<json::array_t>()[0]);
-                QMessageBox::information(this, "Your new Hushchataddress",hushchataddr);
-            //    ui->listReceiveAddresses->insertItem(0, hushchataddr);
-              //  ui->listReceiveAddresses->setCurrentIndex(0);
+                QClipboard *zaddr_Clipboard = QApplication::clipboard();
+                zaddr_Clipboard ->setText(hushchataddr);
+                QMessageBox::information(this, "Your new HushChat address was copied to your clipboard!",hushchataddr);
+                ui->listReceiveAddresses->insertItem(0, hushchataddr);
+                ui->listReceiveAddresses->setCurrentIndex(0);
+              
                 });
 }

@@ -3,6 +3,8 @@
 #include "ui_newseed.h"
 #include "ui_restoreseed.h"
 #include "ui_newwallet.h"
+#include "mainwindow.h"
+#include "DataStore/DataStore.h"
 
 #include "../lib/silentdragonlitelib.h"
 
@@ -38,31 +40,75 @@ int FirstTimeWizard::nextId() const {
 NewOrRestorePage::NewOrRestorePage(FirstTimeWizard *parent) : QWizardPage(parent) {
     setTitle("Create or Restore wallet.");
 
+    
+
     QWidget* pageWidget = new QWidget();
     Ui_CreateWalletForm form;
     form.setupUi(pageWidget);
+    
 
-    // Exclusive buttons
+         auto fnPasswordEdited = [=](const QString&) {
+        // Enable the Finish button if the passwords match.
+        QString Password = form.txtPassword->text();
+        
+        if (!form.txtPassword->text().isEmpty() && 
+                form.txtPassword->text() == form.txtConfirmPassword->text() && Password.size() >= 16) {
+
+            form.lblPasswordMatch->setText("");
+            parent->button(QWizard::CommitButton)->setEnabled(true);
+            setButtonText(QWizard::CommitButton, "Next");
+            form.radioRestoreWallet->setEnabled(true);
+            form.radioNewWallet->setEnabled(true);
+            form.radioNewWallet->setChecked(true);
+            qDebug()<<"PW :"<<Password;
+
+            
+DataStore::getChatDataStore()->setPassword(Password);
+         //main->setPassword(Password);
+
+         //qDebug()<<"Objekt gesetzt";
+            
+
+                // Exclusive buttons
     QObject::connect(form.radioNewWallet,  &QRadioButton::clicked, [=](bool checked) {
         if (checked) {
             form.radioRestoreWallet->setChecked(false);
+            
         }
     });
 
     QObject::connect(form.radioRestoreWallet, &QRadioButton::clicked, [=](bool checked) {
         if (checked) {
             form.radioNewWallet->setChecked(false);
+          
         }
     });
-    form.radioNewWallet->setChecked(true);
+           
 
-    registerField("intro.new", form.radioNewWallet);
+            
+        } else {
+            form.lblPasswordMatch->setText(tr("Passphrase don't match or You have entered too few letters (16 minimum)"));
+            
+           parent->button(QWizard::CommitButton)->setEnabled(false);
+           form.radioRestoreWallet->setEnabled(false);
+           form.radioNewWallet->setEnabled(false);
+        }
+
+    };
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(pageWidget);
     setLayout(layout);
+    
+
+    QObject::connect(form.txtConfirmPassword, &QLineEdit::textChanged, fnPasswordEdited);
+    QObject::connect(form.txtPassword, &QLineEdit::textChanged, fnPasswordEdited);
+    registerField("intro.new", form.radioNewWallet);
+    form.radioRestoreWallet->setEnabled(false);
+    form.radioNewWallet->setEnabled(false);
     setCommitPage(true);
-    setButtonText(QWizard::CommitButton, "Next");
+    
+    
 }
 
 NewSeedPage::NewSeedPage(FirstTimeWizard *parent) : QWizardPage(parent) {
@@ -81,6 +127,7 @@ NewSeedPage::NewSeedPage(FirstTimeWizard *parent) : QWizardPage(parent) {
 
 void NewSeedPage::initializePage() {
     // Call the library to create a new wallet.
+
     char* resp = litelib_initialize_new(parent->dangerous, parent->server.toStdString().c_str());
     QString reply = litelib_process_response(resp);
 
@@ -90,7 +137,11 @@ void NewSeedPage::initializePage() {
     } else {
         QString seed = QString::fromStdString(parsed["seed"].get<json::string_t>());
         form.txtSeed->setPlainText(seed);
+        
+        
     }
+
+
 }
 
 // Will be called just before closing. Make sure we can save the seed in the wallet
