@@ -1,1 +1,1 @@
-#define APP_VERSION "1.3-Chat-Alpha"
+#define APP_VERSION "1.3.7"

@@ -37,7 +37,7 @@ class ListViewDelegate : public QAbstractItemDelegate
         inline QSize sizeHint(QStyleOptionViewItem const &option, QModelIndex const &index) const;
 };
 
-inline ListViewDelegate::ListViewDelegate(QObject *parent): QAbstractItemDelegate(parent), d_radius(5), d_toppadding(5), d_bottompadding(3), d_leftpadding(5), d_rightpadding(5), d_verticalmargin(5), d_horizontalmargin(10), d_pointerwidth(4), d_pointerheight(17), d_widthfraction(.6)
+inline ListViewDelegate::ListViewDelegate(QObject *parent): QAbstractItemDelegate(parent), d_radius(15), d_toppadding(15), d_bottompadding(3), d_leftpadding(5), d_rightpadding(5), d_verticalmargin(5), d_horizontalmargin(10), d_pointerwidth(4), d_pointerheight(25), d_widthfraction(.6)
 {
 
 }
@@ -50,7 +50,17 @@ inline void ListViewDelegate::paint(QPainter *painter, QStyleOptionViewItem cons
     bodydoc.setDefaultTextOption(textOption);
     bodydoc.setDefaultFont(QFont("Roboto", 12));
     QString bodytext(index.data(Qt::DisplayRole).toString());
-    bodydoc.setHtml(bodytext);
+    bodydoc.setHtml(bodytext.replace("\n",  "<br>")); 
+    bodydoc.setHtml(bodytext.replace(":smiley:",  "<img src=':/emoji/res/emoji/emoji1.png'>"));
+    bodydoc.setHtml(bodytext.replace(":-)",  "<img src=':/emoji/res/emoji/emoji1.png'>"));
+    bodydoc.setHtml(bodytext.replace(":money_mouth:",  "<img src=':/emoji/res/emoji/money-mouth.png'>"));
+    bodydoc.setHtml(bodytext.replace(":laughing:",  "<img src=':/emoji/res/emoji/laughing.png'>"));
+    bodydoc.setHtml(bodytext.replace(":sweet_smile:",  "<img src=':/emoji/res/emoji/sweet_smile.png'>"));
+    bodydoc.setHtml(bodytext.replace(":joy:",  "<img src=':/emoji/res/emoji/joy.png'>"));
+    bodydoc.setHtml(bodytext.replace(":innocent:",  "<img src=':/emoji/res/emoji/innocent.png'>"));
+    bodydoc.setHtml(bodytext.replace(":partying_face:",  "<img src=':/emoji/res/emoji/partying_face.png'>"));
+    bodydoc.setHtml(bodytext.replace(":heart_eyes:",  "<img src=':/emoji/res/emoji/heart_eyes.png'>"));
+    bodydoc.setHtml(bodytext.replace(":fire:",  "<img src=':/emoji/res/emoji/fire.png'>"));
     qreal contentswidth = option.rect.width() * d_widthfraction - d_horizontalmargin - d_pointerwidth - d_leftpadding - d_rightpadding;
     bodydoc.setTextWidth(contentswidth);
     qreal bodyheight = bodydoc.size().height();
@@ -173,7 +183,18 @@ inline QSize ListViewDelegate::sizeHint(QStyleOptionViewItem const &option, QMod
     bodydoc.setDefaultTextOption(textOption);
     bodydoc.setDefaultFont(QFont("Roboto", 12));
     QString bodytext(index.data(Qt::DisplayRole).toString());
-    bodydoc.setHtml(bodytext);
+    bodydoc.setHtml(bodytext.replace("\n",  "<br>"));
+    bodydoc.setHtml(bodytext.replace(":smiley:",  "<img src=':/emoji/res/emoji/emoji1.png'>"));
+    bodydoc.setHtml(bodytext.replace(":-)",  "<img src=':/emoji/res/emoji/emoji1.png'>"));
+    bodydoc.setHtml(bodytext.replace(":money_mouth:",  "<img src=':/emoji/res/emoji/money-mouth.png'>"));
+    bodydoc.setHtml(bodytext.replace(":laughing:",  "<img src=':/emoji/res/emoji/laughing.png'>"));
+    bodydoc.setHtml(bodytext.replace(":sweet_smile:",  "<img src=':/emoji/res/emoji/sweet_smile.png'>"));
+    bodydoc.setHtml(bodytext.replace(":joy:",  "<img src=':/emoji/res/emoji/joy.png'>"));
+    bodydoc.setHtml(bodytext.replace(":innocent:",  "<img src=':/emoji/res/emoji/innocent.png'>"));
+    bodydoc.setHtml(bodytext.replace(":partying_face:",  "<img src=':/emoji/res/emoji/partying_face.png'>"));
+    bodydoc.setHtml(bodytext.replace(":heart_eyes:",  "<img src=':/emoji/res/emoji/heart_eyes.png'>"));
+    bodydoc.setHtml(bodytext.replace(":fire:",  "<img src=':/emoji/res/emoji/fire.png'>"));
+
 
     // the width of the contents are the (a fraction of the window width) minus (margins + padding + width of the bubble's tail)
     qreal contentswidth = option.rect.width() * d_widthfraction - d_horizontalmargin - d_pointerwidth - d_leftpadding - d_rightpadding;

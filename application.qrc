@@ -47,7 +47,11 @@
         <file>res/addContactBlack.png</file>
         <file>res/unknownBlack.png</file>
         <file>res/unknownWhite.png</file>
-       
+        <file>res/dark-01.png</file>
+        <file>res/money-mouth.png</file>
+        <file>res/money-outgoing.png</file>
+        <file>res/hush-money-white.png</file>
+
     </qresource>
     <qresource prefix="/img">
         <file>res/hushdlogo.gif</file>
@@ -58,22 +62,37 @@
         <file>res/loaderblack.gif</file>
         <file>res/loaderwhite.gif</file>
     </qresource>
+    <qresource prefix="/emoji">
+    <file>res/emoji/emoji1.png</file>
+    <file>res/emoji/laughing.png</file>
+    <file>res/emoji/money-mouth.png</file>
+    <file>res/emoji/sweet_smile.png</file>
+    <file>res/emoji/joy.png</file>
+    <file>res/emoji/innocent.png</file>
+    <file>res/emoji/partying_face.png</file>
+    <file>res/emoji/heart_eyes.png</file>
+    <file>res/emoji/fire.png</file>
+
+    </qresource>
     <qresource prefix="/translations">
-    <file>res/silentdragonlite_de.qm</file>
-    <file>res/silentdragonlite_es.qm</file>
-    <file>res/silentdragonlite_fr.qm</file>
-    <file>res/silentdragonlite_pt.qm</file>
-    <file>res/silentdragonlite_it.qm</file>
-    <file>res/silentdragonlite_hr.qm</file>
-    <file>res/silentdragonlite_fa.qm</file>
-    <file>res/silentdragonlite_id.qm</file>
+        <file>res/silentdragonlite_de.qm</file>
+        <file>res/silentdragonlite_es.qm</file>
+        <file>res/silentdragonlite_fr.qm</file>
+        <file>res/silentdragonlite_pt.qm</file>
+        <file>res/silentdragonlite_it.qm</file>
+        <file>res/silentdragonlite_hr.qm</file>
+        <file>res/silentdragonlite_fa.qm</file>
+        <file>res/silentdragonlite_id.qm</file>
+        <file>res/silentdragonlite_ar.qm</file>
+        <file>res/silentdragonlite_ro.qm</file>
     </qresource>
     <qresource prefix="/css">
-        <file>res/css/blue.css</file>
-        <file>res/css/dark.css</file>
-        <file>res/css/default.css</file>
-        <file>res/css/light.css</file>
-        <file>res/css/midnight.css</file>
+        <file>res/css/Blue.css</file>
+        <file>res/css/Dark.css</file>
+        <file>res/css/Default.css</file>
+        <file>res/css/Light.css</file>
+        <file>res/css/Midnight.css</file>
+        <file>res/css/test.css</file>
     </qresource>
     <qresource prefix="/images/blue">
         <file>res/images/blue/unchecked.png</file>
@@ -84,5 +103,8 @@
         <file>res/images/blue/blue_leftArrow_small.png</file>
         <file>res/images/blue/blue_rightArrow_small.png</file>
         <file>res/images/blue/blue_qtreeview_selected.png</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>res/images/tile.png</file>
     </qresource>
 </RCC>

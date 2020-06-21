@@ -6,13 +6,14 @@ extern "C" {
 #endif
 
 extern bool   litelib_wallet_exists       (const char* chain_name);
-extern char * litelib_initialize_new      (bool dangerous, const char* server);
+extern char * litelib_initialize_new      (const char* server);
 extern char * litelib_initialize_new_from_phrase
-                                          (bool dangerous, const char* server, const char* seed,
-                                           unsigned long long birthday);  
-extern char * litelib_initialize_existing (bool dangerous, const char* server);
+                                          (const char* server, const char* seed,
+                                           unsigned long long birthday, unsigned long long number);  
+extern char * litelib_initialize_existing (const char* server);
 extern char * litelib_execute             (const char* s, const char* args);
 extern void   litelib_rust_free_string    (char* s);
+extern char * blake3_PW                   (char* pw);
 
 #ifdef __cplusplus
 }

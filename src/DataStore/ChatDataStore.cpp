@@ -39,6 +39,18 @@ QString ChatDataStore::getPassword()
     return _password;
 }
 
+QString ChatDataStore::getSendZaddr()
+{
+
+    return _zaddr;
+}
+
+void ChatDataStore::setSendZaddr(QString zaddr)
+{
+
+    _zaddr = zaddr;
+}
+
 void ChatDataStore::setPassword(QString password)
 {
 
@@ -47,15 +59,16 @@ void ChatDataStore::setPassword(QString password)
 
 QString ChatDataStore::dump()
 {
-	json chats;
-    chats["count"] = this->data.size();
-    json j = {};
+    QJsonObject chats;
+    chats["count"] = (qint64)this->data.size();
+    QJsonArray j;
     for (auto &c: this->data)
     {
         j.push_back(c.second.toJson());
     }
     chats["chatitems"] = j;
-	return QString::fromStdString(chats.dump());
+    QJsonDocument jd_chats = QJsonDocument(chats);
+    return QLatin1String(jd_chats.toJson(QJsonDocument::Compact));
 }
 
 std::map<QString, ChatItem> ChatDataStore::getAllRawChatItems()
@@ -96,6 +109,46 @@ std::map<QString, ChatItem> ChatDataStore::getAllOldContactRequests()
             (c.second.isContact() == true) &&
             (c.second.getMemo().startsWith("{")) 
         ) 
+        {
+            filteredItems[c.first] = c.second;
+        }
+    }
+    return filteredItems;
+}
+
+std::map<QString, ChatItem> ChatDataStore::getAllCashMemosIncoming()
+{
+    std::map<QString, ChatItem> filteredItems;
+  
+    for(auto &c: this->data)   
+    {
+        if (
+            (c.second.isOutgoing() == false) &&
+            (c.second.getType() == "Money")  &&
+            (c.second.getMemo().startsWith("{"))  
+              
+        ) 
+        
+        {
+            filteredItems[c.first] = c.second;
+        }
+    }
+    return filteredItems;
+}
+
+std::map<QString, ChatItem> ChatDataStore::getAllCashMemosOutgoing()
+{
+    std::map<QString, ChatItem> filteredItems;
+  
+    for(auto &c: this->data)   
+    {
+        if (
+            (c.second.isOutgoing() == true) &&
+            (c.second.getType() == "Money")  &&
+            (c.second.getMemo().startsWith("{"))  
+              
+        ) 
+        
         {
             filteredItems[c.first] = c.second;
         }

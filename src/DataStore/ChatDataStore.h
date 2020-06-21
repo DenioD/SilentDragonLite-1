@@ -1,7 +1,6 @@
 #ifndef CHATDATASTORE_H
 #define CHATDATASTORE_H
 #include "../chatmodel.h"
-using json = nlohmann::json;
 
 class ChatDataStore
 {
@@ -23,12 +22,18 @@ class ChatDataStore
         ChatItem getData(QString key);
         std::map<QString, ChatItem> getAllRawChatItems();
         std::map<QString, ChatItem> getAllNewContactRequests();
+        std::map<QString, ChatItem> getAllCashMemosOutgoing();
+        std::map<QString, ChatItem> getAllCashMemosIncoming();
         std::map<QString, ChatItem> getAllOldContactRequests();
         std::map<QString, ChatItem> getAllMemos();
         QString getPassword();
+        QString getSendZaddr();
 
-        void setPassword(QString Password);
+        void setSendZaddr(QString Password);
         QString _password;
+
+        void setPassword(QString zaddr);
+        QString _zaddr;
     
         QString dump();
 

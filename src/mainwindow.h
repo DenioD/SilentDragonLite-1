@@ -14,7 +14,6 @@ class WSServer;
 class WormholeClient;
 class ChatModel;
 
-using json = nlohmann::json;
 
 // Struct used to hold destination info when sending a Tx. 
 struct ToFields {
@@ -50,12 +49,18 @@ public:
 
     QString doSendTxValidations(Tx tx);
     QString doSendChatTxValidations(Tx tx);
+    QString doSendChatMoneyTxValidations(Tx tx);
     QString doSendRequestTxValidations(Tx tx);
+    QString doSendChatMoneyRequestTxValidations(Tx tx);
     QString getCid();
+    QString getAmt();
+    QString getMoneyMemo();
     QString getPassword();
     std::map<QString, QString> pubkeyMap;
     QString getPubkeyByAddress(QString requestZaddr);
     void setPassword(QString Password);
+    void setAmt(QString Amt);
+    void setMoneyMemo(QString MoneyMemo);
     void addPubkey(QString requestZaddr, QString pubkey);
     
     
@@ -106,12 +111,15 @@ private slots:
 
     void on_givemeZaddr_clicked();
 
+    void on_emojiButton_clicked();
 private:
 
     bool fileExists(QString path);
     void closeEvent(QCloseEvent* event);
     void closeEventpw(QCloseEvent* event);
     QString _password;
+    QString _amt;
+    QString _moneymemo;
 
 
     void setupSendTab();
@@ -136,7 +144,8 @@ private:
 
     Tx   createTxFromChatPage();
     Tx   createTxForSafeContactRequest();
-
+    Tx   createTxFromSendChatPage();
+    Tx   createTxFromSendRequestChatPage();
 
     void encryptWallet();
     void removeWalletEncryption();
@@ -145,6 +154,8 @@ private:
     void cancelButton();
     void sendButton();
     void sendChat();
+    void sendMoneyChat();
+    void sendMoneyRequestChat();
     void addContact();
     void ContactRequest();
     
@@ -213,6 +224,22 @@ private:
     int             maxlenchat             = 235;
     QLabel*         lenDisplayLabelchat    = nullptr;
     QPushButton*    sendChatButton     = nullptr;
+};
+
+class ChatMemoEditRequest : public QTextEdit
+{
+public:
+    ChatMemoEditRequest(QWidget* parent);
+
+    void setMaxLenChatRequest(int len);
+    void setLenDisplayLabelChatRequest(QLabel* label);
+    void SetSendRequestButton(QPushButton* button);
+    void updateDisplayChatRequest();
+
+private:
+    int             maxlenchatrequest             = 512;
+    QLabel*         lenDisplayLabelchatRequest   = nullptr;
+    QPushButton*    sendRequestButton     = nullptr;
 };
 
 

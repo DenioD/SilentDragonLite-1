@@ -1,0 +1,239 @@
+
+QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTableView, QTableView::item, QScrollArea, QGroupBox, QPlainTextEdit, QLineEdit, QLabel, MainWindow
+{
+    /* background-color: #303335; */
+    background: transparent;
+    color: #ffffff;
+}
+
+QMainWindow
+{
+    border-image: url(':images/res/images/tile.png') 0 0 0 0 repeat repeat;
+    color: #ffffff;
+}
+
+QTabWidget QTabBar::tab {
+padding-left:20px;
+padding-right:20px;
+padding-top:5px;
+padding-bottom:5px;
+border: 1px solid #525355;
+/*background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #3E4244);*/
+background-color: rgba(0, 0, 0, 128);
+}
+
+QTabWidget QTabBar::tab:selected {
+min-height: 10px;
+/*background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #525355, stop: 1 #303335);*/
+background-color: rgba(0, 64, 0, 128);
+color:#fff;
+border: 1px ridge #000;
+}
+
+QTabWidget QTabBar::tab:hover {
+/*background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #3E4244);*/
+background-color: rgba(0, 0, 0, 32);
+color:#fff;
+border: 1px ridge #fff;
+min-height: 20px
+}
+
+QTabWidget::pane {
+    background-color: rgba(0, 0, 0, 128);
+    border: 2px solid rgb(0, 0, 0);
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    top: -2px;
+}
+
+QStatusBar {
+    background-color: rgba(0, 0, 64, 128);
+}
+
+QHeaderView { /* Table Header */
+/* background-color:#303335;*/
+background-color: rgba(0, 0, 0, 64);
+border:1px solid #fff;
+}
+
+QHeaderView::section { /* Table Header Sections */
+qproperty-alignment:center;
+/*background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #3E4244);*/
+background: transparent;
+color:#fff;
+min-height:25px;
+font-weight:bold;
+font-size:11px;
+outline:0;
+border:1px solid #525355;
+border-right:1px solid #fff;
+border-left:1px solid #fff;
+padding-left:5px;
+padding-right:5px;
+padding-top:2px;
+padding-bottom:2px;
+}
+
+QHeaderView::section:last {
+border-right: 0px solid #d7d7d7;
+}
+
+QScrollArea {
+background:transparent;
+border:0px;
+}
+
+QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
+/*background:#303335;*/
+background: transparent;
+}
+
+QTableView::item { /* Table Item */
+/*background-color:#303335;*/
+background: transparent;
+border:1px solid #fff;
+font-size:12px;
+}
+
+QTableView::item:selected { /* Table Item Selected */
+background-color:#fff;
+color:#000;
+}
+
+QMenuBar {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #525355, stop: 1 #303335);
+color: #fff;
+}
+
+QMenuBar::item {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #525355, stop: 1 #303335);
+color: #fff;
+}
+
+QMenuBar::item:selected {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #3E4244);
+}
+
+QTabBar::tab {
+    background-color: rgba(0, 0, 0, 128);
+    min-width: 150px;
+    padding: 4px;
+    border-bottom: 2px solid rgb(68, 49, 141);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected {
+    /* font: bold; */
+    border: 2px solid rgb(68, 49, 141);
+    border-bottom: none;
+}
+
+
+QTabBar::tab:hover {
+    /* font: bold; */
+    border: 2px solid rgb(68, 49, 141);
+}
+
+
+QGroupBox {
+  background-color: rgba(0, 0, 0, 128);
+  font-weight: bold;
+  font-style: italic;
+  border: 1px solid rgba(0, 128, 0, 128);
+  border-radius: 4px;
+  padding: 4px;
+  margin-top: 16px;
+}
+
+QGroupBox::title {
+  subcontrol-origin: margin;
+  subcontrol-position: top left;
+  left: 8px;
+  padding-left: 3px;
+  padding-right: 3px;
+  padding-top: 6px;
+  padding-bottom: 8px;
+}
+
+QLineEdit, QPushButton, QPlainTextEdit {
+    background-color: rgba(10, 7, 20, 128);
+    min-width: 100px;
+    border: 1px solid rgb(68, 49, 141);
+    border-radius: 4px;
+    padding:5px;
+}
+
+QLineEdit:focus, QPushButton:pressed, QPlainTextEdit:focus  {
+    border: 1px solid rgb(216, 00, 255);
+}
+
+QLineEdit:hover, QPushButton:hover, QPlainTextEdit:hover  {
+    border: 1px solid rgb(216, 00, 255);
+}
+
+QLineEdit:disabled, QPushButton:disabled, QPlainTextEdit:disabled  {
+    border: 1px solid rgb(64, 64, 64);
+}
+
+QComboBox {
+    background-color: rgba(10, 7, 20, 128);
+    min-height: 28px;
+    min-width: 80px;
+    border: 1px solid rgb(68, 49, 141);
+    border-radius: 4px;
+}
+
+QComboBox:hover {
+    border: 1px solid rgb(216, 00, 255);
+}
+
+QComboBox QAbstractItemView {
+    background-color: rgb(0, 0, 0);
+    border: 1px solid rgb(68, 49, 141);
+    border-radius: 4px;
+}
+
+QComboBox::item {
+    background-color: rgb(0, 0, 0);
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 4px;
+    height:28px;
+}
+
+QComboBox::item:selected { /* when user selects item using mouse or keyboard */
+    background-color: rgb(20, 15, 40);
+    border: 1px solid rgb(68, 49, 141);
+    border-radius: 4px;
+
+}
+
+
+QCheckBox::indicator, QRadioButton::indicator {
+        border: 2px solid rgb(68, 49, 141);
+        border-radius: 6px;
+}
+
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+        background-color: rgba(0, 255, 0, 128);
+}
+
+QCheckBox::indicator:unchecked, QRadioButton::indicator:unchecked {
+        background-color: rgba(0, 16, 0, 128);
+}
+
+QCheckBox::indicator:hover, QRadioButton::indicator:hover {
+        border: 2px solid rgb(0, 192, 0);
+}
+
+QCheckBox::indicator:disabled, QRadioButton::indicator:disabled {
+        border: 2px solid rgb(64, 64, 64);
+}
+
+QWidget.FilledIconLabel /* targets custom ui widget by class name */
+{
+    background-color: rgba(255, 255, 255, 64);
+    border: 2px solid rgb(255, 0, 0);
+}

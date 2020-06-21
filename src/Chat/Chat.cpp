@@ -46,6 +46,45 @@ void ChatMemoEdit::setLenDisplayLabelChat(QLabel* label) {
     this->lenDisplayLabelchat = label;
 }
 
+ChatMemoEditRequest::ChatMemoEditRequest(QWidget* parent) : QTextEdit(parent) {
+    QObject::connect(this, &QTextEdit::textChanged, this, &ChatMemoEditRequest::updateDisplayChatRequest);
+}
+
+void ChatMemoEditRequest::updateDisplayChatRequest() {
+    QString txt = this->toPlainText();
+    if (lenDisplayLabelchatRequest)
+        lenDisplayLabelchatRequest->setText(QString::number(txt.toUtf8().size()) + "/" + QString::number(maxlenchatrequest));
+
+    if (txt.toUtf8().size() <= maxlenchatrequest) {
+        // Everything is fine
+        if (sendRequestButton)
+            sendRequestButton->setEnabled(true);
+
+        if (lenDisplayLabelchatRequest)
+            lenDisplayLabelchatRequest->setStyleSheet("");
+    }
+    else {
+        // Overweight
+        if (sendRequestButton)
+            sendRequestButton->setEnabled(false);
+
+        if (lenDisplayLabelchatRequest)
+            lenDisplayLabelchatRequest->setStyleSheet("color: red;");
+    }
+}
+
+void ChatMemoEditRequest::setMaxLenChatRequest(int len) {
+    this->maxlenchatrequest = len;
+    updateDisplayChatRequest();
+}
+
+void ChatMemoEditRequest::SetSendRequestButton(QPushButton* button) {
+    this->sendRequestButton = button;
+}
+
+void ChatMemoEditRequest::setLenDisplayLabelChatRequest(QLabel* label) {
+    this->lenDisplayLabelchatRequest = label;
+}
 void Chat::renderChatBox(Ui::MainWindow *ui, QListView *view, QLabel *label)
 {
     
@@ -59,7 +98,8 @@ void Chat::renderChatBox(Ui::MainWindow *ui, QListView *view, QLabel *label)
             if (
                 (p.getName() == ui->contactNameMemo->text().trimmed()) &&
                 (p.getPartnerAddress() == c.second.getAddress()) &&
-                (c.second.isOutgoing() == true)) 
+                (c.second.isOutgoing() == true))
+               
             {
 
                 QStandardItem *Items = new QStandardItem(c.second.toChatLine());

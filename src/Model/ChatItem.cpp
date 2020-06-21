@@ -158,6 +158,9 @@ QString ChatItem::toChatLine()
 {
     QDateTime myDateTime;
     QString lock;
+    QString money;
+    QString moneyText;
+    QString moneyTextRequest;
     myDateTime.setTime_t(_timestamp);
 
     if (_notarize == true)
@@ -175,26 +178,58 @@ QString ChatItem::toChatLine()
         {
 
         lock = "<b> <img src=':/icons/res/lock_green.png'><b>";
-        }
+        }else{}
+
+    if (_memo.startsWith("Money transaction of :"))
+    {
+    if (_outgoing == true)
+    {
+
+        moneyText = QString("<p> Outgoing Money Transaction </p>") + QString("<b> <img src=':/icons/res/money-outgoing.png'><b>");
+    }else{
+
+
+        moneyText = QString("<p> Incoming Money Transaction </p>") + QString("<b> <img src=':/icons/res/money-mouth.png'><b>");
+
+    } 
+    }else{money = "";
+    moneyText = ""; }
+
+      if (_memo.startsWith("Request of :"))
+    {
+    if (_outgoing == true)
+    {
+
+        moneyTextRequest = QString("<p> Outgoing Hush Request </p>") + QString("<b> <img src=':/icons/res/money-outgoing.png'><b>");
+    }else{
+
+
+        moneyTextRequest = QString("<p> Incoming Hush Request </p>") + QString("<b> <img src=':/icons/res/money-mouth.png'><b>");
+
+    } 
+    }else{moneyTextRequest = "";
+    moneyTextRequest = "";    }
+
+    
     
 
     QString line = QString("<small>") + myDateTime.toString("yyyy-MM-dd hh:mm");
-    line += QString(lock) + QString("</small>");
+    line += QString(lock) + QString(moneyText) + QString(moneyTextRequest) +  QString("</small>");
     line +=QString("<p>") + _memo.toHtmlEscaped() + QString("</p>");
     return line;
 }
 
-json ChatItem::toJson()
+QJsonValue ChatItem::toJson()
 {
-    json j;
-    j["_timestamp"] = _timestamp;
-    j["_address"] = _address.toStdString();
-    j["_contact"] = _contact.toStdString();
-    j["_memo"] = _memo.toStdString();
-    j["_requestZaddr"] = _requestZaddr.toStdString();
-    j["_type"] = _type.toStdString();
-    j["_cid"] = _cid.toStdString();
-    j["_txid"] = _txid.toStdString();
+    QJsonObject j;
+    j["_timestamp"] = (qint64)_timestamp;
+    j["_address"] = _address;
+    j["_contact"] = _contact;
+    j["_memo"] = _memo;
+    j["_requestZaddr"] = _requestZaddr;
+    j["_type"] = _type;
+    j["_cid"] = _cid;
+    j["_txid"] = _txid;
     j["_confirmations"] = _confirmations;
     j["_outgoing"] = _outgoing;
     return j;

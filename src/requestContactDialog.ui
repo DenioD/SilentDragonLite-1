@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Incoming contact request</string>
+   <string>Incoming Contact Request</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">

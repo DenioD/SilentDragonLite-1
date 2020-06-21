@@ -6,7 +6,6 @@
 #include <vector>
 #include <QString>
 #include "mainwindow.h"
-using json = nlohmann::json;
 
 class ContactItem
 {
@@ -34,7 +33,7 @@ public:
     void setcid(QString cid);
     void setAvatar(QString avatar);
     QString toQTString();
-    json toJson();
+    QJsonValue toJson();
 };
 
 #endif

@@ -230,7 +230,7 @@ void Settings::set_currency_name(QString currency_name) {
 
 QString Settings::get_theme_name() {
     // Load from the QT Settings.
-    return QSettings().value("options/theme_name", "dark").toString();
+    return QSettings().value("options/theme_name", "Dark").toString();
 }
 
 void Settings::set_theme_name(QString theme_name) {

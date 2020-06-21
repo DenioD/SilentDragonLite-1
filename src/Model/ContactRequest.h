@@ -5,7 +5,6 @@
 #define CONTACTREQUEST_H
 
 #include <QString>
-using json = nlohmann::json;
 
 class ContactRequest
 {

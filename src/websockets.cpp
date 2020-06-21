@@ -735,9 +735,9 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, st
         return;
     }
 
-    json params = json::array();
+    QJsonArray params;
     mainwindow->getRPC()->fillTxJsonParams(params, tx);
-    std::cout << std::setw(2) << params << std::endl;
+    //std::cout << std::setw(2) << params << std::endl;
 
     // And send the Tx
     mainwindow->getRPC()->executeTransaction(tx,
@@ -835,9 +835,9 @@ void AppDataServer::processSendManyTx(QJsonObject sendmanyTx, MainWindow* mainwi
         return;
     }
 
-    json params = json::array();
+    QJsonArray params;
     mainwindow->getRPC()->fillTxJsonParams(params, tx);
-    std::cout << std::setw(2) << params << std::endl;
+    //std::cout << std::setw(2) << params << std::endl;
 
     // And send the Tx
     mainwindow->getRPC()->executeTransaction(tx,
@@ -923,7 +923,7 @@ void AppDataServer::processGetTransactions(MainWindow* mainWindow, std::shared_p
             {"amount", model->getAmt(i)},
             {"txid", model->getTxId(i)},
             {"address", model->getAddr(i)},
-            {"memo", model->getMemo(i)},
+      //      {"memo", model->getMemo(i)},
             {"confirmations", model->getConfirmations(i)}
         });
     }
