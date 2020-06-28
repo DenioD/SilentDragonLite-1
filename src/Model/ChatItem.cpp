@@ -1,8 +1,11 @@
+// Copyright 2019-2020 The Hush developers
+// GPLv3
+
 #include "ChatItem.h"
 
 ChatItem::ChatItem() {}
 
-ChatItem::ChatItem(long timestamp, QString address, QString contact, QString memo, QString requestZaddr, QString type, QString cid, QString txid)
+ChatItem::ChatItem(long timestamp, QString address, QString contact, QString memo, QString requestZaddr, QString type, QString cid, QString txid, int confirmations, bool notarize,  bool iscontact)
 {
     _timestamp = timestamp;
     _address = address;
@@ -12,10 +15,13 @@ ChatItem::ChatItem(long timestamp, QString address, QString contact, QString mem
     _type = type;
     _cid = cid;
     _txid = txid;
+    _confirmations = confirmations;
     _outgoing = false;
+    _notarize = notarize;
+    _iscontact = iscontact;
 }
 
-ChatItem::ChatItem(long timestamp, QString address, QString contact, QString memo, QString requestZaddr, QString type, QString cid, QString txid, bool outgoing)
+ChatItem::ChatItem(long timestamp, QString address, QString contact, QString memo, QString requestZaddr, QString type, QString cid, QString txid, int confirmations, bool outgoing, bool notarize,  bool iscontact)
 {
     _timestamp = timestamp;
     _address = address;
@@ -25,7 +31,11 @@ ChatItem::ChatItem(long timestamp, QString address, QString contact, QString mem
     _type = type;
     _cid = cid;
     _txid = txid;
+    _confirmations = confirmations;
     _outgoing = outgoing;
+    _notarize = notarize;
+    _iscontact = iscontact;
+     
 }
 
 long ChatItem::getTimestamp()
@@ -66,10 +76,24 @@ QString ChatItem::getTxid()
 {
     return _txid;
 }
+int ChatItem::getConfirmations()
+{
+    return _confirmations;
+}
 
 bool ChatItem::isOutgoing()
 {
     return _outgoing;
+}
+
+bool ChatItem::isNotarized()
+{
+    return _notarize;
+}
+
+bool ChatItem::isContact()
+{
+    return _iscontact;
 }
 
 void ChatItem::setTimestamp(long timestamp)
@@ -110,26 +134,108 @@ void ChatItem::setTxid(QString txid)
 {
     _txid = txid;
 }
+void ChatItem::setConfirmations(int confirmations)
+{
+    _confirmations = confirmations;
+}
 
 void ChatItem::toggleOutgo()
 {
     _outgoing = true;
 }
+void ChatItem::notarized()
+{
+    _notarize = false;
+}
+
+void ChatItem::contact(bool iscontact)
+{
+    _iscontact = iscontact;
+}
+
 
 QString ChatItem::toChatLine()
 {
     QDateTime myDateTime;
+    QString lock;
+    QString money;
+    QString moneyText;
+    QString moneyTextRequest;
     myDateTime.setTime_t(_timestamp);
-    QString line = QString("[") + myDateTime.toString("d.M.yy hh:mm") + QString("] ");
-    line += QString("") + QString(_memo) + QString("\n\n");
+
+    if (_notarize == true)
+
+    {
+
+        lock = "<b> <img src=':/icons/res/lock_orange.png'><b>";
+
+    }else{
+        
+         lock = "<b> <img src=':/icons/res/unlocked.png'><b>";
+        }
+        if ((_confirmations > 0) && (_notarize == false))
+        
+        {
+
+        lock = "<b> <img src=':/icons/res/lock_green.png'><b>";
+        }else{}
+
+    if (_memo.startsWith("Money transaction of :"))
+    {
+    if (_outgoing == true)
+    {
+
+        moneyText = QString("<br>") + QString("<br>") + QString("<pr> Outgoing Money Transaction </pr>") + QString("<b> <img src=':/icons/res/money-outgoing.png'><b>");
+    }else{
+
+
+        moneyText = QString("<br>") + QString("<br>") + QString("<pr> Incoming Money Transaction </pr>") + QString("<b> <img src=':/icons/res/money-mouth.png'><b>");
+
+    } 
+    }else{money = "";
+    moneyText = ""; }
+
+      if (_memo.startsWith("Request of :"))
+    {
+    if (_outgoing == true)
+    {
+
+        moneyTextRequest = QString("<br>") + QString("<br>") + QString("<pr> Outgoing Hush Request </pr>") + QString("<b> <img src=':/icons/res/money-outgoing.png'><b>");
+    }else{
+
+
+        moneyTextRequest = QString("<br>") + QString("<br>") + QString("<pr> Incoming Hush Request </pr>") + QString("<b> <img src=':/icons/res/money-mouth.png'><b>");
+
+    } 
+    }else{moneyTextRequest = "";
+    moneyTextRequest = "";    }
+
+    
+    
+
+    QString line = QString("<small>") + myDateTime.toString("yyyy-MM-dd hh:mm");
+    line += QString(lock) + QString(moneyText) + QString(moneyTextRequest) +  QString("</small>");
+    line +=QString("<p>") + _memo.toHtmlEscaped() + QString("</p>");
     return line;
+}
+
+QJsonValue ChatItem::toJson()
+{
+    QJsonObject j;
+    j["_timestamp"] = (qint64)_timestamp;
+    j["_address"] = _address;
+    j["_contact"] = _contact;
+    j["_memo"] = _memo;
+    j["_requestZaddr"] = _requestZaddr;
+    j["_type"] = _type;
+    j["_cid"] = _cid;
+    j["_txid"] = _txid;
+    j["_confirmations"] = _confirmations;
+    j["_outgoing"] = _outgoing;
+    return j;
 }
 
 ChatItem::~ChatItem()
 {
-    /*delete timestamp;
-            delete address;
-            delete contact;
-            delete memo;
-            delete outgoing;*/
+
 }

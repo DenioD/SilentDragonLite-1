@@ -4,8 +4,6 @@
 #include "precompiled.h"
 #include "camount.h"
 
-using json = nlohmann::json;
-
 struct Config {
     QString server;
 };
@@ -65,8 +63,6 @@ public:
 
     QString get_currency_name();
     void set_currency_name(QString currency_name);
-
-
 
 
     bool    isSaplingActive();
@@ -225,13 +221,12 @@ private:
 };
 
 
-inline bool isJsonResultSuccess(const json& res) {
-    return res.find("result") != res.end() && 
-                    QString::fromStdString(res["result"].get<json::string_t>()) == "success";
+inline bool isJsonResultSuccess(const QJsonValue& res) {
+    return res.toObject()["result"].toString() == "success";
 }
 
-inline bool isJsonError(const json& res) {
-    return res.find("error") != res.end();
+inline bool isJsonError(const QJsonValue& res) {
+    return !res.toObject()["error"].isNull();
 }
 
 

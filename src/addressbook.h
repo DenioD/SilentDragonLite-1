@@ -3,6 +3,7 @@
 
 #include "precompiled.h"
 #include "contactmodel.h"
+#include "FileSystem/FileSystem.h"
 
 class MainWindow;
 
@@ -22,7 +23,6 @@ public:
     int      columnCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  
 
 private:
     void loadData();
@@ -31,7 +31,8 @@ private:
     QTableView* parent;
     //QList<QPair<QString, QString>> labels;
     QList<ContactItem> labels;
-    QStringList headers;    
+    QStringList headers;  
+    
 };
 
 class AddressBook {
@@ -62,6 +63,10 @@ public:
 
     QString get_avatar_name();
     void set_avatar_name(QString avatar_name);
+
+    
+
+    
     
     
 
@@ -75,6 +80,7 @@ private:
 
     QString writeableFile();
     QList<ContactItem> allLabels;
+    
 
     static AddressBook* instance;
 };

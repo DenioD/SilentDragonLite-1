@@ -14,6 +14,7 @@ QT += widgets
 QT += websockets
 
 
+
 TARGET = SilentDragonLite
 
 TEMPLATE = app
@@ -75,11 +76,16 @@ SOURCES += \
     src/DataStore/DataStore.cpp \
     src/DataStore/ChatDataStore.cpp \
     src/DataStore/SietchDataStore.cpp \
+    src/DataStore/ContactDataStore.cpp \
     src/Model/ChatItem.cpp \
     src/Model/ContactRequestChatItem.cpp \
     src/Model/ContactItem.cpp \
+    src/Model/ContactRequest.cpp \
     src/Chat/Helper/ChatIDGenerator.cpp \
-    src/Chat/Chat.cpp
+    src/Chat/Chat.cpp \
+    src/FileSystem/FileSystem.cpp \
+    src/Crypto/FileEncryption.cpp \
+    src/Crypto/passwd.cpp
 
 HEADERS += \
     src/firsttimewizard.h \
@@ -89,7 +95,6 @@ HEADERS += \
     src/3rdparty/qrcode/BitBuffer.hpp \
     src/3rdparty/qrcode/QrCode.hpp \
     src/3rdparty/qrcode/QrSegment.hpp \
-    src/3rdparty/json/json.hpp \
     src/settings.h \
     src/txtablemodel.h \
     src/qrcodelabel.h \
@@ -116,18 +121,24 @@ HEADERS += \
 
 FORMS += \
     src/contactrequest.ui \
+    src/deposithush.ui \
+    src/emoji.ui \
     src/encryption.ui \
+    src/hushrequest.ui \
     src/mainwindow.ui \
     src/migration.ui \
     src/newseed.ui \
     src/newwallet.ui \
     src/recurringpayments.ui \
     src/restoreseed.ui \
+    src/seedrestore.ui \
+    src/sendHushTransactionChat.ui \
     src/settings.ui \
     src/about.ui \
     src/confirm.ui \
     src/privkey.ui \
     src/memodialog.ui \ 
+    src/startupencryption.ui \
     src/viewalladdresses.ui \
     src/connection.ui \
     src/addressbook.ui \
@@ -137,6 +148,7 @@ FORMS += \
     src/requestContactDialog.ui \
     src/newrecurring.ui \
     src/requestdialog.ui \
+    src/removeencryption.ui \
     src/recurringmultiple.ui \ 
     src/chatbubbleme.ui \
     src/chatbubblepartner.ui
@@ -151,6 +163,9 @@ TRANSLATIONS = res/silentdragonlite_es.ts \
                res/silentdragonlite_hr.ts \
                res/silentdragonlite_sr.ts \
                res/silentdragonlite_fa.ts \
+               res/silentdragonlite_id.ts \
+               res/silentdragonlite_ar.ts \
+               res/silentdragonlite_ro.ts \
                res/silentdragonlite_tr.ts 
              
 include(singleapplication/singleapplication.pri)

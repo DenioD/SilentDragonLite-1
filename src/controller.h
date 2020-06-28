@@ -1,3 +1,6 @@
+// Copyright 2019-2020 The Hush developers
+// GPLv3
+
 #ifndef RPCCLIENT_H
 #define RPCCLIENT_H
 
@@ -16,7 +19,6 @@
 #include "Model/ContactRequestChatItem.h"
 #include "Model/ContactItem.h"
 #include "contactmodel.h"
-using json = nlohmann::json;
 
 struct WatchedTx {
     QString opid;
@@ -37,7 +39,11 @@ public:
     Connection* getConnection() { return zrpc->getConnection(); }
     void setConnection(Connection* c);
     void refresh(bool force = false);
-    void refreshAddresses();    
+    void refreshAddresses();
+    int getLag();   
+    void setLag(int lag);
+    int _lag;
+    std::string encryptDecrypt(std::string);
     
     void checkForUpdate(bool silent = true);
     void refreshZECPrice();
@@ -74,7 +80,8 @@ public:
     void refreshGBPCAP();
     void refreshAUDCAP();
     
-    void refreshChat(QListView *listWidget);
+    
+    void refreshChat(QListView *listWidget, QLabel *label);
     void refreshContacts(QListView *listWidget);
     
     void executeStandardUITransaction(Tx tx); 
@@ -83,7 +90,7 @@ public:
         const std::function<void(QString txid)> submitted,
         const std::function<void(QString txid, QString errStr)> error);
 
-    void fillTxJsonParams(json& params, Tx tx);
+    void fillTxJsonParams(QJsonArray &params, Tx tx);
     
     const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }
 
@@ -91,58 +98,58 @@ public:
     void noConnection();
     bool isEmbedded() { return ehushd != nullptr; }
 
-    void encryptWallet(QString password, const std::function<void(json)>& cb) { 
+    void encryptWallet(QString password, const std::function<void(QJsonValue)>& cb) {
         zrpc->encryptWallet(password, cb); 
     }
     
-    void removeWalletEncryption(QString password, const std::function<void(json)>& cb) { 
+    void removeWalletEncryption(QString password, const std::function<void(QJsonValue)>& cb) {
                 zrpc->removeWalletEncryption(password, cb); }
 
-    void saveWallet(const std::function<void(json)>& cb) { zrpc->saveWallet(cb); }
+    void saveWallet(const std::function<void(QJsonValue)>& cb) { zrpc->saveWallet(cb); }
 
-    void clearWallet(const std::function<void(json)>& cb) { zrpc->clearWallet(cb); }
+    void clearWallet(const std::function<void(QJsonValue)>& cb) { zrpc->clearWallet(cb); }
 
-    void createNewZaddr(bool sapling, const std::function<void(json)>& cb) { 
+    void createNewZaddr(bool sapling, const std::function<void(QJsonValue)>& cb) {
         unlockIfEncrypted([=] () {
             zrpc->createNewZaddr(sapling, cb);
         }, [=](){});
     }
 
    
-    void createNewTaddr(const std::function<void(json)>& cb) { 
+    void createNewTaddr(const std::function<void(QJsonValue)>& cb) {
         unlockIfEncrypted([=] () {
             zrpc->createNewTaddr(cb); 
         }, [=](){});
     }
-     void createNewSietchZaddr(const std::function<void(json)>& cb) { 
+     void createNewSietchZaddr(const std::function<void(QJsonValue)>& cb) {
         unlockIfEncrypted([=] () {
            zrpc->createNewSietchZaddr(cb); 
         }, [=](){});
     }
-    void fetchPrivKey(QString addr, const std::function<void(json)>& cb) { 
+    void fetchPrivKey(QString addr, const std::function<void(QJsonValue)>& cb) {
         unlockIfEncrypted([=] () {
             zrpc->fetchPrivKey(addr, cb); 
         },
         [=]() {
-            cb({ {"error", "Failed to unlock wallet"} });
+            cb(QJsonObject({ {"error", "Failed to unlock wallet"} }) );
         });
     }
 
-    void fetchAllPrivKeys(const std::function<void(json)> cb) { 
+    void fetchAllPrivKeys(const std::function<void(QJsonValue)> cb) {
         unlockIfEncrypted([=] () {
             zrpc->fetchAllPrivKeys(cb); 
         },
         [=]() {
-            cb({ {"error", "Failed to unlock wallet"} });
+            cb(QJsonObject({ {"error", "Failed to unlock wallet"} }));
         });
     }
 
-    void fetchSeed(const std::function<void(json)> cb) {
+    void fetchSeed(const std::function<void(QJsonValue)> cb) {
         unlockIfEncrypted([=] () {
             zrpc->fetchSeed(cb); 
         },
         [=]() {
-            cb({ {"error", "Failed to unlock wallet"} });
+            cb(QJsonObject({ {"error", "Failed to unlock wallet"} }));
         });
     }
 
@@ -155,12 +162,12 @@ public:
     
     
 private:
-    void processInfo(const json&);
+    void processInfo(const QJsonValue&);
     void refreshBalances();
 
     void refreshTransactions();    
 
-    void processUnspent     (const json& reply, QMap<QString, CAmount>* newBalances, QList<UnspentOutput>* newUnspentOutputs);
+    void processUnspent     (const QJsonValue& reply, QMap<QString, CAmount>* newBalances, QList<UnspentOutput>* newUnspentOutputs);
     void updateUI           (bool anyUnconfirmed);
     void updateUIBalances   ();
 

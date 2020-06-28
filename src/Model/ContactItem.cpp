@@ -1,6 +1,26 @@
+// Copyright 2019-2020 The Hush developers
+// GPLv3
 #include "ContactItem.h"
+#include "chatmodel.h"
+#include "Model/ChatItem.h"
+#include "controller.h"
 
 ContactItem::ContactItem() {}
+
+ContactItem::ContactItem(QString name, QString partnerAddress)
+{
+    _name = name;
+    _partnerAddress = partnerAddress;
+}
+
+ContactItem::ContactItem(QString name, QString partnerAddress, QString myAddress, QString cid)
+{
+    _name = name;
+    _myAddress = myAddress;
+    _partnerAddress = partnerAddress;
+    _cid = cid;
+
+}
 
 ContactItem::ContactItem(QString name, QString partnerAddress, QString myAddress, QString cid, QString avatar)
 {
@@ -8,7 +28,8 @@ ContactItem::ContactItem(QString name, QString partnerAddress, QString myAddress
     _myAddress = myAddress;
     _partnerAddress = partnerAddress;
     _cid = cid;
-    _avatar = avatar;
+    _avatar = avatar; 
+ 
 }
 
 QString ContactItem::getName() const
@@ -63,4 +84,15 @@ void ContactItem::setAvatar(QString avatar)
 QString ContactItem::toQTString()
 {
     return _name + "|" + _partnerAddress + "|" + _myAddress + "|" + _cid + "|" + _avatar;
+}
+
+QJsonValue ContactItem::toJson()
+{
+    QJsonObject j;
+    j["_myAddress"] = _myAddress;
+    j["_partnerAddress"] = _partnerAddress;
+    j["_name"] = _name;
+    j["_cid"] = _cid;
+    j["_avatar"] = _avatar;
+    return j;
 }

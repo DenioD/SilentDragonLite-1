@@ -1,11 +1,14 @@
 // Copyright 2019-2020 The Hush developers
 // GPLv3
+
 #include "addressbook.h"
 #include "ui_addressbook.h"
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "mainwindow.h"
 #include "controller.h"
+#include "DataStore/DataStore.h"
+#include "FileSystem/FileSystem.h"
 
 
 AddressBookModel::AddressBookModel(QTableView *parent) : QAbstractTableModel(parent) 
@@ -36,8 +39,9 @@ void AddressBookModel::loadData()
     parent->horizontalHeader()->restoreState(
         QSettings().value(
             "addresstablegeometry"
-        ).toByteArray()
+        ).toByteArray()      
     );
+     
 }
 
 void AddressBookModel::addNewLabel(QString label, QString addr, QString myAddr, QString cid, QString avatar) 
@@ -104,7 +108,9 @@ QVariant AddressBookModel::data(const QModelIndex &index, int role) const
             case 2: return labels.at(index.row()).getPartnerAddress();
             case 3: return labels.at(index.row()).getMyAddress();
             case 4: return labels.at(index.row()).getCid();
+
         }
+        
     }
 
     return QVariant();
@@ -141,22 +147,37 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
     // Connect the dialog's closing to updating the label address completor
     QObject::connect(&d, &QDialog::finished, [=] (auto) { parent->updateLabels(); });
 
-       Controller* rpc = parent->getRPC();
+    Controller* rpc = parent->getRPC();
+    QObject::connect(ab.newZaddr, &QPushButton::clicked, [&] () { 
+       
         bool sapling = true;
-        rpc->createNewZaddr(sapling, [=] (json reply) {
-            QString myAddr = QString::fromStdString(reply.get<json::array_t>()[0]);
+        try 
+       {
+        rpc->createNewZaddr(sapling, [=] (QJsonValue reply) {
+            QString myAddr = reply.toArray()[0].toString();
             QString message = QString("New Chat Address for your partner: ") + myAddr;
             QString cid = QUuid::createUuid().toString(QUuid::WithoutBraces);
+ 
+            rpc->refreshAddresses();
            
             parent->ui->listReceiveAddresses->insertItem(0, myAddr); 
             parent->ui->listReceiveAddresses->setCurrentIndex(0);
 
-            qDebug() << "new generated myAddr" << myAddr;
+            qDebug() << " new Addr in Addressbook" << myAddr;
             ab.cid->setText(cid);
             ab.addr_chat->setText(myAddr);
         });
-        model.updateUi(); //todo fix updating gui after adding 
-        //rpc->refresh(true);
+       }
+
+       catch(...)
+       {
+
+            
+            qDebug() << QString("Caught something nasty with myZaddr Addressbook");
+       }
+    });
+   
+       // model.updateUi(); //todo fix updating gui after adding 
 
     // If there is a target then make it the addr for the "Add to" button
     if (target != nullptr && Settings::isValidAddress(target->text())) 
@@ -174,7 +195,6 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         
         
         QString avatar = QString(":/icons/res/") + ab.comboBoxAvatar->currentText() + QString(".png");
-        qDebug()<<"AVATAR NAME : " << avatar;
 
         if (addr.isEmpty() || newLabel.isEmpty()) 
         {
@@ -222,8 +242,16 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
             return;
         
         
-        rpc->refresh(true);
+       // rpc->refresh(true);
          model.updateUi();
+
+        rpc->refreshContacts(
+        parent->ui->listContactWidget
+            
+        );
+
+       parent->ui->listChat->verticalScrollBar()->setValue(
+        parent->ui->listChat->verticalScrollBar()->maximum());
 
     });
 
@@ -361,54 +389,118 @@ AddressBook::AddressBook()
 
 void AddressBook::readFromStorage() 
 {
-    QFile file(AddressBook::writeableFile());
+    auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    QString target_decaddr_file = dir.filePath("addresslabels.dat");
+    QString target_encaddr_file = dir.filePath("addresslabels.dat.enc");
+    QFile file(target_encaddr_file);
+    QFile file1(target_decaddr_file);
 
     if (file.exists()) 
     {
+
+        // Decrypt first 
+
+        QString passphraseHash = DataStore::getChatDataStore()->getPassword();
+        int length = passphraseHash.length();
+
+        char *sequence1 = NULL;
+        sequence1 = new char[length+1];
+        strncpy(sequence1, passphraseHash.toUtf8(), length+1);
+
+        #define PassphraseHashEnd ((const unsigned char *) sequence1)
+        #define MESSAGE_LEN length
+
+        #define PASSWORD sequence
+        #define KEY_LEN crypto_box_SEEDBYTES
+
+        const QByteArray ba = QByteArray::fromHex(passphraseHash.toLatin1());
+        const unsigned char *pwHash= reinterpret_cast<const unsigned char *>(ba.constData());
+ 
+
+        
+
+        FileEncryption::decrypt(target_decaddr_file, target_encaddr_file, pwHash);
+
+
         allLabels.clear();
-        file.open(QIODevice::ReadOnly);
-        QDataStream in(&file);    // read the data serialized from the file
+        file1.open(QIODevice::ReadOnly);
+        QDataStream in(&file1);    // read the data serialized from the file
         QString version;
         in >> version;
-        qDebug() << "Detected old addressbook format";
-            // Convert old addressbook format v1 to v2
         QList<QList<QString>> stuff;
         in >> stuff;
-        //qDebug() << "Stuff: " << stuff;
+
+            //////////////found old addrbook, and rename it to .bak
+        if (version == "v1")
+        {
+            auto filename = QStringLiteral("addresslabels.dat");
+            auto dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+            QFile address(dir.filePath(filename));
+
+            qDebug() << "is v1";
+
+            address.rename(dir.filePath("addresslabels.bak"));
+            
+        }else{
         for (int i=0; i < stuff.size(); i++) 
         {
-            //qDebug() << "0:" << stuff[i][0];
-            //qDebug() << "1:" << stuff[i][1];
-            //qDebug() << "2:" << stuff[i][2];
+
             ContactItem contact = ContactItem(stuff[i][0],stuff[i][1], stuff[i][2], stuff[i][3],stuff[i][4]);
-            //qDebug() << "contact=" << contact.toQTString();
+
             allLabels.push_back(contact);
         }
+        }
+   
+ 
+      //  qDebug() << "Read " << version << " Hush contacts from disk...";
+        file1.close();
 
-        qDebug() << "Read " << version << " Hush contacts from disk...";
-        file.close();
+        FileEncryption::encrypt(target_encaddr_file, target_decaddr_file, pwHash);
+        file1.remove();
     }
     else 
     {
         qDebug() << "No Hush contacts found on disk!";
     }
 
-    // Special. 
-    // Add the default silentdragon donation address if it isn't already present
-    // QList<QString> allAddresses;
-    // std::transform(allLabels.begin(), allLabels.end(), 
-    //     std::back_inserter(allAddresses), [=] (auto i) { return i.getPartnerAddress(); });
-    // if (!allAddresses.contains(Settings::getDonationAddr(true))) {
-    //     allLabels.append(QPair<QString, QString>("silentdragon donation", Settings::getDonationAddr(true)));
-    // }
 }
+
 
 void AddressBook::writeToStorage() 
 {
-    QFile file(AddressBook::writeableFile());
+    //FileSystem::getInstance()->writeContacts(AddressBook::writeableFile(), DataStore::getContactDataStore()->dump());
+    
+   // FileSystem::getInstance()->writeContactsOldFormat(AddressBook::writeableFile(), allLabels);
+
+        QString passphraseHash = DataStore::getChatDataStore()->getPassword();
+        int length = passphraseHash.length();
+
+        char *sequence1 = NULL;
+        sequence1 = new char[length+1];
+        strncpy(sequence1, passphraseHash.toUtf8(), length+1);
+
+        #define PassphraseHashEnd ((const unsigned char *) sequence1)
+        #define MESSAGE_LEN length
+
+        #define PASSWORD sequence
+        #define KEY_LEN crypto_box_SEEDBYTES
+
+        const QByteArray ba = QByteArray::fromHex(passphraseHash.toLatin1());
+        const unsigned char *pwHash= reinterpret_cast<const unsigned char *>(ba.constData());
+
+  
+    
+        auto dir =  QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        QString target_encaddr_file = dir.filePath("addresslabels.dat.enc");
+        QString target_decaddr_file = dir.filePath("addresslabels.dat");
+
+        FileEncryption::decrypt(target_decaddr_file, target_encaddr_file, pwHash);
+
+    QFile file(target_decaddr_file);
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
     QDataStream out(&file);   // we will serialize the data into the file
     QList<QList<QString>> contacts;
+
     for(auto &item: allLabels)
     {
         QList<QString> c;
@@ -417,10 +509,20 @@ void AddressBook::writeToStorage()
         c.push_back(item.getMyAddress());
         c.push_back(item.getCid());
         c.push_back(item.getAvatar());
-        contacts.push_back(c);
+        contacts.push_back(c);   
+        
     }
-    out << QString("v1") << contacts;
+    out << QString("v2") << contacts;
+    qDebug()<<"schreibe in Datei: ";
     file.close();
+
+
+        FileEncryption::encrypt(target_encaddr_file, target_decaddr_file , pwHash);
+        QFile file1(target_decaddr_file);
+        file1.remove();
+    
+        qDebug()<<"encrypt Addrbook writeToStorage";
+    
 }
 
 QString AddressBook::writeableFile() 

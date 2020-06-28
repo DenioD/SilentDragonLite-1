@@ -9,8 +9,6 @@
 #include "recurring.h"
 
 
-using json = nlohmann::json;
-
 void MainWindow::setupSendTab() {
     // Create the validator for send to/amount fields
     amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}"));
@@ -138,7 +136,7 @@ void MainWindow::setupSendTab() {
     ui->MemoTxt1->setFont(f);
 
     // Recurring button
-    QObject::connect(ui->chkRecurring, &QCheckBox::stateChanged, [=] (int checked) {
+    /*QObject::connect(ui->chkRecurring, &QCheckBox::stateChanged, [=] (int checked) {
         if (checked) {
             ui->btnRecurSchedule->setEnabled(true);
 
@@ -150,23 +148,23 @@ void MainWindow::setupSendTab() {
             ui->btnRecurSchedule->setEnabled(false);
             ui->lblRecurDesc->setText("");
         }
-    });
+    });*/
 
     // Recurring schedule button
-    QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
+   // QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
 
     // Set the default state for the whole page
     clearSendForm();
 }
 
 void MainWindow::disableRecurring() {
-    if (!Settings::getInstance()->isTestnet()) {
+/*    if (!Settings::getInstance()->isTestnet()) {
         ui->chkRecurring->setVisible(false);
         ui->chkRecurring->setEnabled(false);
         ui->btnRecurSchedule->setVisible(false);
         ui->btnRecurSchedule->setEnabled(false);
-        ui->action_Recurring_Payments->setVisible(false);
-    }
+        ui->action_Recurring_Payments->setVisible(false);*/
+  //  }
 }
 
 void MainWindow::editSchedule() {
@@ -185,21 +183,21 @@ void MainWindow::editSchedule() {
     }
 
     // Open the edit schedule dialog
-    auto recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this,
-                            createTxFromSendPage(), this->sendTxRecurringInfo);
-    if (recurringInfo == nullptr) {
+   // auto recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this,
+     //                       createTxFromSendPage(), this->sendTxRecurringInfo);
+   // if (recurringInfo == nullptr) {
         // User pressed cancel.
         // If there is no existing recurring info, uncheck the recurring box
-        if (sendTxRecurringInfo == nullptr) {
-            ui->chkRecurring->setCheckState(Qt::Unchecked);
-        }
-    }
-    else {
-        delete this->sendTxRecurringInfo;
+       // if (sendTxRecurringInfo == nullptr) {
+          //  ui->chkRecurring->setCheckState(Qt::Unchecked);
+       // }
+   // }
+   // else {
+      //  delete this->sendTxRecurringInfo;
 
-        this->sendTxRecurringInfo = recurringInfo;
-        ui->lblRecurDesc->setText(recurringInfo->getScheduleDescription());
-    }
+       // this->sendTxRecurringInfo = recurringInfo;
+       // ui->lblRecurDesc->setText(recurringInfo->getScheduleDescription());
+    //}
 }
 
 void MainWindow::updateLabelsAutoComplete() {
@@ -311,11 +309,11 @@ void MainWindow::addAddressSection() {
 
     // Disable recurring payments if a address section is added, since recurring payments
     // aren't supported for more than 1 address
-    delete sendTxRecurringInfo;
-    sendTxRecurringInfo = nullptr;
-    ui->lblRecurDesc->setText("");
-    ui->chkRecurring->setChecked(false);
-    ui->chkRecurring->setEnabled(false);
+  //  delete sendTxRecurringInfo;
+  //  sendTxRecurringInfo = nullptr;
+   // ui->lblRecurDesc->setText("");
+   // ui->chkRecurring->setChecked(false);
+   // ui->chkRecurring->setEnabled(false);
 
     // Set focus into the address
     Address1->setFocus();
@@ -358,10 +356,10 @@ void MainWindow::amountChanged(int item, const QString& text) {
     }
 
     // If there is a recurring payment, update the info there as well
-    if (sendTxRecurringInfo != nullptr) {
-        Recurring::getInstance()->updateInfoWithTx(sendTxRecurringInfo, createTxFromSendPage());
-        ui->lblRecurDesc->setText(sendTxRecurringInfo->getScheduleDescription());
-    }
+    //if (sendTxRecurringInfo != nullptr) {
+      //  Recurring::getInstance()->updateInfoWithTx(sendTxRecurringInfo, createTxFromSendPage());
+       // ui->lblRecurDesc->setText(sendTxRecurringInfo->getScheduleDescription());
+  //  }
 }
 
 void MainWindow::setMemoEnabled(int number, bool enabled) {
@@ -457,14 +455,14 @@ void MainWindow::clearSendForm() {
 
     // Reset the recurring button
     if (Settings::getInstance()->isTestnet()) {
-        ui->chkRecurring->setEnabled(true);
+       // ui->chkRecurring->setEnabled(true);
     }
 
-    ui->chkRecurring->setCheckState(Qt::Unchecked);
-    ui->btnRecurSchedule->setEnabled(false);
-    ui->lblRecurDesc->setText("");
-    delete sendTxRecurringInfo;
-    sendTxRecurringInfo = nullptr;
+  //  ui->chkRecurring->setCheckState(Qt::Unchecked);
+  //  ui->btnRecurSchedule->setEnabled(false);
+  //  ui->lblRecurDesc->setText("");
+  //  delete sendTxRecurringInfo;
+  //  sendTxRecurringInfo = nullptr;
 }
 
 void MainWindow::maxAmountChecked(int checked) {
@@ -846,7 +844,7 @@ void MainWindow::sendButton() {
         QMovie *movie1 = new QMovie(":/img/res/silentdragonlite-animated.gif");;
         QMovie *movie2 = new QMovie(":/img/res/silentdragonlite-animated-dark.gif");;
         auto theme = Settings::getInstance()->get_theme_name();
-        if (theme == "dark" || theme == "midnight") {
+        if (theme == "Dark" || theme == "Midnight") {
             movie2->setScaledSize(QSize(512,512));
             connD->topIcon->setMovie(movie2);
             movie2->start();
@@ -937,7 +935,7 @@ QString MainWindow::doSendTxValidations(Tx tx) {
     auto available = rpc->getModel()->getAvailableBalance();
 
     if (available < total) {
-        return tr("Not enough available funds to send this transaction\n\nHave: %1\nNeed: %2\n\nNote: Funds need 5 confirmations before they can be spent")
+        return tr("Not enough available funds to send this transaction\n\nHave: %1\nNeed: %2\n\nNote: Funds need 1 confirmations before they can be spent")
             .arg(available.toDecimalhushString(), total.toDecimalhushString());
     }
 

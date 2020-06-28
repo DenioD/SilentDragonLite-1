@@ -3,7 +3,7 @@
 SilentDragonLite is a lightwallet for HUSH ($HUSH) runs on Linux and Windows which does not require you to download the full blockchain. This is experimental software under active development!
 
 
-[![Screenshot-from-2019-12-14-14-51-50.png](https://i.postimg.cc/XYGmmFYJ/Screenshot-from-2019-12-14-14-51-50.png)](https://postimg.cc/21Y0B1vR)
+<img src="https://raw.githubusercontent.com/MyHush/SilentDragonLite/master/hushchat-screenshot.png">
 
 ## PRIVACY NOTICE
 
@@ -15,7 +15,17 @@ This means your IP address is known to these servers. Enable Tor setting in Sile
 
 Go to the releases page and grab the latest installers or binary. https://github.com/MyHush/SilentDragonLite/releases
 
-### Note Management
+## Install Torsocks (or any other Socks service for TOR) on Ubuntu 18.04
+```
+sudo apt update
+sudo apt install torsocks
+```
+## Connection to our TOR onion service Server
+```
+* Open SDL  Edit->Settings->LightwalletServer->6onaaujm4ozaokzu.onion:80
+* Open the folder of SDL in a Terminal -> Enter: TORSOCKS_LOG_LEVEL=1 torsocks -i ./SilentDragonLite
+```
+## Note Management
 SilentDragonLite does automatic note and utxo management, which means it doesn't allow you to manually select which address to send outgoing transactions from. It follows these principles:
 * Defaults to sending shielded transactions, even if you're sending to a transparent address
 * Sapling funds need at least 2 confirmations before they can be spent
@@ -26,7 +36,7 @@ SilentDragonLite does automatic note and utxo management, which means it doesn't
 ## Compiling from source
 * SilentDragonLite is written in C++ 14, and can be compiled with g++/clang++/visual c++. 
 * It also depends on Qt5, which you can get from [here](https://www.qt.io/download). 
-* You'll need Rust v1.37 +
+* You'll need Rust v1.41 +
 
 ## Building on Linux
 

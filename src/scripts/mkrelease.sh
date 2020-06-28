@@ -35,6 +35,15 @@ rm -rf bin/SilentDragonLite* > /dev/null
 # Build the lib first
 cd lib && make release && cd ..
 make -j$(nproc) > /dev/null
+make install INSTALL_ROOT=AppDir
+
+# now, build AppImage using linuxdeploy and linuxdeploy-plugin-qt
+# download linuxdeploy and its Qt plugin
+wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+
+# make them executable
+chmod +x linuxdeploy*.AppImage
 echo "[OK]"
 
 

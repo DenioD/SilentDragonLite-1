@@ -9,3 +9,8 @@ ChatDataStore* DataStore::getChatDataStore()
 {
     return ChatDataStore::getInstance();
 }
+
+ContactDataStore* DataStore::getContactDataStore()
+{
+    return ContactDataStore::getInstance();
+}

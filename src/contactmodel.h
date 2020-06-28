@@ -5,13 +5,23 @@
 
 #include "Model/ContactItem.h"
 #include <QListWidget>
+#include "mainwindow.h"
 
 
 class ContactModel
+
 {
 	public:
+			MainWindow*                 main;
+	    std::map<QString, QString> AddressMap;
+    
+    QString getContactbyAddress(QString addr);
+	void addLabel(QString addr, QString label);
+
 		ContactModel() {}
 		void renderContactList(QListView* view);
+		
+			
 };
 
 #endif

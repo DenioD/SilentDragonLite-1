@@ -5,15 +5,15 @@
 
 #include "logger.h"
 #include "recurring.h"
-
+#include "firsttimewizard.h"
 
 // Forward declare to break circular dependency.
 class Controller;
 class Settings;
 class WSServer;
 class WormholeClient;
+class ChatModel;
 
-using json = nlohmann::json;
 
 // Struct used to hold destination info when sending a Tx. 
 struct ToFields {
@@ -49,25 +49,37 @@ public:
 
     QString doSendTxValidations(Tx tx);
     QString doSendChatTxValidations(Tx tx);
+    QString doSendChatMoneyTxValidations(Tx tx);
     QString doSendRequestTxValidations(Tx tx);
+    QString doSendChatMoneyRequestTxValidations(Tx tx);
+    QString getCid();
+    QString getAmt();
+    QString getMoneyMemo();
+    QString getPassword();
+    std::map<QString, QString> pubkeyMap;
+    QString getPubkeyByAddress(QString requestZaddr);
+    void setPassword(QString Password);
+    void setAmt(QString Amt);
+    void setMoneyMemo(QString MoneyMemo);
+    void addPubkey(QString requestZaddr, QString pubkey);
+    
+    
+    
 
     void replaceWormholeClient(WormholeClient* newClient);
     bool isWebsocketListening();
     void createWebsocket(QString wormholecode);
     void stopWebsocket();
-    
-
+    void saveContact();
+    void saveandsendContact();
+    void showRequesthush();
+  
     void balancesReady();
     void payhushURI(QString uri = "", QString myAddr = "");
 
     void updateLabels();
     void updateTAddrCombo(bool checked);
-  //  void renderContactRequest();
-  //  void setChatItem(ChatItem* item);
-    //void ChatItem* getChatItem();
-   
     
-
     // Disable recurring on mainnet
     void disableRecurring();
 
@@ -86,7 +98,8 @@ public:
     Logger*      logger;
 
     void doClose();
-    QString createHeaderMemo(QString type, QString cid, QString zaddr, int version, int headerNumber);
+    void doClosePw();
+    QString createHeaderMemo(QString type, QString cid, QString zaddr,QString headerbytes,QString publickey, int version, int headerNumber);
 
 public slots:
     void slot_change_theme(const QString& themeName);
@@ -98,9 +111,15 @@ private slots:
 
     void on_givemeZaddr_clicked();
 
+    void on_emojiButton_clicked();
 private:
 
+    bool fileExists(QString path);
     void closeEvent(QCloseEvent* event);
+    void closeEventpw(QCloseEvent* event);
+    QString _password;
+    QString _amt;
+    QString _moneymemo;
 
 
     void setupSendTab();
@@ -110,7 +129,6 @@ private:
     void setuphushdTab();
     void setupchatTab();
     void renderContactRequest();
-    void setLenDisplayLabel(QLabel* label);
     
     void updateContacts();
     void updateChat();
@@ -119,22 +137,29 @@ private:
     void setupStatusBar();
     
     void clearSendForm();
+    
 
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
 
     Tx   createTxFromChatPage();
     Tx   createTxForSafeContactRequest();
-
+    Tx   createTxFromSendChatPage();
+    Tx   createTxFromSendRequestChatPage();
 
     void encryptWallet();
     void removeWalletEncryption();
+    void removeWalletEncryptionStartUp();
 
     void cancelButton();
     void sendButton();
-    void sendChatButton();
+    void sendChat();
+    void sendMoneyChat();
+    void sendMoneyRequestChat();
     void addContact();
     void ContactRequest();
+    
+    
     void addAddressSection();
     void maxAmountChecked(int checked);
 
@@ -173,6 +198,7 @@ private:
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
 
+
     Controller*         rpc             = nullptr;
     
     QCompleter*         labelCompleter  = nullptr;
@@ -184,21 +210,37 @@ private:
     QMovie*      loadingMovie;
 };
 
-class ChatMemoEdit : public QPlainTextEdit
+class ChatMemoEdit : public QTextEdit
 {
 public:
     ChatMemoEdit(QWidget* parent);
 
-    void setMaxLen(int len);
-    
-    void setSendChatButton(QPushButton* button);
-    void includeReplyTo(QString replyToAddress);
-    void updateDisplay();
+    void setMaxLenChat(int len);
+    void setLenDisplayLabelChat(QLabel* label);
+    void SetSendChatButton(QPushButton* button);
+    void updateDisplayChat();
 
 private:
-    int             maxlen             = 512;
-    QLabel*         lenDisplayLabel    = nullptr;
+    int             maxlenchat             = 235;
+    QLabel*         lenDisplayLabelchat    = nullptr;
     QPushButton*    sendChatButton     = nullptr;
 };
+
+class ChatMemoEditRequest : public QTextEdit
+{
+public:
+    ChatMemoEditRequest(QWidget* parent);
+
+    void setMaxLenChatRequest(int len);
+    void setLenDisplayLabelChatRequest(QLabel* label);
+    void SetSendRequestButton(QPushButton* button);
+    void updateDisplayChatRequest();
+
+private:
+    int             maxlenchatrequest             = 512;
+    QLabel*         lenDisplayLabelchatRequest   = nullptr;
+    QPushButton*    sendRequestButton     = nullptr;
+};
+
 
 #endif // MAINWINDOW_H
