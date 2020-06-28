@@ -3,7 +3,7 @@
 SilentDragonLite is a lightwallet for HUSH ($HUSH) runs on Linux and Windows which does not require you to download the full blockchain. This is experimental software under active development!
 
 
-[![INFO.png](https://i.postimg.cc/mDC63BsR/INFO.png)](https://postimg.cc/Q9NbhLCn)
+<img src="https://raw.githubusercontent.com/MyHush/SilentDragonLite/master/hushchat-screenshot.png">
 
 ## PRIVACY NOTICE
 
@@ -22,7 +22,7 @@ sudo apt install torsocks
 ```
 ## Connection to our TOR onion service Server
 ```
-* Open SDL  Edit->Settings->LightwalletServer->rnhk4pwlsbaqzx7wcqfy47lijf2opklstaukq35reiz5rn76crfqpjqd.onion:9067
+* Open SDL  Edit->Settings->LightwalletServer->6onaaujm4ozaokzu.onion:80
 * Open the folder of SDL in a Terminal -> Enter: TORSOCKS_LOG_LEVEL=1 torsocks -i ./SilentDragonLite
 ```
 ## Note Management

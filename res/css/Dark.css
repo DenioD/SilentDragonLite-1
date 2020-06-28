@@ -1,5 +1,5 @@
 
-QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTableView, QTableView::item, QScrollArea, QGroupBox, QPlainTextEdit, QLineEdit, QLabel, MainWindow
+QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTableView, QTableView::item, QScrollArea, QGroupBox, QPlainTextEdit, QLineEdit, QLabel, MainWindow, ChatModel, requestDialog
 {
     background-color: #303335;
     color: #ffffff;
@@ -25,7 +25,7 @@ QTabWidget QTabBar::tab:hover {
 background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #3E4244);
 color:#fff;
 border: 1px ridge #fff;
-min-height: 20px
+min-height: 20px;
 }
 
 QHeaderView { /* Table Header */

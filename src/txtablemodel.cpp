@@ -200,13 +200,22 @@ QVariant TxTableModel::data(const QModelIndex &index, int role) const {
             return QVariant(icon.pixmap(16, 16));
         } else if (hasMemo) {
             // Return the info pixmap to indicate memo
-            QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);            
+            QIcon icon(":/icons/res/mail.png");            
             return QVariant(icon.pixmap(16, 16));
         } else {
+
+            if (dat.type == "Receive"){
             // Empty pixmap to make it align
             QPixmap p(16, 16);
-            p.fill(Qt::white);
-            return QVariant(p);
+            QIcon icon = QApplication::style()->standardIcon(QStyle::SP_ArrowLeft); 
+            return QVariant(icon.pixmap(16, 16));
+        }
+            if (dat.type == "send"){
+            // Empty pixmap to make it align
+            QPixmap p(16, 16);
+            QIcon icon = QApplication::style()->standardIcon(QStyle::SP_ArrowForward); 
+            return QVariant(icon.pixmap(16, 16));
+        }
         }
     }
 

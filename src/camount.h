@@ -26,6 +26,7 @@ public:
 
     double  toDecimalDouble() const;
     QString toDecimalString() const;
+    double getDblAmount() const;
     QString toDecimalUSDString() const;
     QString toDecimalEURString() const;
     QString toDecimalBTCString() const;

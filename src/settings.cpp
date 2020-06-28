@@ -225,21 +225,20 @@ QString Settings::get_currency_name() {
 }
 
 void Settings::set_currency_name(QString currency_name) {
-    QSettings().setValue("options/currency_name", currency_name);
-
-  
-    
+    QSettings().setValue("options/currency_name", currency_name);  
 }
-
 
 QString Settings::get_theme_name() {
     // Load from the QT Settings.
-    return QSettings().value("options/theme_name", false).toString();
+    return QSettings().value("options/theme_name", "Dark").toString();
 }
 
 void Settings::set_theme_name(QString theme_name) {
     QSettings().setValue("options/theme_name", theme_name);
 }
+
+
+
 
 
 //=================================
@@ -303,7 +302,7 @@ QString Settings::getDonationAddr() {
     if (Settings::getInstance()->isTestnet()) 
             return "ztestsaplingXXX";
     else 
-            return "zs1kwp3h4rwz76zfqzmwqqextq696kndtjskg4fzc80l9ygfal4hchcsst83ua8tjwzzy9nja7v5rr";
+            return "zs1fq9f7vg797qaeac9lyx0njyjmjg4w7m60hwq6lhyhvdcqltl5hdkm8vwx9cxy60ehuuz2x49jxt";
 
 }
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Connect Mobile App</string>
+   <string>Mobile Connector App</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="1" colspan="2">

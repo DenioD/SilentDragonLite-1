@@ -13,81 +13,8 @@
   <property name="windowTitle">
    <string>Address Book</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Add New Address</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_1">
-        <property name="text">
-         <string>Address (z-Addr or t-Addr)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="addr"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Label</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="label">
-        <property name="maxLength">
-         <number>40</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="addNew">
-          <property name="text">
-           <string>Add to Address Book</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTableView" name="addresses">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-     <attribute name="horizontalHeaderStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-    </widget>
-   </item>
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QPushButton" name="btnImport">
@@ -107,6 +34,269 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QTableView" name="addresses">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Add New Address</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_1">
+        <property name="text">
+         <string>Address (z-Addr or t-Addr)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Nickname :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="addr">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maxLength">
+         <number>25</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>HushChat Address - give this Address only to your contact</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLineEdit" name="addr_chat">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Conversation ID:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLineEdit" name="cid">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QPushButton" name="addNew">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Add to Address Book</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QComboBox" name="comboBoxAvatar">
+        <item>
+         <property name="text">
+          <string>SDLogo</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/SDLogo.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Duke</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Duke.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Denio</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Denio.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Berg</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Berg.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sharpee</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Sharpee.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Elsa</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/icons/res/Elsa.png</normalon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Yoda</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Yoda.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Garflied</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Garfield.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Snoopy</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Snoopy.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Popey</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Popey.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pinguin</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Pinguin.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mickey</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Mickey.png</activeon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Stag</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <activeon>:/icons/res/Stag.png</activeon>
+          </iconset>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avatar :&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="newZaddr">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Create a new HushChat zaddr</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

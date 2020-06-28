@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=SilentDragonLite
+Comment=Lightclient UI wallet for Hush
+GenericName=Wallet
+Exec=SilentDragonLite %u
+Icon=SilentDragonLite
+Type=Application
+StartupNotify=true
+StartupWMClass=SilentDragonLite
+Categories=Utility;
+MimeType=x-scheme-handler/hush;
+Keywords=SilentDragonLite;
+

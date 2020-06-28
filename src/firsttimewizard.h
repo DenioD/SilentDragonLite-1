@@ -5,11 +5,19 @@
 
 #include "ui_newseed.h"
 #include "ui_restoreseed.h"
+#include "ui_newwallet.h"
+#include "mainwindow.h"
+
+
 
 class FirstTimeWizard: public QWizard
 {
+
+
+    
 public:
-    FirstTimeWizard(bool dangerous, QString server);
+    FirstTimeWizard(QString server);
+    
 
 protected:
     int nextId() const;
@@ -21,17 +29,21 @@ private:
         Page_Restore
     };
 
-    bool dangerous;
     QString server;
 
     friend class NewOrRestorePage;
     friend class NewSeedPage;
     friend class RestoreSeedPage;
+    
+     
+    
 };
 
 class NewOrRestorePage: public QWizardPage {
 public:
+ 
     NewOrRestorePage(FirstTimeWizard* parent);
+
 };
 
 
