@@ -2,6 +2,8 @@ language: rust
 rust:
   - 1.41.0
 
+sudo: require
+
 matrix:
   include:
     # works on Precise and Trusty
@@ -41,7 +43,7 @@ script:
  - qmake silentdragon-lite.pro CONFIG+=release -spec linux-g++
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
- - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+ - make INSTALL_ROOT=appdir -j$(nproc) install ;
    - mkdir -p appdir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./appdir/usr/bin/
   - mkdir -p appdir/usr/share/applications ; cp res/silentdragonlite.desktop ./appdir/usr/share/applications/
   - mkdir -p appdir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./appdir/usr/share/icons/hicolor/256x256/apps/
