@@ -38,7 +38,11 @@ script:
  - g++-5 -v
  - qmake silentdragon-lite.pro CONFIG+=release -spec linux-clang
  - make CC=clang CXX=clang++ -j$(nproc)
-  - mkdir -p appdir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./appdir/usr/bin/
+ - qmake silentdragon-lite.pro CONFIG+=release -spec linux-g++
+ - res/libsodium/buildlibsodium.sh
+ - make CC=gcc-5 CXX=g++-5 -j$(nproc)
+ - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
+   - mkdir -p appdir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./appdir/usr/bin/
   - mkdir -p appdir/usr/share/applications ; cp res/silentdragonlite.desktop ./appdir/usr/share/applications/
   - mkdir -p appdir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./appdir/usr/share/icons/hicolor/256x256/apps/
   - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
@@ -46,9 +50,6 @@ script:
   - export VERSION=$(git rev-parse --short HEAD) 
   - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop 
   - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
- - qmake silentdragon-lite.pro CONFIG+=release -spec linux-g++
- - res/libsodium/buildlibsodium.sh
- - make CC=gcc-5 CXX=g++-5 -j$(nproc)
 
  
 after_success:
