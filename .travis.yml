@@ -3,6 +3,7 @@ rust:
   - 1.41.0
 
 sudo: require
+github_token: $GITHUB_TOKEN 
 
 matrix:
   include:
@@ -55,7 +56,6 @@ after_success:
   - wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
   - export VERSION=$(git rev-parse --short HEAD) 
-  - ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/*.desktop 
   - ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/*.desktop -appimage
   - find AppDir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
   - # curl --upload-file SilentDragonLite*.AppImage https://transfer.sh/SilentDragonLite-git.$(git rev-parse --short HEAD)-x86_64.AppImage
