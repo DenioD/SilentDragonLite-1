@@ -13,6 +13,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7', 'g++-5']
 
+           
+
 before_script:
   - export PATH="$PATH:$HOME/.cargo/bin"
 
@@ -29,8 +31,9 @@ before_install:
  - source /opt/qt514/bin/qt514-env.sh
  - chmod +x res/libsodium/buildlibsodium.sh
 
+
 script:
- - qmake -v
+ - qmake CONFIG+=release PREFIX=/usr
  - clang++ -v
  - g++-5 -v
  - qmake silentdragon-lite.pro CONFIG+=release -spec linux-clang
@@ -46,4 +49,17 @@ script:
  - qmake silentdragon-lite.pro CONFIG+=release -spec linux-g++
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
+
+ 
+after_success:
+
+  - find appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  - # curl --upload-file SilentDragonLite*.AppImage https://transfer.sh/SilentDragonLite-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh SilentDragonLite*.AppImage*
+
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)$/
 
