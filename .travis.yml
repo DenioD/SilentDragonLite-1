@@ -44,9 +44,9 @@ script:
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
  - make install INSTALL_ROOT=AppDir
-  - mkdir AppDir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./AppDir/usr/bin/
-  - mkdir AppDir/usr/share/applications ; cp res/silentdragonlite.desktop ./AppDir/usr/share/applications/
-  - mkdir AppDir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./AppDir/usr/share/icons/hicolor/256x256/apps/
+  - mkdir -p AppDir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./AppDir/usr/bin/
+  - mkdir -p AppDir/usr/share/applications ; cp res/silentdragonlite.desktop ./AppDir/usr/share/applications/
+  - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./AppDir/usr/share/icons/hicolor/256x256/apps/
   - wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
   - export VERSION=$(git rev-parse --short HEAD) 
