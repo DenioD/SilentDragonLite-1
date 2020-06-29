@@ -16,9 +16,7 @@ matrix:
           packages: ['clang-3.7', 'g++-5']
 
 sudo: require
-if: commit_message = build_linux
-github_token: $GITHUB_TOKEN 
-skip_cleanup: true
+
 
 
 before_script:
@@ -46,6 +44,9 @@ script:
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
  - make install INSTALL_ROOT=AppDir
+if: commit_message = build_linux
+github_token: $GITHUB_TOKEN 
+skip_cleanup: true
 
 
 after_success:
