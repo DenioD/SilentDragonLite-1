@@ -5,7 +5,7 @@ rust:
 sudo: require
 github_token: $GITHUB_TOKEN 
 skip_cleanup: true
-if: commit_message = trigger build
+if: commit_message = v*
 matrix:
 
   include:
