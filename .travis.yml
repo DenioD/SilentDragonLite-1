@@ -5,6 +5,8 @@ rust:
 sudo: require
 github_token: $GITHUB_TOKEN 
 skip_cleanup: true
+if: commit_message = v* 
+
 
 
 matrix:
@@ -19,6 +21,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7', 'g++-5']
+          env: UPLOADTOOL_SUFFIX = SilentDragonLite
 
            
 
@@ -40,8 +43,6 @@ before_install:
 
 
 script:
-if: commit_message = v* 
- UPLOADTOOL_SUFFIX = SilentDragonLite
  - qmake CONFIG+=release PREFIX=/usr
  - clang++ -v
  - g++-5 -v
