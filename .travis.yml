@@ -11,9 +11,7 @@ matrix:
   include:
     # works on Precise and Trusty
     - os: 
-    - linux
-    - osx
-    - windows
+     linux, osx, windows
     - dist: xenial
     - env: UPLOADTOOL_SUFFIX=SilentDragonLite$(git rev-parse --short HEAD)
       compiler: clang
