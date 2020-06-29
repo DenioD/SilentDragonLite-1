@@ -8,7 +8,7 @@ matrix:
     - name: deploy
     - os: linux
     - dist: xenial
-    - env: UPLOADTOOL_SUFFIX=SilentDragonLite$(git rev-parse --short HEAD)
+    - env: UPLOADTOOL_SUFFIX=SilentDragonLite.$(git rev-parse --short HEAD)
       compiler: clang
       addons:
         apt:
