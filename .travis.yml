@@ -5,13 +5,9 @@ rust:
 sudo: require
 github_token: $GITHUB_TOKEN 
 skip_cleanup: true
-if: commit_message = v* 
-
-
+if: commit_message = build travis* 
 
 matrix:
-
-
   include:
     # works on Precise and Trusty
     - os: linux
@@ -50,8 +46,6 @@ script:
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
  - make install INSTALL_ROOT=AppDir
 
-
-
 after_success:
   - mkdir -p AppDir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./AppDir/usr/bin/
   - mkdir -p AppDir/usr/share/applications ; cp res/silentdragonlite.desktop ./AppDir/usr/share/applications/
@@ -69,4 +63,5 @@ branches:
   except:
     - # Do not build tags that we create when we upload to GitHub Releases
     - /^(?i:continuous)$/
+    - /^(?i:continuous-SilentDragonLite)$/
     
