@@ -1,4 +1,7 @@
 if: commit_message = build_linux
+language: rust
+rust:
+  - 1.41.0
 matrix:
   include:
     # works on Precise and Trusty
@@ -64,7 +67,9 @@ branches:
 
 
 if: commit_message != build_linux
-
+language: rust
+rust:
+  - 1.41.0
 
 sudo: require
 github_token: $GITHUB_TOKEN 
@@ -102,8 +107,8 @@ script:
  - qmake CONFIG+=release PREFIX=/usr
  - clang++ -v
  - g++-5 -v
- - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-clang
+ - qmake silentdragon-lite.pro CONFIG+=release -spec linux-clang
  - make CC=clang CXX=clang++ -j$(nproc)
- - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-g++
+ - qmake silentdragon-lite.pro CONFIG+=release -spec linux-g++
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
