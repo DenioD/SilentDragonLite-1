@@ -1,4 +1,5 @@
 
+if: commit_message = build_linux
 language: rust
 rust:
   - 1.41.0
@@ -44,8 +45,6 @@ script:
  - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-g++
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
-
-if: commit_message = build_linux;
  - make install INSTALL_ROOT=AppDir
 
 
