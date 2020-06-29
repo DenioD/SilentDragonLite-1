@@ -40,8 +40,6 @@ before_install:
  - source /opt/qt514/bin/qt514-env.sh
  - chmod +x res/libsodium/buildlibsodium.sh
 
-
-
 script:
  - qmake CONFIG+=release PREFIX=/usr
  - clang++ -v
