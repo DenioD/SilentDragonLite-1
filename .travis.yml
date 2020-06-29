@@ -14,7 +14,6 @@ matrix:
     # works on Precise and Trusty
     - os: linux
     - dist: xenial
-    - name: deploy
       compiler: clang
       addons:
         apt:
@@ -41,6 +40,8 @@ before_install:
 
 
 script:
+if: commit_message = v* 
+ UPLOADTOOL_SUFFIX = SilentDragonLite
  - qmake CONFIG+=release PREFIX=/usr
  - clang++ -v
  - g++-5 -v
@@ -52,9 +53,8 @@ script:
  - make install INSTALL_ROOT=AppDir
 
 
-if: commit_message = v* 
-after_success:
 
+after_success:
   - mkdir -p AppDir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./AppDir/usr/bin/
   - mkdir -p AppDir/usr/share/applications ; cp res/silentdragonlite.desktop ./AppDir/usr/share/applications/
   - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./AppDir/usr/share/icons/hicolor/256x256/apps/
