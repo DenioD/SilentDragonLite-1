@@ -12,7 +12,7 @@ matrix:
     # works on Precise and Trusty
     - os: linux
     - dist: xenial
-    - env: UPLOADTOOL_SUFFIX=SilentDragonLite
+    - env: UPLOADTOOL_SUFFIX=SilentDragonLite(git rev-parse --short HEAD)
       compiler: clang
       addons:
         apt:
@@ -52,11 +52,11 @@ after_success:
   - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./AppDir/usr/share/icons/hicolor/256x256/apps/
   - wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-  - export VERSION=$(git log -1 --pretty=%B) 
+  - export VERSION=$(git rev-parse --short HEAD) 
   - ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/*.desktop -appimage
   - find AppDir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
   - # curl --upload-file SilentDragonLite*.AppImage https://transfer.sh/SilentDragonLite-git.$(git rev-parse --short HEAD)-x86_64.AppImage
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - wget -c https://github.com/DenioD/uploadtool/raw/master/upload.sh
   - bash upload.sh SilentDragonLite*.AppImage*
 
 branches:
