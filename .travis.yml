@@ -16,12 +16,13 @@ matrix:
     # works on Precise and Trusty
     - os: linux
     - dist: xenial
+    env: UPLOADTOOL_SUFFIX=SilentDragonLite
       compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7', 'g++-5']
-          env: UPLOADTOOL_SUFFIX = SilentDragonLite
+          
 
            
 
