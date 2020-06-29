@@ -1,52 +1,69 @@
---- 
-after_success: 
-  if: "commit_message = *\"trigger build\"*; - \"mkdir -p AppDir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./AppDir/usr/bin/\" - \"mkdir -p AppDir/usr/share/applications ; cp res/silentdragonlite.desktop ./AppDir/usr/share/applications/\" - \"mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./AppDir/usr/share/icons/hicolor/256x256/apps/\" - \"wget \\\"https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage\\\"\" - \"chmod a+x linuxdeployqt-continuous-x86_64.AppImage\" - \"export VERSION=$(git log -1 --pretty=%B)\" - \"./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/*.desktop -appimage\" - \"find AppDir -executable -type f -exec ldd {} \\\\; | grep \\\" => /usr\\\" | cut -d \\\" \\\" -f 2-3 | sort | uniq\" - ~ - \"wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh\" - \"bash upload.sh SilentDragonLite*.AppImage*\""
-before_install: 
-  - "rustup component add rustfmt --toolchain 1.41.0-x86_64-unknown-linux-gnu"
-  - "gem install bundler"
-  - "curl -sSL https://sh.rustup.rs | sh -s -- -y --default-toolchain=stable --profile=minimal"
-  - "export PATH=\"$PATH:$HOME/.cargo/bin\""
-  - "sudo add-apt-repository ppa:beineri/opt-qt-5.14.2-xenial -y"
-  - "sudo apt-get update -qq"
-  - "sudo apt-get install libsodium-dev pkg-config"
-  - "sudo apt-get install qt514base qt514websockets libgl1-mesa-dev"
-  - "source /opt/qt514/bin/qt514-env.sh"
-  - "chmod +x res/libsodium/buildlibsodium.sh"
-before_script: 
-  - "export PATH=\"$PATH:$HOME/.cargo/bin\""
-branches: 
-  except: 
-    - ~
-    - "/^(?i:continuous)$/"
-github_token: $GITHUB_TOKEN
 language: rust
-matrix: 
-  include: 
-    - 
-      os: linux
-    - 
-      addons: 
-        apt: 
-          packages: 
-            - clang-3.7
-            - g++-5
-          sources: 
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-      compiler: clang
-      dist: xenial
-rust: 
-  - "1.41.0"
-script: 
-  - "qmake CONFIG+=release PREFIX=/usr"
-  - "clang++ -v"
-  - "g++-5 -v"
-  - "qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-clang"
-  - "make CC=clang CXX=clang++ -j$(nproc)"
-  - "qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-g++"
-  - res/libsodium/buildlibsodium.sh
-  - "make CC=gcc-5 CXX=g++-5 -j$(nproc)"
-  - "make install INSTALL_ROOT=AppDir"
-skip_cleanup: true
+rust:
+  - 1.41.0
+
 sudo: require
+github_token: $GITHUB_TOKEN 
+skip_cleanup: true
+if: commit_message = v*
+matrix:
+
+  include:
+    # works on Precise and Trusty
+    - os: linux
+    - dist: xenial
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+          packages: ['clang-3.7', 'g++-5']
+
+           
+
+before_script:
+  - export PATH="$PATH:$HOME/.cargo/bin"
+
+before_install:
+ - rustup component add rustfmt --toolchain 1.41.0-x86_64-unknown-linux-gnu
+ - gem install bundler
+ - curl -sSL https://sh.rustup.rs | sh -s -- -y --default-toolchain=stable --profile=minimal
+ - export PATH="$PATH:$HOME/.cargo/bin"
+ - sudo add-apt-repository ppa:beineri/opt-qt-5.14.2-xenial -y
+ - sudo apt-get update -qq
+ - sudo apt-get install libsodium-dev pkg-config
+ - sudo apt-get install qt514base qt514websockets libgl1-mesa-dev
+ - source /opt/qt514/bin/qt514-env.sh
+ - chmod +x res/libsodium/buildlibsodium.sh
+
+
+script:
+ - qmake CONFIG+=release PREFIX=/usr
+ - clang++ -v
+ - g++-5 -v
+ - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-clang
+ - make CC=clang CXX=clang++ -j$(nproc)
+ - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-g++
+ - res/libsodium/buildlibsodium.sh
+ - make CC=gcc-5 CXX=g++-5 -j$(nproc)
+ - make install INSTALL_ROOT=AppDir
+
+
+
+after_success:
+  - mkdir -p AppDir/usr/bin ; strip SilentDragonLite ; cp SilentDragonLite ./AppDir/usr/bin/
+  - mkdir -p AppDir/usr/share/applications ; cp res/silentdragonlite.desktop ./AppDir/usr/share/applications/
+  - mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps ; cp res/SilentDragonLite.png ./AppDir/usr/share/icons/hicolor/256x256/apps/
+  - wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+  - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+  - export VERSION=$(git log -1 --pretty=%B) 
+  - ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/*.desktop -appimage
+  - find AppDir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  - # curl --upload-file SilentDragonLite*.AppImage https://transfer.sh/SilentDragonLite-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh SilentDragonLite*.AppImage*
+
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)$/
 
