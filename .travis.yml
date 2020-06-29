@@ -10,6 +10,7 @@ if: commit_message = build_linux
 matrix:
   include:
     # works on Precise and Trusty
+    - name: deploy
     - os: linux
     - dist: xenial
     - env: UPLOADTOOL_SUFFIX=SilentDragonLite$(git rev-parse --short HEAD)
@@ -17,7 +18,8 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7']
+          packages: ['clang-3.7', 'g++-5']
+
             
 
 before_script:
@@ -38,7 +40,7 @@ before_install:
 script:
  - qmake CONFIG+=release PREFIX=/usr
  - clang++ -v
- #- g++-5 -v
+ - g++-5 -v
  - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-clang
  - make CC=clang CXX=clang++ -j$(nproc)
  - qmake silentdragon-lite.pro CONFIG+=release PREFIX=/usr -spec linux-g++
@@ -64,4 +66,23 @@ branches:
     - # Do not build tags that we create when we upload to GitHub Releases
     - /^(?i:continuous)$/
     - /^(?i:continuous-SilentDragonLite)$/
-    
+
+language: rust
+rust:
+  - 1.41.0
+
+sudo: require
+github_token: $GITHUB_TOKEN 
+skip_cleanup: true
+
+matrix:
+  include:
+    # works on Precise and Trusty
+    - name: test
+    - os: linux
+    - dist: xenial
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
+          packages: ['clang-3.7', 'g++-5']
