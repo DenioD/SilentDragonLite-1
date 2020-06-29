@@ -4,6 +4,7 @@ rust:
 
 sudo: require
 github_token: $GITHUB_TOKEN 
+skip_cleanup: true
 
 matrix:
   include:
