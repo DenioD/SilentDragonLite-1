@@ -1,3 +1,4 @@
+
 language: rust
 rust:
   - 1.41.0
@@ -44,8 +45,8 @@ script:
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-5 CXX=g++-5 -j$(nproc)
 
-if: [commit_message = build_linux]
- make install INSTALL_ROOT=AppDir
+if: commit_message = build_linux;
+ - make install INSTALL_ROOT=AppDir
 
 
 
