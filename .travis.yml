@@ -10,9 +10,12 @@ if: commit_message = build
 matrix:
   include:
     # works on Precise and Trusty
-    - os: linux
+    - os: 
+    - linux
+    - osx
+    - windows
     - dist: xenial
-    - env: UPLOADTOOL_SUFFIX=SilentDragonLite(git rev-parse --short HEAD)
+    - env: UPLOADTOOL_SUFFIX=SilentDragonLite$(git rev-parse --short HEAD)
       compiler: clang
       addons:
         apt:
