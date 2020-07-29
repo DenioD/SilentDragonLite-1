@@ -4,6 +4,8 @@
 #include "precompiled.h"
 #include "camount.h"
 
+using json = nlohmann::json;
+
 struct Config {
     QString server;
 };
@@ -221,12 +223,13 @@ private:
 };
 
 
-inline bool isJsonResultSuccess(const QJsonValue& res) {
-    return res.toObject()["result"].toString() == "success";
+inline bool isJsonResultSuccess(const json& res) {
+    return res.find("result") != res.end() && 
+                    QString::fromStdString(res["result"].get<json::string_t>()) == "success";
 }
 
-inline bool isJsonError(const QJsonValue& res) {
-    return !res.toObject()["error"].isNull();
+inline bool isJsonError(const json& res) {
+    return res.find("error") != res.end();
 }
 
 

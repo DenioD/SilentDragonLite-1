@@ -1,6 +1,8 @@
 #ifndef SIETCHDATASTORE_H
 #define SIETCHDATASTORE_H
 
+using json = nlohmann::json;
+
 class SietchDataStore
 {
     private:

@@ -6,6 +6,8 @@
 #include "camount.h"
 #include "connection.h"
 
+using json = nlohmann::json;
+
 // Since each transaction can contain multiple outputs, we separate them out individually
 // into a struct with address, amount, memo
 struct TransactionItemDetail {
@@ -36,43 +38,43 @@ public:
     void setConnection(Connection* c);
     Connection* getConnection() { return conn; }
 
-    void fetchUnspent             (const std::function<void(QJsonValue)>& cb);
-    void fetchTransactions        (const std::function<void(QJsonValue)>& cb);
-    void fetchAddresses           (const std::function<void(QJsonValue)>& cb);
+    void fetchUnspent             (const std::function<void(json)>& cb);
+    void fetchTransactions        (const std::function<void(json)>& cb);
+    void fetchAddresses           (const std::function<void(json)>& cb);
 
-    void fetchInfo(const std::function<void(QJsonValue)>& cb,
+    void fetchInfo(const std::function<void(json)>& cb,
                     const std::function<void(QString)>& err);
 
 
 
-    void fetchLatestBlock(const std::function<void(QJsonValue)>& cb,
+    void fetchLatestBlock(const std::function<void(json)>& cb,
                         const std::function<void(QString)>& err);
     
-    void fetchBalance(const std::function<void(QJsonValue)>& cb);
+    void fetchBalance(const std::function<void(json)>& cb);
     
 
-    void createNewZaddr(bool sapling, const std::function<void(QJsonValue)>& cb);
-    void createNewTaddr(const std::function<void(QJsonValue)>& cb);
-    void createNewSietchZaddr(const std::function<void(QJsonValue)>& cb);
+    void createNewZaddr(bool sapling, const std::function<void(json)>& cb);
+    void createNewTaddr(const std::function<void(json)>& cb);
+    void createNewSietchZaddr(const std::function<void(json)>& cb);
 
-    void fetchPrivKey(QString addr, const std::function<void(QJsonValue)>& cb);
-    void fetchAllPrivKeys(const std::function<void(QJsonValue)>);
-    void fetchSeed(const std::function<void(QJsonValue)>&);
+    void fetchPrivKey(QString addr, const std::function<void(json)>& cb);
+    void fetchAllPrivKeys(const std::function<void(json)>);
+    void fetchSeed(const std::function<void(json)>&);
 
-    void saveWallet(const std::function<void(QJsonValue)>& cb);
-    void clearWallet(const std::function<void(QJsonValue)>& cb);
+    void saveWallet(const std::function<void(json)>& cb);
+    void clearWallet(const std::function<void(json)>& cb);
 
-    void fetchWalletEncryptionStatus(const std::function<void(QJsonValue)>& cb);
-    void fetchSupply(const std::function<void(QJsonValue)>& cb);
-    void encryptWallet(QString password, const std::function<void(QJsonValue)>& cb);
-    void unlockWallet(QString password, const std::function<void(QJsonValue)>& cb);
-    void removeWalletEncryption(QString password, const std::function<void(QJsonValue)>& cb);
+    void fetchWalletEncryptionStatus(const std::function<void(json)>& cb);
+    void fetchSupply(const std::function<void(json)>& cb);
+    void encryptWallet(QString password, const std::function<void(json)>& cb);
+    void unlockWallet(QString password, const std::function<void(json)>& cb);
+    void removeWalletEncryption(QString password, const std::function<void(json)>& cb);
 
     //void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
     //void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
     
    
-    void sendTransaction(QString params, const std::function<void(QJsonValue)>& cb, const std::function<void(QString)>& err);
+    void sendTransaction(QString params, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
 
 private:
     Connection*  conn                        = nullptr;

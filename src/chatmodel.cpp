@@ -433,8 +433,6 @@ Tx MainWindow::createTxFromChatPage() {
             QString myAddr = c.getMyAddress();
             QString type = "Memo";
             QString addr = c.getPartnerAddress();
-           
-   
 
              /////////User input for chatmemos
         QString memoplain = ui->memoTxtChat->toPlainText().trimmed();
@@ -516,8 +514,7 @@ Tx MainWindow::createTxFromChatPage() {
 
              /////Ciphertext Memo
             QString memo = QByteArray(reinterpret_cast<const char*>(ciphertext), CIPHERTEXT_LEN).toHex();
-         
-   
+              
              tx.toAddrs.push_back(ToFields{addr, amt, hmemo});
              tx.toAddrs.push_back(ToFields{addr, amt, memo});
 
@@ -724,8 +721,8 @@ void::MainWindow::addContact()
     {   
 
     bool sapling = true;
-    rpc->createNewZaddr(sapling, [=] (QJsonValue reply) {
-        QString myAddr = reply.toArray()[0].toString();
+    rpc->createNewZaddr(sapling, [=] (json reply) {
+        QString myAddr = QString::fromStdString(reply.get<json::array_t>()[0]);
         rpc->refreshAddresses();
         request.myzaddr->setText(myAddr);
         ui->listReceiveAddresses->insertItem(0, myAddr); 

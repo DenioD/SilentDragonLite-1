@@ -319,7 +319,7 @@ QString Recurring::writeableFile() {
     auto filename = QStringLiteral("recurringpayments.json");
 
     auto dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-    if (!dir.exists())
+    if (dir.exists())
         QDir().mkpath(dir.absolutePath());
 
     if (Settings::getInstance()->isTestnet()) {
@@ -353,6 +353,9 @@ void Recurring::removeRecurringInfo(QString hash) {
 
 
 void Recurring::readFromStorage() {
+
+    if (writeableFile().isEmpty())
+    {
     QFile file(writeableFile());
     file.open(QIODevice::ReadOnly);
 
@@ -365,10 +368,14 @@ void Recurring::readFromStorage() {
         auto p = RecurringPaymentInfo::fromJson(k.toObject());
         payments.insert(p.getHash(), p);
     }
+    }else{}
 }
 
 
 void Recurring::writeToStorage() {
+
+     if (writeableFile().isEmpty())
+    {
     QFile file(writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
 
@@ -381,6 +388,7 @@ void Recurring::writeToStorage() {
     out << QJsonDocument(arr).toJson();
 
     file.close();
+}else{}
 }
 
 /**

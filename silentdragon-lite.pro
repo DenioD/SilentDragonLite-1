@@ -50,6 +50,7 @@ SOURCES += \
     src/3rdparty/qrcode/BitBuffer.cpp \
     src/3rdparty/qrcode/QrCode.cpp \
     src/3rdparty/qrcode/QrSegment.cpp \
+    src/3rdparty/json/json.hpp \
     src/settings.cpp \
     src/sendtab.cpp \
     src/txtablemodel.cpp \
@@ -137,7 +138,8 @@ FORMS += \
     src/about.ui \
     src/confirm.ui \
     src/privkey.ui \
-    src/memodialog.ui \ 
+    src/memodialog.ui \  
+    src/verifyseed.ui \
     src/startupencryption.ui \
     src/viewalladdresses.ui \
     src/connection.ui \

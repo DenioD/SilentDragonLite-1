@@ -5,6 +5,7 @@
 #define CHATITEM_H
 
 #include <QString>
+using json = nlohmann::json;
 
 class ChatItem
 {
@@ -52,7 +53,7 @@ class ChatItem
         void notarized();
         void contact(bool iscontact);
         QString toChatLine();
-        QJsonValue toJson();
+        json toJson();
         ~ChatItem();
 };
 

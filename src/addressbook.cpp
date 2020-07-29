@@ -153,8 +153,8 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target)
         bool sapling = true;
         try 
        {
-        rpc->createNewZaddr(sapling, [=] (QJsonValue reply) {
-            QString myAddr = reply.toArray()[0].toString();
+        rpc->createNewZaddr(sapling, [=] (json reply) {
+            QString myAddr = QString::fromStdString(reply.get<json::array_t>()[0]);
             QString message = QString("New Chat Address for your partner: ") + myAddr;
             QString cid = QUuid::createUuid().toString(QUuid::WithoutBraces);
  

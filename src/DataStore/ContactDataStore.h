@@ -2,6 +2,7 @@
 #define CONTACTDATASTORE_H
 #include "../Model/ContactItem.h"
 #include <string>
+using json = nlohmann::json;
 
 class ContactDataStore
 {

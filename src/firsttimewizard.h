@@ -16,7 +16,18 @@ class FirstTimeWizard: public QWizard
 
     
 public:
-    FirstTimeWizard(QString server);
+    FirstTimeWizard(bool dangerous, QString server);
+
+    QString getSeed();
+    QString getBirthday();   
+    QString _birthday;
+    QString _seed;
+    void setSeed(QString Seed); 
+    void setBirthday(QString Birthday);   
+    void cancelEvent();
+
+public slots: 
+    void slot_change_theme(const QString& themeName);
     
 
 protected:
@@ -29,6 +40,7 @@ private:
         Page_Restore
     };
 
+    bool dangerous;
     QString server;
 
     friend class NewOrRestorePage;
@@ -50,6 +62,7 @@ public:
 class NewSeedPage: public QWizardPage {
 public:
     NewSeedPage(FirstTimeWizard* parent);
+ 
 
 protected:
     virtual void initializePage();

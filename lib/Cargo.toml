@@ -12,4 +12,4 @@ crate-type = ["staticlib"]
 libc = "0.2.58"
 lazy_static = "1.4.0"
 blake3 = "0.3.4"
-silentdragonlitelib = { git = "https://github.com/MyHush/silentdragonlite-cli", rev = "6c3f6f22bfc642c714c1e43f6e09cb4d34c7a1de" }
+silentdragonlitelib = { git = "https://github.com/MyHush/silentdragonlite-cli", rev = "fcd9cbb17020ffbaef41b2db62766ef8c3c81768" }

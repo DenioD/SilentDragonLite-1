@@ -7,6 +7,8 @@
 #include "recurring.h"
 #include "firsttimewizard.h"
 
+using json = nlohmann::json;
+
 // Forward declare to break circular dependency.
 class Controller;
 class Settings;

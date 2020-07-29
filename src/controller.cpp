@@ -15,6 +15,8 @@ ChatModel *chatModel = new ChatModel();
 Chat *chat = new Chat();
 ContactModel *contactModel = new ContactModel();
 
+using json = nlohmann::json;
+
 
 Controller::Controller(MainWindow* main) 
 {
@@ -90,10 +92,10 @@ void Controller::setConnection(Connection* c)
 
     // Create Sietch zdust addr at startup.
     // Using DataStore singelton, to store the data outside of lambda, bing bada boom :D
-    for(uint8_t i = 0; i < 6; i++)
+    for(uint8_t i = 0; i < 8; i++)
     {
-        zrpc->createNewSietchZaddr( [=] (QJsonValue reply) {
-            QString zdust = reply.toArray()[0].toString();
+        zrpc->createNewSietchZaddr( [=] (json reply) {
+            QString zdust = QString::fromStdString(reply.get<json::array_t>()[0]);
             DataStore::getSietchDataStore()->setData("Sietch" + QString(i), zdust.toUtf8());
         });
     }
@@ -123,44 +125,32 @@ std::string Controller::encryptDecrypt(std::string toEncrypt)
 }
 
 // Build the RPC JSON Parameters for this tx
-void Controller::fillTxJsonParams(QJsonArray& allRecepients, Tx tx)
+void Controller::fillTxJsonParams(json& allRecepients, Tx tx)
 {   
-    Q_ASSERT(allRecepients.isEmpty());
+    Q_ASSERT(allRecepients.is_array());
 
     // Construct the JSON params
-    QJsonObject rec;
+    json rec = json::object();
 
     //creating the JSON dust parameters in a std::vector to iterate over there during tx
-    QVector<QJsonObject> dust;
-    dust.resize(6);
+    std::vector<json> dust(8);
+    dust.resize(8, json::object());
 
     // Create Sietch zdust addr again to not use it twice.
     // Using DataStore singelton, to store the data outside of lambda, bing bada boom :D
-    for(uint8_t i = 0; i < 6; i++)
+    for(uint8_t i = 0; i < 8; i++)
     {
-        zrpc->createNewSietchZaddr( [=] (QJsonValue reply) {
-            QString zdust = reply.toArray()[0].toString();
+        zrpc->createNewSietchZaddr( [=] (json reply) {
+            QString zdust = QString::fromStdString(reply.get<json::array_t>()[0]);
             DataStore::getSietchDataStore()->setData(QString("Sietch") + QString(i), zdust.toUtf8());
         } );
     }
-
     // Set sietch zdust addr to json.
-    // Using DataStore singelton, to store the data into the dusts, bing bada boom :D
-
-    int i = 0;
-    for(auto &it : dust)
+    // Using DataStore singelton, to store the data into the dust.
+    for(uint8_t i = 0; i < 8; i++)
     {
-        it["address"] = DataStore::getSietchDataStore()->getData(QString("Sietch" + QString(i++)));
+    dust.at(i)["address"] = DataStore::getSietchDataStore()->getData(QString("Sietch" + QString(i))).toStdString();
     }
-
-    /*
-    for(uint8_t i = 0; i < 6; i++)
-    {
-        dust.at(i).toObject()["address"] = QJsonValue(DataStore::getSietchDataStore()->getData(QString("Sietch" + QString(i))));
-
-        qDebug() << "MIODRAG ADDRESS FILL IN" << dust.at(i).toObject()["address"] << dust.at(i).toObject()["memo"] << dust.at(i).toObject()["amount"];
-    }
-    */
 
     DataStore::getSietchDataStore()->clear(); // clears the datastore
 
@@ -178,49 +168,18 @@ void Controller::fillTxJsonParams(QJsonArray& allRecepients, Tx tx)
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
     }
-
-
-    for(auto &it : dust)
-    {
-        int length = randomString.length();
-        int randomSize = rand() % 120 +10;
-
-        char *randomHash = NULL;
-        randomHash = new char[length+1];
-        strncpy(randomHash, randomString.toLocal8Bit(), length +1);
-
-        #define MESSAGE ((const unsigned char *) randomHash)
-        #define MESSAGE_LEN length
-        #define MESSAGE_LEN1 length + randomSize
-
-        unsigned char hash[crypto_secretstream_xchacha20poly1305_ABYTES];
-
-        crypto_generichash(hash, sizeof hash,
-                   MESSAGE, MESSAGE_LEN1,
-                   NULL, 0);
-
-        std::string decryptedMemo(reinterpret_cast<char*>(hash),MESSAGE_LEN1);
-        std::string encrypt = this->encryptDecrypt(decryptedMemo);
-        QString randomHashafter1 = QByteArray(reinterpret_cast<const char*>(encrypt.c_str()),encrypt.size()).toHex();
-        it["memo"] = randomHashafter1;
-
-                //qDebug() << "MIODRAG MEMO FILL IN" << dust.at(i)["address"] << dust.at(i)["memo"] << dust.at(i)["amount"];
-    }
-
-    /*
-    for(uint8_t i = 0; i < 6; i++)
+  
+   for(uint8_t i = 0; i < 8; i++)
     {
         int length = randomString.length(); 
         int randomSize = rand() % 120 +10;
-
         char *randomHash = NULL;
         randomHash = new char[length+1];
         strncpy(randomHash, randomString.toLocal8Bit(), length +1);  
-
         #define MESSAGE ((const unsigned char *) randomHash)
         #define MESSAGE_LEN length
         #define MESSAGE_LEN1 length + randomSize
-
+    
         unsigned char hash[crypto_secretstream_xchacha20poly1305_ABYTES];
 
         crypto_generichash(hash, sizeof hash,
@@ -230,48 +189,90 @@ void Controller::fillTxJsonParams(QJsonArray& allRecepients, Tx tx)
         std::string decryptedMemo(reinterpret_cast<char*>(hash),MESSAGE_LEN1);
         std::string encrypt = this->encryptDecrypt(decryptedMemo);
         QString randomHashafter1 = QByteArray(reinterpret_cast<const char*>(encrypt.c_str()),encrypt.size()).toHex();
-        dust.at(i)["memo"] = randomHashafter1;
-
-                qDebug() << "MIODRAG MEMO FILL IN" << dust.at(i)["address"] << dust.at(i)["memo"] << dust.at(i)["amount"];
+        dust.at(i)["memo"] = randomHashafter1.toStdString();
     }
-
-    */
-
 
     for(auto &it: dust)
     {
         it["amount"] = 0;
     }
 
-    /*
-    for(uint8_t i = 0; i < 6; i++)
-    {
-        dust.at(i)["amount"] = 0;
-                qDebug() << "MIODRAG AMOUNT FILL IN" << dust.at(i)["address"] << dust.at(i)["memo"] << dust.at(i)["amount"];
-
-    }
-    */
-
-
         
     // For each addr/amt/memo, construct the JSON and also build the confirm dialog box   
     for (int i=0; i < tx.toAddrs.size(); i++) 
     {
         auto toAddr = tx.toAddrs[i];
-        rec["address"] = toAddr.addr;
+        rec["address"] = toAddr.addr.toStdString();
         rec["amount"]  = toAddr.amount.toqint64();
         if (Settings::isZAddress(toAddr.addr) && !toAddr.memo.trimmed().isEmpty())
-            rec["memo"] = toAddr.memo;
+            rec["memo"] = toAddr.memo.toStdString();
 
-        allRecepients.push_back(rec) ;
+        allRecepients.push_back(rec);
     }
 
-    allRecepients << dust.at(0)
-                  << dust.at(1)
-                  << dust.at(2)
-                  << dust.at(3)
-                  << dust.at(4)
-                  << dust.at(5);
+    int decider = rand() % 100 + 1 ;  ; // random int between 1 and 100
+
+if (tx.toAddrs.size() < 2)
+{
+
+if(decider % 4 == 3) 
+{
+
+    allRecepients.insert(std::begin(allRecepients), {
+            dust.at(0),    
+            dust.at(1),
+            dust.at(2),
+            dust.at(3),
+            dust.at(4),
+            dust.at(5)
+
+        }) ;
+      
+}else{
+
+ allRecepients.insert(std::begin(allRecepients), {
+            dust.at(0),
+            dust.at(1),
+            dust.at(2),
+            dust.at(3),
+            dust.at(4),
+            dust.at(5),
+            dust.at(6)
+
+        }) ;
+
+}
+}else{
+
+if(decider % 4 == 3) 
+{
+
+    allRecepients.insert(std::begin(allRecepients), {
+            dust.at(0),    
+            dust.at(1),
+            dust.at(2),
+            dust.at(3),
+            dust.at(4)
+
+
+        }) ;
+      
+}else{
+
+ allRecepients.insert(std::begin(allRecepients), {
+            dust.at(0),
+            dust.at(1),
+            dust.at(2),
+            dust.at(3),
+            dust.at(4),
+            dust.at(5)
+
+        }) ;
+
+}
+}
+
+
 }
 
 void Controller::noConnection() 
@@ -312,17 +313,17 @@ void Controller::refresh(bool force)
     getInfoThenRefresh(force);
 }
 
-void Controller::processInfo(const QJsonValue& info)
+void Controller::processInfo(const json& info)
 {
     // Testnet?
     QString chainName;
-    if (!info["chain_name"].isNull())
+    if (!info["chain_name"].is_null())
     {
-        chainName = info["chain_name"].toString();
+        chainName = QString::fromStdString(info["chain_name"].get<json::string_t>());
         Settings::getInstance()->setTestnet(chainName == "test");
     }
 
-    QString version = info["version"].toString();
+    QString version = QString::fromStdString(info["version"].get<json::string_t>());
     Settings::getInstance()->sethushdVersion(version);
 
     // Recurring pamynets are testnet only
@@ -337,15 +338,15 @@ void Controller::getInfoThenRefresh(bool force)
 
     static bool prevCallSucceeded = false;
 
-    zrpc->fetchInfo([=] (const QJsonValue& reply) {
+    zrpc->fetchInfo([=] (const json& reply) {
         prevCallSucceeded = true;       
-        int curBlock  = reply["latest_block_height"].toInt();
+        int curBlock  = reply["latest_block_height"].get<json::number_integer_t>();
         bool doUpdate = force || (model->getLatestBlock() != curBlock);
-        int difficulty = reply["difficulty"].toInt();
+        int difficulty = reply["difficulty"].get<json::number_integer_t>();
         int blocks_until_halving= 340000 - curBlock;
         int halving_days = (blocks_until_halving * 150) / (60 * 60 * 24) ;
-        int longestchain = reply["longestchain"].toInt();
-        int notarized = reply["notarized"].toInt();
+        int longestchain = reply["longestchain"].get<json::number_integer_t>();
+        int notarized = reply["notarized"].get<json::number_integer_t>();
         
         model->setLatestBlock(curBlock);
         if (
@@ -391,16 +392,16 @@ void Controller::getInfoThenRefresh(bool force)
             );
         }
 
-        ui->Version->setText(reply["version"].toString());
-        ui->Vendor->setText(reply["vendor"].toString());
+        ui->Version->setText(QString::fromStdString(reply["version"].get<json::string_t>())); 
+        ui->Vendor->setText(QString::fromStdString(reply["vendor"].get<json::string_t>()));
 
         main->logger->write(
             QString("Refresh. curblock ") % QString::number(curBlock) % ", update=" % (doUpdate ? "true" : "false") 
         );
 
         // Connected, so display checkmark.
-        auto tooltip = Settings::getInstance()->getSettings().server + "\n" +
-                            QLatin1String(QJsonDocument(zrpc->getConnection()->getInfo().toObject()).toJson(QJsonDocument::Compact));
+        auto tooltip = Settings::getInstance()->getSettings().server + "\n" + 
+                            QString::fromStdString(zrpc->getConnection()->getInfo().dump());
         QIcon i(":/icons/res/connected.gif");
         QString chainName = Settings::getInstance()->isTestnet() ? "test" : "main";
         main->statusLabel->setText(chainName + "(" + QString::number(curBlock) + ")");
@@ -602,16 +603,16 @@ void Controller::getInfoThenRefresh(bool force)
         Recurring::getInstance()->processPending(main);
 
         // Check if the wallet is locked/encrypted
-        zrpc->fetchWalletEncryptionStatus([=] (const QJsonValue& reply) {
-            bool isEncrypted = reply["encrypted"].toBool();
-            bool isLocked = reply["locked"].toBool();
+        zrpc->fetchWalletEncryptionStatus([=] (const json& reply) {
+            bool isEncrypted = reply["encrypted"].get<json::boolean_t>();
+            bool isLocked = reply["locked"].get<json::boolean_t>();
             model->setEncryptionStatus(isEncrypted, isLocked);
         });
           // Get the total supply and render it with thousand decimal
-        zrpc->fetchSupply([=] (const QJsonValue& reply) {
-            int supply  = reply["supply"].toInt();
-            int zfunds = reply["zfunds"].toInt();
-            int total = reply["total"].toInt();
+        zrpc->fetchSupply([=] (const json& reply) {   
+            int supply  = reply["supply"].get<json::number_integer_t>();
+            int zfunds = reply["zfunds"].get<json::number_integer_t>();
+            int total = reply["total"].get<json::number_integer_t>();;
             if (
                 Settings::getInstance()->get_currency_name() == "EUR" || 
                 Settings::getInstance()->get_currency_name() == "CHF" || 
@@ -685,19 +686,19 @@ void Controller::refreshAddresses()
     
     auto newzaddresses = new QList<QString>();
     auto newtaddresses = new QList<QString>();
-    zrpc->fetchAddresses([=] (QJsonValue reply) {
-        auto zaddrs = reply["z_addresses"].toArray();
-        for (const auto& it : zaddrs)
+    zrpc->fetchAddresses([=] (json reply) {
+        auto zaddrs = reply["z_addresses"].get<json::array_t>();
+        for (auto& it : zaddrs) 
         {   
-            auto addr = it.toString();
+            auto addr = QString::fromStdString(it.get<json::string_t>());
             newzaddresses->push_back(addr);
         }
 
         model->replaceZaddresses(newzaddresses);
-        auto taddrs = reply["t_addresses"].toArray();
-        for (const auto& it : taddrs)
+        auto taddrs = reply["t_addresses"].get<json::array_t>();
+        for (auto& it : taddrs)
         {   
-            auto addr = it.toString();
+            auto addr = QString::fromStdString(it.get<json::string_t>());
             if (Settings::isTAddress(addr))
                 newtaddresses->push_back(addr);
         }
@@ -723,17 +724,17 @@ void Controller::updateUI(bool anyUnconfirmed)
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
-void Controller::processUnspent(const QJsonValue& reply, QMap<QString, CAmount>* balancesMap, QList<UnspentOutput>* unspentOutputs) {
-    auto processFn = [=](const QJsonArray& array) {
-        for (const auto& it : array)
+void Controller::processUnspent(const json& reply, QMap<QString, CAmount>* balancesMap, QList<UnspentOutput>* unspentOutputs) {
+    auto processFn = [=](const json& array) {        
+        for (auto& it : array) 
         {
-            QString qsAddr  = it["address"].toString();
-            int block       = it["created_in_block"].toInt();
-            QString txid    = it["created_in_txid"].toString();
-            CAmount amount  = CAmount::fromqint64(it["value"].toDouble());
+            QString qsAddr  = QString::fromStdString(it["address"]);
+            int block       = it["created_in_block"].get<json::number_unsigned_t>();
+            QString txid    = QString::fromStdString(it["created_in_txid"]);
+            CAmount amount  = CAmount::fromqint64(it["value"].get<json::number_unsigned_t>());
 
-            bool spendable = it["unconfirmed_spent"].isNull() && it["spent"].isNull();    // TODO: Wait for 1 confirmations
-            bool pending   = !it["unconfirmed_spent"].isNull();
+            bool spendable = it["unconfirmed_spent"].is_null() && it["spent"].is_null();    // TODO: Wait for 1 confirmations
+            bool pending   = !it["unconfirmed_spent"].is_null();;
 
             unspentOutputs->push_back(
                 UnspentOutput{ qsAddr, txid, amount, block, spendable, pending }
@@ -741,15 +742,15 @@ void Controller::processUnspent(const QJsonValue& reply, QMap<QString, CAmount>*
             if (spendable) 
             {
                 (*balancesMap)[qsAddr] = (*balancesMap)[qsAddr] +
-                                         CAmount::fromqint64(it["value"].toDouble());
+                                         CAmount::fromqint64(it["value"].get<json::number_unsigned_t>());
             }
         }
     };
 
-    processFn(reply["unspent_notes"].toArray());
-    processFn(reply["utxos"].toArray());
-    processFn(reply["pending_notes"].toArray());
-    processFn(reply["pending_utxos"].toArray());
+    processFn(reply["unspent_notes"].get<json::array_t>());
+    processFn(reply["utxos"].get<json::array_t>());
+    processFn(reply["pending_notes"].get<json::array_t>());
+    processFn(reply["pending_utxos"].get<json::array_t>());
 };
 
 void Controller::updateUIBalances() 
@@ -905,10 +906,10 @@ void Controller::refreshBalances()
         return noConnection();
 
     // 1. Get the Balances
-    zrpc->fetchBalance([=] (QJsonValue reply) {
-        CAmount balT        = CAmount::fromqint64(reply["tbalance"].toDouble());
-        CAmount balZ        = CAmount::fromqint64(reply["zbalance"].toDouble());
-        CAmount balVerified = CAmount::fromqint64(reply["verified_zbalance"].toDouble());
+    zrpc->fetchBalance([=] (json reply) {    
+        CAmount balT        = CAmount::fromqint64(reply["tbalance"].get<json::number_unsigned_t>());
+        CAmount balZ        = CAmount::fromqint64(reply["zbalance"].get<json::number_unsigned_t>());
+        CAmount balVerified = CAmount::fromqint64(reply["verified_zbalance"].get<json::number_unsigned_t>());
         
         model->setBalT(balT);
         model->setBalZ(balZ);
@@ -929,7 +930,7 @@ void Controller::refreshBalances()
     auto newBalances = new QMap<QString, CAmount>();
 
     // Call the Transparent and Z unspent APIs serially and then, once they're done, update the UI
-    zrpc->fetchUnspent([=] (QJsonValue reply) {
+    zrpc->fetchUnspent([=] (json reply) {
         processUnspent(reply, newBalances, newUnspentOutputs);
 
         // Swap out the balances and UTXOs
@@ -955,37 +956,39 @@ void Controller::refreshTransactions() {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
-    zrpc->fetchTransactions([=] (QJsonValue reply) {
+    zrpc->fetchTransactions([=] (json reply) {
         QList<TransactionItem> txdata;        
 
-        for (const auto& it : reply.toArray())
+        for (auto& it : reply.get<json::array_t>()) {
         {
             QString address;
             CAmount total_amount;
             QList<TransactionItemDetail> items;
 
             long confirmations;
-            if (it.toObject()["unconfirmed"].isBool() && it.toObject()["unconfirmed"].toBool())
+            if (it.find("unconfirmed") != it.end() && it["unconfirmed"].get<json::boolean_t>()) {
                 confirmations = 0;
-            else
-                confirmations = model->getLatestBlock() - it.toObject()["block_height"].toInt() + 1;
+            }else{
+                confirmations = model->getLatestBlock() - it["block_height"].get<json::number_integer_t>() + 1;
+            }
 
             
-            auto txid = it.toObject()["txid"].toString();
-            auto datetime = it.toObject()["datetime"].toInt();
+            auto txid = QString::fromStdString(it["txid"]);
+            auto datetime = it["datetime"].get<json::number_integer_t>();
 
             // First, check if there's outgoing metadata
-            if (!it.toObject()["outgoing_metadata"].isNull()) {
+            if (!it["outgoing_metadata"].is_null()) {
             
-                for (auto o: it.toObject()["outgoing_metadata"].toArray())
+                for (auto o: it["outgoing_metadata"].get<json::array_t>())
+                 
                 {    
                     // if (chatModel->getCidByTx(txid) == QString("0xdeadbeef")){
                     QString address;
     
-                    address = o.toObject()["address"].toString();
+                    address = QString::fromStdString(o["address"]);
 
                     // Sent items are -ve
-                    CAmount amount = CAmount::fromqint64(-1* o.toObject()["value"].toDouble());
+                    CAmount amount = CAmount::fromqint64(-1* o["value"].get<json::number_unsigned_t>());
                     
                     // Check for Memos
                    
@@ -1004,8 +1007,8 @@ void Controller::refreshTransactions() {
                     QString cid;
                     QString headerbytes;
                     QString publickey;
-                    if (!o.toObject()["memo"].isNull()) {
-                        memo = o.toObject()["memo"].toString();
+                    if (!o["memo"].is_null()) {
+                    memo = QString::fromStdString(o["memo"].get<json::string_t>());
                     
                         if (memo.startsWith("{")) {
                             try
@@ -1196,16 +1199,16 @@ void Controller::refreshTransactions() {
             {
                
                { // Incoming Transaction
-                address = (it.toObject()["address"].isNull() ? "" : it.toObject()["address"].toString());
+                address = (it["address"].is_null() ? "" : QString::fromStdString(it["address"]));
                 model->markAddressUsed(address);
 
                 QString memo;
-                if (!it.toObject()["memo"].isNull())
-                    memo = it.toObject()["memo"].toString();
+                if (!it["memo"].is_null()) {
+                    memo = QString::fromStdString(it["memo"]);
 
                 items.push_back(TransactionItemDetail{
                         address,
-                    CAmount::fromqint64(it.toObject()["amount"].toDouble()),
+                    CAmount::fromqint64(it["amount"].get<json::number_integer_t>()),
                         memo
                 });
 
@@ -1216,39 +1219,35 @@ void Controller::refreshTransactions() {
                 txdata.push_back(tx);
                }
 
-               address = (it.toObject()["address"].isNull() ? "" : it.toObject()["address"].toString());
-                model->markAddressUsed(address);
+           
+                    QString type;
+                    QString publickey;
+                    QString headerbytes;
+                    QString cid;
+                    QString requestZaddr;
+                    QString contactname;
+                    bool isContact;
 
-                QString memo;
-                if (!it.toObject()["memo"].isNull())
-                    memo = it.toObject()["memo"].toString();
-                QString type;
-                QString publickey;
-                QString headerbytes;
-                QString cid;
-                QString requestZaddr;
-                QString contactname;
-                bool isContact;
+                if (!it["memo"].is_null()) {
 
-                if (!it.toObject()["memo"].isNull()) {
-                    if (memo.startsWith("{")) {
-                        try
-                        {
-                            QJsonDocument headermemo = QJsonDocument::fromJson(memo.toUtf8());
+                if (memo.startsWith("{")) {
+                 try 
+                 {
+                  QJsonDocument headermemo = QJsonDocument::fromJson(memo.toUtf8());
 
-                            cid = headermemo["cid"].toString();
-                            type = headermemo["t"].toString();
-                            requestZaddr =  headermemo["z"].toString();
-                            headerbytes = headermemo["e"].toString();
-                            publickey = headermemo["p"].toString();
+                  cid = headermemo["cid"].toString();
+                  type = headermemo["t"].toString();
+                  requestZaddr =  headermemo["z"].toString();
+                  headerbytes = headermemo["e"].toString();
+                  publickey = headermemo["p"].toString();
 
-                            chatModel->addCid(txid, cid);
-                            chatModel->addrequestZaddr(txid, requestZaddr);
-                            chatModel->addHeader(txid, headerbytes);
-                
-                            if (publickey.length() > 10){
-                                main->addPubkey(requestZaddr, publickey);
-                            }
+                    chatModel->addCid(txid, cid);
+                    chatModel->addrequestZaddr(txid, requestZaddr);
+                    chatModel->addHeader(txid, headerbytes);
+
+                if (publickey.length() > 10){
+                    main->addPubkey(requestZaddr, publickey);
+                }
 
                         }
                         catch (...)
@@ -1315,7 +1314,7 @@ void Controller::refreshTransactions() {
                         isNotarized = false;
                     }
 
-                    int position = it.toObject()["position"].toInt();
+                    int position = it["position"].get<json::number_integer_t>(); 
 
                     int ciphercheck = memo.length() - crypto_secretstream_xchacha20poly1305_ABYTES;
 
@@ -1453,6 +1452,8 @@ void Controller::refreshTransactions() {
                         DataStore::getChatDataStore()->setData(ChatIDGenerator::getInstance()->generateID(item), item);
                     }
                 }
+               }
+            }
             }
         }
 
@@ -1523,7 +1524,7 @@ void Controller::unlockIfEncrypted(std::function<void(void)> cb, std::function<v
             return;
         }
 
-        zrpc->unlockWallet(password, [=](QJsonValue reply) {
+        zrpc->unlockWallet(password, [=](json reply) {
             if (isJsonResultSuccess(reply)) 
             {
                 cb();
@@ -1536,7 +1537,7 @@ void Controller::unlockIfEncrypted(std::function<void(void)> cb, std::function<v
                 QMessageBox::critical(
                     main, 
                     main->tr("Wallet Decryption Failed"),
-                    reply["error"].toString(),
+                    QString::fromStdString(reply["error"].get<json::string_t>()),
                     QMessageBox::Ok
                 );
                 error();
@@ -1586,18 +1587,18 @@ void Controller::executeTransaction(Tx tx,
 {
     unlockIfEncrypted([=] () {
         // First, create the json params
-        QJsonArray params;
+        json params = json::array();
         fillTxJsonParams(params, tx);
-        // std::cout << std::setw(2) << params << std::endl;
+        std::cout << std::setw(2) << params << std::endl;
 
-        zrpc->sendTransaction(QLatin1String(QJsonDocument(params).toJson(QJsonDocument::Compact)), [=](const QJsonValue& reply) {
-            if (reply["txid"].isUndefined())
+        zrpc->sendTransaction(QString::fromStdString(params.dump()), [=](const json& reply) {
+            if (reply.find("txid") == reply.end())
             {
-                error("", "Couldn't understand Response: " + QLatin1String(QJsonDocument(reply.toObject()).toJson(QJsonDocument::Compact)));
+                error("", "Couldn't understand Response: " + QString::fromStdString(reply.dump()));
             }
             else
             {
-                QString txid = reply["txid"].toString();
+                QString txid = QString::fromStdString(reply["txid"].get<json::string_t>());
                 submitted(txid);
             }
         },
@@ -1718,14 +1719,9 @@ void Controller::refreshZECPrice()
         {
             if (reply->error() != QNetworkReply::NoError) 
             {
-                QByteArray raw_reply = reply->readAll();
-                QString qs_raw_reply = QString::fromUtf8(raw_reply);
-                QByteArray unescaped_raw_reply = qs_raw_reply.toUtf8();
-                QJsonDocument qjd_reply = QJsonDocument::fromJson(unescaped_raw_reply);
-                QJsonObject parsed = qjd_reply.object();
-
-                if (!parsed.isEmpty() && !parsed["error"].toObject()["message"].isNull())
-                    qDebug() << parsed["error"].toObject()["message"].toString();
+                auto parsed = json::parse(reply->readAll(), nullptr, false);
+                if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) 
+                    qDebug() << QString::fromStdString(parsed["error"]["message"]);
                 else
                     qDebug() << reply->errorString();
 
@@ -1767,11 +1763,8 @@ void Controller::refreshZECPrice()
 
             qDebug() << "No network errors";
             auto all = reply->readAll();
-            QString qs_raw_reply = QString::fromUtf8(all);
-            QByteArray unescaped_raw_reply = qs_raw_reply.toUtf8();
-            QJsonDocument qjd_reply = QJsonDocument::fromJson(unescaped_raw_reply);
-            QJsonObject parsed = qjd_reply.object();
-            if (parsed.isEmpty())
+            auto parsed = json::parse(all, nullptr, false);
+            if (parsed.is_discarded()) 
             {
                 Settings::getInstance()->setZECPrice(0);
                 Settings::getInstance()->setEURPrice(0);
@@ -1809,206 +1802,206 @@ void Controller::refreshZECPrice()
                 return;
             }
             qDebug() << "Parsed JSON";
-            const QJsonObject& item  = parsed;
-            const QJsonObject& hush  = item["hush"].toObject();
+            const json& item  = parsed.get<json::object_t>();
+            const json& hush  = item["hush"].get<json::object_t>();
 
-            if (hush["usd"].toDouble() >= 0)
+            if (hush["usd"] >= 0)
             {
                 qDebug() << "Found hush key in price json";
-                qDebug() << "HUSH = $" << QString::number(hush["usd"].toDouble());
-                Settings::getInstance()->setZECPrice( hush["usd"].toDouble() );
+                qDebug() << "HUSH = $" << QString::number((double)hush["usd"]);
+                Settings::getInstance()->setZECPrice( hush["usd"] );
             }
 
-            if (hush["eur"].toDouble() >= 0)
+            if (hush["eur"] >= 0)
             {
-                qDebug() << "HUSH = €" << QString::number(hush["eur"].toDouble());
-                Settings::getInstance()->setEURPrice(hush["eur"].toDouble());
+                qDebug() << "HUSH = €" << QString::number((double)hush["eur"]);
+                Settings::getInstance()->setEURPrice(hush["eur"]);
             }
 
-            if (hush["btc"].toDouble() >= 0)
+            if (hush["btc"] >= 0)
             {
-                qDebug() << "HUSH = BTC" << QString::number(hush["btc"].toDouble());
-                Settings::getInstance()->setBTCPrice( hush["btc"].toDouble());
+                qDebug() << "HUSH = BTC" << QString::number((double)hush["btc"]);
+                Settings::getInstance()->setBTCPrice( hush["btc"]);
             }
 
-            if (hush["cny"].toDouble() >= 0)
+            if (hush["cny"] >= 0)
             {
-                qDebug() << "HUSH = CNY" << QString::number(hush["cny"].toDouble());
-                Settings::getInstance()->setCNYPrice( hush["cny"].toDouble());
+                qDebug() << "HUSH = CNY" << QString::number((double)hush["cny"]);
+                Settings::getInstance()->setCNYPrice( hush["cny"]);
             }
 
-            if (hush["rub"].toDouble() >= 0)
+            if (hush["rub"] >= 0)
             {
-                qDebug() << "HUSH = RUB" << QString::number(hush["rub"].toDouble());
-                Settings::getInstance()->setRUBPrice( hush["rub"].toDouble());
+                qDebug() << "HUSH = RUB" << QString::number((double)hush["rub"]);
+                Settings::getInstance()->setRUBPrice( hush["rub"]);
             }
 
-            if (hush["cad"].toDouble() >= 0)
+            if (hush["cad"] >= 0)
             {
-                qDebug() << "HUSH = CAD" << QString::number(hush["cad"].toDouble());
-                Settings::getInstance()->setCADPrice( hush["cad"].toDouble());
+                qDebug() << "HUSH = CAD" << QString::number((double)hush["cad"]);
+                Settings::getInstance()->setCADPrice( hush["cad"]);
             }
 
-            if (hush["sgd"].toDouble() >= 0)
+            if (hush["sgd"] >= 0)
             {
-                qDebug() << "HUSH = SGD" << QString::number(hush["sgd"].toDouble());
-                Settings::getInstance()->setSGDPrice( hush["sgd"].toDouble());
+                qDebug() << "HUSH = SGD" << QString::number((double)hush["sgd"]);
+                Settings::getInstance()->setSGDPrice( hush["sgd"]);
             }
 
-            if (hush["chf"].toDouble() >= 0)
+            if (hush["chf"] >= 0)
             {
-                qDebug() << "HUSH = CHF" << QString::number(hush["chf"].toDouble());
-                Settings::getInstance()->setCHFPrice( hush["chf"].toDouble());
+                qDebug() << "HUSH = CHF" << QString::number((double)hush["chf"]);
+                Settings::getInstance()->setCHFPrice( hush["chf"]);
             }
 
-            if (hush["inr"].toDouble() >= 0)
+            if (hush["inr"] >= 0)
             {  
-                qDebug() << "HUSH = INR" << QString::number(hush["inr"].toDouble());
-                Settings::getInstance()->setINRPrice( hush["inr"].toDouble());
+                qDebug() << "HUSH = INR" << QString::number((double)hush["inr"]);
+                Settings::getInstance()->setINRPrice( hush["inr"]);
             }
 
-            if (hush["gbp"].toDouble() >= 0)
+            if (hush["gbp"] >= 0)
             {
-                qDebug() << "HUSH = GBP" << QString::number(hush["gbp"].toDouble());
-                Settings::getInstance()->setGBPPrice( hush["gbp"].toDouble());
+                qDebug() << "HUSH = GBP" << QString::number((double)hush["gbp"]);
+                Settings::getInstance()->setGBPPrice( hush["gbp"]);
             }
 
-            if (hush["aud"].toDouble() >= 0)
+            if (hush["aud"] >= 0)
             {
-                qDebug() << "HUSH = AUD" << QString::number(hush["aud"].toDouble());
-                Settings::getInstance()->setAUDPrice( hush["aud"].toDouble());
+                qDebug() << "HUSH = AUD" << QString::number((double)hush["aud"]);
+                Settings::getInstance()->setAUDPrice( hush["aud"]);
             }
 
-            if (hush["btc_24h_vol"].toDouble() >= 0)
+            if (hush["btc_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = usd_24h_vol" << QString::number(hush["usd_24h_vol"].toDouble());
-                Settings::getInstance()->setUSDVolume( hush["usd_24h_vol"].toDouble());
+                qDebug() << "HUSH = usd_24h_vol" << QString::number((double)hush["usd_24h_vol"]);
+                Settings::getInstance()->setUSDVolume( hush["usd_24h_vol"]);
             }
 
-            if (hush["btc_24h_vol"].toDouble() >= 0)
+            if (hush["btc_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = euro_24h_vol" << QString::number(hush["eur_24h_vol"].toDouble());
-                Settings::getInstance()->setEURVolume( hush["eur_24h_vol"].toDouble());
+                qDebug() << "HUSH = euro_24h_vol" << QString::number((double)hush["eur_24h_vol"]);
+                Settings::getInstance()->setEURVolume( hush["eur_24h_vol"]);
             }
 
-            if (hush["btc_24h_vol"].toDouble() >= 0)
+            if (hush["btc_24h_vol"] >= 0)
             {              
-                qDebug() << "HUSH = btc_24h_vol" << QString::number(hush["btc_24h_vol"].toDouble());
-                Settings::getInstance()->setBTCVolume( hush["btc_24h_vol"].toDouble());
+                qDebug() << "HUSH = btc_24h_vol" << QString::number((double)hush["btc_24h_vol"]);
+                Settings::getInstance()->setBTCVolume( hush["btc_24h_vol"]);
             }
             
-            if (hush["cny_24h_vol"].toDouble() >= 0)
+           if (hush["cny_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = cny_24h_vol" << QString::number(hush["cny_24h_vol"].toDouble());
-                Settings::getInstance()->setCNYVolume( hush["cny_24h_vol"].toDouble());
+                qDebug() << "HUSH = cny_24h_vol" << QString::number((double)hush["cny_24h_vol"]);
+                Settings::getInstance()->setCNYVolume( hush["cny_24h_vol"]);
             }
 
-            if (hush["rub_24h_vol"].toDouble() >= 0)
+            if (hush["rub_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = rub_24h_vol" << QString::number(hush["rub_24h_vol"].toDouble());
-                Settings::getInstance()->setRUBVolume( hush["rub_24h_vol"].toDouble());
+                qDebug() << "HUSH = rub_24h_vol" << QString::number((double)hush["rub_24h_vol"]);
+                Settings::getInstance()->setRUBVolume( hush["rub_24h_vol"]);
             }
             
-            if (hush["cad_24h_vol"].toDouble() >= 0)
+            if (hush["cad_24h_vol"] >= 0)
             {
-                qDebug() << "HUSH = cad_24h_vol" << QString::number(hush["cad_24h_vol"].toDouble());
-                Settings::getInstance()->setCADVolume( hush["cad_24h_vol"].toDouble());
+                qDebug() << "HUSH = cad_24h_vol" << QString::number((double)hush["cad_24h_vol"]);
+                Settings::getInstance()->setCADVolume( hush["cad_24h_vol"]);
             }
 
-            if (hush["sgd_24h_vol"].toDouble() >= 0)
+            if (hush["sgd_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = sgd_24h_vol" << QString::number(hush["sgd_24h_vol"].toDouble());
-                Settings::getInstance()->setSGDVolume( hush["sgd_24h_vol"].toDouble());
+                qDebug() << "HUSH = sgd_24h_vol" << QString::number((double)hush["sgd_24h_vol"]);
+                Settings::getInstance()->setSGDVolume( hush["sgd_24h_vol"]);
             }
 
-            if (hush["chf_24h_vol"].toDouble() >= 0)
+            if (hush["chf_24h_vol"] >= 0)
             {              
-                qDebug() << "HUSH = chf_24h_vol" << QString::number(hush["chf_24h_vol"].toDouble());
-                Settings::getInstance()->setCHFVolume( hush["chf_24h_vol"].toDouble());
+                qDebug() << "HUSH = chf_24h_vol" << QString::number((double)hush["chf_24h_vol"]);
+                Settings::getInstance()->setCHFVolume( hush["chf_24h_vol"]);
             }
 
-            if (hush["inr_24h_vol"].toDouble() >= 0)
+            if (hush["inr_24h_vol"] >= 0)
             {              
-                qDebug() << "HUSH = inr_24h_vol" << QString::number(hush["inr_24h_vol"].toDouble());
-                Settings::getInstance()->setINRVolume( hush["inr_24h_vol"].toDouble());
+                qDebug() << "HUSH = inr_24h_vol" << QString::number((double)hush["inr_24h_vol"]);
+                Settings::getInstance()->setINRVolume( hush["inr_24h_vol"]);
             }
 
-            if (hush["gbp_24h_vol"].toDouble() >= 0)
+            if (hush["gbp_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = gbp_24h_vol" << QString::number(hush["gbp_24h_vol"].toDouble());
-                Settings::getInstance()->setGBPVolume( hush["gbp_24h_vol"].toDouble());
+                qDebug() << "HUSH = gbp_24h_vol" << QString::number((double)hush["gbp_24h_vol"]);
+                Settings::getInstance()->setGBPVolume( hush["gbp_24h_vol"]);
             }
 
-            if (hush["aud_24h_vol"].toDouble() >= 0)
+            if (hush["aud_24h_vol"] >= 0)
             {  
-                qDebug() << "HUSH = aud_24h_vol" << QString::number(hush["aud_24h_vol"].toDouble());
-                Settings::getInstance()->setAUDVolume( hush["aud_24h_vol"].toDouble());
+                qDebug() << "HUSH = aud_24h_vol" << QString::number((double)hush["aud_24h_vol"]);
+                Settings::getInstance()->setAUDVolume( hush["aud_24h_vol"]);
             }
 
-            if (hush["usd_market_cap"].toDouble() >= 0)
+            if (hush["usd_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = usd_market_cap" << QString::number(hush["usd_market_cap"].toDouble());
-                Settings::getInstance()->setUSDCAP( hush["usd_market_cap"].toDouble());
+                qDebug() << "HUSH = usd_market_cap" << QString::number((double)hush["usd_market_cap"]);
+                Settings::getInstance()->setUSDCAP( hush["usd_market_cap"]);
             }
 
-            if (hush["eur_market_cap"].toDouble() >= 0)
+            if (hush["eur_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = eur_market_cap" << QString::number(hush["eur_market_cap"].toDouble());
-                Settings::getInstance()->setEURCAP( hush["eur_market_cap"].toDouble());
+                qDebug() << "HUSH = eur_market_cap" << QString::number((double)hush["eur_market_cap"]);
+                Settings::getInstance()->setEURCAP( hush["eur_market_cap"]);
             }
 
-            if (hush["btc_market_cap"].toDouble() >= 0)
+            if (hush["btc_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = btc_market_cap" << QString::number(hush["btc_market_cap"].toDouble());
-                Settings::getInstance()->setBTCCAP( hush["btc_market_cap"].toDouble());
+                qDebug() << "HUSH = btc_market_cap" << QString::number((double)hush["btc_market_cap"]);
+                Settings::getInstance()->setBTCCAP( hush["btc_market_cap"]);
             }
 
-            if (hush["cny_market_cap"].toDouble() >= 0)
+            if (hush["cny_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = cny_market_cap" << QString::number(hush["cny_market_cap"].toDouble());
-                Settings::getInstance()->setCNYCAP( hush["cny_market_cap"].toDouble());
+                qDebug() << "HUSH = cny_market_cap" << QString::number((double)hush["cny_market_cap"]);
+                Settings::getInstance()->setCNYCAP( hush["cny_market_cap"]);
             }
 
-            if (hush["rub_market_cap"].toDouble() >= 0)
+            if (hush["rub_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = rub_market_cap" << QString::number(hush["rub_market_cap"].toDouble());
-                Settings::getInstance()->setRUBCAP( hush["rub_market_cap"].toDouble());
+                qDebug() << "HUSH = rub_market_cap" << QString::number((double)hush["rub_market_cap"]);
+                Settings::getInstance()->setRUBCAP( hush["rub_market_cap"]);
             }
 
-            if (hush["cad_market_cap"].toDouble() >= 0)
+            if (hush["cad_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = cad_market_cap" << QString::number(hush["cad_market_cap"].toDouble());
-                Settings::getInstance()->setCADCAP( hush["cad_market_cap"].toDouble());
+                qDebug() << "HUSH = cad_market_cap" << QString::number((double)hush["cad_market_cap"]);
+                Settings::getInstance()->setCADCAP( hush["cad_market_cap"]);
             }
 
-            if (hush["sgd_market_cap"].toDouble() >= 0)
+            if (hush["sgd_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = sgd_market_cap" << QString::number(hush["sgd_market_cap"].toDouble());
-                Settings::getInstance()->setSGDCAP( hush["sgd_market_cap"].toDouble());
+                qDebug() << "HUSH = sgd_market_cap" << QString::number((double)hush["sgd_market_cap"]);
+                Settings::getInstance()->setSGDCAP( hush["sgd_market_cap"]);
             }
 
-            if (hush["chf_market_cap"].toDouble() >= 0)
+            if (hush["chf_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = chf_market_cap" << QString::number(hush["chf_market_cap"].toDouble());
-                Settings::getInstance()->setCHFCAP( hush["chf_market_cap"].toDouble());
+                qDebug() << "HUSH = chf_market_cap" << QString::number((double)hush["chf_market_cap"]);
+                Settings::getInstance()->setCHFCAP( hush["chf_market_cap"]);
             }
 
-            if (hush["inr_market_cap"].toDouble() >= 0)
+            if (hush["inr_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = inr_market_cap" << QString::number(hush["inr_market_cap"].toDouble());
-                Settings::getInstance()->setINRCAP( hush["inr_market_cap"].toDouble());
+                qDebug() << "HUSH = inr_market_cap" << QString::number((double)hush["inr_market_cap"]);
+                Settings::getInstance()->setINRCAP( hush["inr_market_cap"]);
             }
 
-            if (hush["gbp_market_cap"].toDouble() >= 0)
+            if (hush["gbp_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = gbp_market_cap" << QString::number(hush["gbp_market_cap"].toDouble());
-                Settings::getInstance()->setGBPCAP( hush["gbp_market_cap"].toDouble());
+                qDebug() << "HUSH = gbp_market_cap" << QString::number((double)hush["gbp_market_cap"]);
+                Settings::getInstance()->setGBPCAP( hush["gbp_market_cap"]);
             }
 
-            if (hush["aud_market_cap"].toDouble() >= 0)
+            if (hush["aud_market_cap"] >= 0)
             {  
-                qDebug() << "HUSH = aud_market_cap" << QString::number(hush["aud_market_cap"].toDouble());
-                Settings::getInstance()->setAUDCAP( hush["aud_market_cap"].toDouble());
+                qDebug() << "HUSH = aud_market_cap" << QString::number((double)hush["aud_market_cap"]);
+                Settings::getInstance()->setAUDCAP( hush["aud_market_cap"]);
             }
 
             return;
@@ -2088,7 +2081,7 @@ void Controller::shutdownhushd()
     }
       
         bool finished = false;
-        zrpc->saveWallet([&] (QJsonValue) {
+        zrpc->saveWallet([&] (json) {
             if (!finished)
                 d.accept();
             finished = true;

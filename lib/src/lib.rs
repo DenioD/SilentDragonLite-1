@@ -57,7 +57,7 @@ return e_str.into_raw();
 
 /// Create a new wallet and return the seed for the newly created wallet.
 #[no_mangle]
-pub extern fn litelib_initialize_new(server: *const c_char) -> *mut c_char {
+pub extern fn litelib_initialize_new(dangerous: bool,server: *const c_char) -> *mut c_char {
     let server_str = unsafe {
         assert!(!server.is_null());
 
@@ -65,7 +65,7 @@ pub extern fn litelib_initialize_new(server: *const c_char) -> *mut c_char {
     };
 
     let server = LightClientConfig::get_server_or_default(Some(server_str));
-    let (config, latest_block_height) = match LightClientConfig::create(server) {
+    let (config, latest_block_height) = match LightClientConfig::create(server, dangerous) {
         Ok((c, h)) => (c, h),
         Err(e) => {
             let e_str = CString::new(format!("Error: {}", e)).unwrap();
@@ -101,7 +101,7 @@ pub extern fn litelib_initialize_new(server: *const c_char) -> *mut c_char {
 
 /// Restore a wallet from the seed phrase
 #[no_mangle]
-pub extern fn litelib_initialize_new_from_phrase(server: *const c_char, 
+pub extern fn litelib_initialize_new_from_phrase(dangerous: bool,server: *const c_char, 
             seed: *const c_char, birthday: u64, number: u64, overwrite: bool) -> *mut c_char {
     let server_str = unsafe {
         assert!(!server.is_null());
@@ -116,7 +116,7 @@ pub extern fn litelib_initialize_new_from_phrase(server: *const c_char,
     };
 
     let server = LightClientConfig::get_server_or_default(Some(server_str));
-    let (config, _latest_block_height) = match LightClientConfig::create(server) {
+    let (config, _latest_block_height) = match LightClientConfig::create(server,dangerous) {
         Ok((c, h)) => (c, h),
         Err(e) => {
             let e_str = CString::new(format!("Error: {}", e)).unwrap();
@@ -143,7 +143,7 @@ pub extern fn litelib_initialize_new_from_phrase(server: *const c_char,
 
 // Initialize a new lightclient and store its value
 #[no_mangle]
-pub extern fn litelib_initialize_existing(server: *const c_char) -> *mut c_char {
+pub extern fn litelib_initialize_existing(dangerous: bool, server: *const c_char) -> *mut c_char {
     let server_str = unsafe {
         assert!(!server.is_null());
 
@@ -151,7 +151,7 @@ pub extern fn litelib_initialize_existing(server: *const c_char) -> *mut c_char 
     };
 
     let server = LightClientConfig::get_server_or_default(Some(server_str));
-    let (config, _latest_block_height) = match LightClientConfig::create(server) {
+    let (config, _latest_block_height) = match LightClientConfig::create(server,dangerous) {
         Ok((c, h)) => (c, h),
         Err(e) => {
             let e_str = CString::new(format!("Error: {}", e)).unwrap();

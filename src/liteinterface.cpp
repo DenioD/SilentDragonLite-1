@@ -20,7 +20,7 @@ bool LiteInterface::haveConnection() {
     return conn != nullptr;
 }
 
-void LiteInterface::fetchAddresses(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchAddresses(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
@@ -28,21 +28,21 @@ void LiteInterface::fetchAddresses(const std::function<void(QJsonValue)>& cb) {
 }
 
 
-void LiteInterface::fetchUnspent(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchUnspent(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("notes", "", cb);
 }
 
-void LiteInterface::createNewZaddr(bool, const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::createNewZaddr(bool, const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("new", "zs", cb);
 }
 
-void LiteInterface::createNewSietchZaddr(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::createNewSietchZaddr(const std::function<void(json)>& cb) {
       if (conn == nullptr)
         return;
 
@@ -50,70 +50,70 @@ void LiteInterface::createNewSietchZaddr(const std::function<void(QJsonValue)>& 
       
 }
 
-void LiteInterface::createNewTaddr(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::createNewTaddr(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("new", "R", cb);
 }
 
-void LiteInterface::fetchPrivKey(QString addr, const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchPrivKey(QString addr, const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("export", addr, cb);
 }
 
-void LiteInterface::fetchSeed(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchSeed(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("seed", "", cb);
 }
 
-void LiteInterface::fetchBalance(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchBalance(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("balance", "", cb);
 }
 
-void LiteInterface::fetchTransactions(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchTransactions(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("list", "", cb);
 }
 
-void LiteInterface::saveWallet(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::saveWallet(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("save", "", cb);
 }
 
-void LiteInterface::clearWallet(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::clearWallet(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("clear", "", cb);
 }
 
-void LiteInterface::unlockWallet(QString password, const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::unlockWallet(QString password, const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("unlock", password, cb);
 }
 
-void LiteInterface::fetchWalletEncryptionStatus(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchWalletEncryptionStatus(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
     conn->doRPCWithDefaultErrorHandling("encryptionstatus", "", cb);
 }
 
-void LiteInterface::encryptWallet(QString password, const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::encryptWallet(QString password, const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
@@ -121,7 +121,7 @@ void LiteInterface::encryptWallet(QString password, const std::function<void(QJs
 }
 
 
-void LiteInterface::removeWalletEncryption(QString password, const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::removeWalletEncryption(QString password, const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
@@ -129,7 +129,7 @@ void LiteInterface::removeWalletEncryption(QString password, const std::function
 }
 
 
-void LiteInterface::sendTransaction(QString params, const std::function<void(QJsonValue)>& cb,
+void LiteInterface::sendTransaction(QString params, const std::function<void(json)>& cb,
     const std::function<void(QString)>& err) {
     if (conn == nullptr)
         return;
@@ -137,7 +137,7 @@ void LiteInterface::sendTransaction(QString params, const std::function<void(QJs
     conn->doRPC("send", params, cb, err);
 }
 
-void LiteInterface::fetchInfo(const std::function<void(QJsonValue)>& cb,
+void LiteInterface::fetchInfo(const std::function<void(json)>& cb,
     const std::function<void(QString)>&  err) {
     if (conn == nullptr)
         return;
@@ -145,7 +145,7 @@ void LiteInterface::fetchInfo(const std::function<void(QJsonValue)>& cb,
     conn->doRPC("info", "", cb, err);
 }
 
-void LiteInterface::fetchSupply(const std::function<void(QJsonValue)>& cb) {
+void LiteInterface::fetchSupply(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
@@ -153,7 +153,7 @@ void LiteInterface::fetchSupply(const std::function<void(QJsonValue)>& cb) {
 }
 
 
-void LiteInterface::fetchLatestBlock(const std::function<void(QJsonValue)>& cb,
+void LiteInterface::fetchLatestBlock(const std::function<void(json)>& cb,
                         const std::function<void(QString)>& err) {
     if (conn == nullptr)
         return;
@@ -166,7 +166,7 @@ void LiteInterface::fetchLatestBlock(const std::function<void(QJsonValue)>& cb,
  * combine the result, and call the callback with a single list containing both the t-addr and z-addr
  * private keys
  */ 
-void LiteInterface::fetchAllPrivKeys(const std::function<void(QJsonValue)> cb) {
+void LiteInterface::fetchAllPrivKeys(const std::function<void(json)> cb) {
     if (conn == nullptr) {
         // No connection, just return
         return;

@@ -33,9 +33,9 @@ ContactItem ContactDataStore::getData(QString key)
 
 QString ContactDataStore::dump()
 {
-    QJsonObject contacts;
-    contacts["count"] = (qint64)this->data.size();
-    QJsonArray j = {};
+    json contacts;
+    contacts["count"] = this->data.size();
+    json j = {};
     for (auto &c: this->data)
     {
         qDebug() << c.second.toQTString();
@@ -43,10 +43,7 @@ QString ContactDataStore::dump()
         j.push_back(c.second.toJson());
     }
     contacts["contacts"] = j;
-    QJsonDocument jd_contacts = QJsonDocument(contacts);
-    return QLatin1String(jd_contacts.toJson(QJsonDocument::Compact));
-
-    // return QString::fromStdString(contacts.dump(4));
+   return QString::fromStdString(contacts.dump(4));
 }
 
 ContactDataStore* ContactDataStore::instance = nullptr;
