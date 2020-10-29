@@ -318,12 +318,281 @@ bool NewSeedPage::validatePage() {
     verifyseed.setupUi(&dialog);
     Settings::saveRestore(&dialog);
 
-    dialog.exec();
+    form.birthday->setVisible(false);
+    form.txtSeed->setVisible(false);
+   
 
     QString seed = parent->getSeed();
     QString birthday = parent->getBirthday();
+    QString word1 = seed.split(" ").at(13);
+    verifyseed.word1->setText(word1);
+    QString word2 = seed.split(" ").at(23);
+    verifyseed.word2->setText(word2);
+    QString word3 = seed.split(" ").at(11);
+    verifyseed.word3->setText(word3);
+    QString word4 = seed.split(" ").at(15);
+    verifyseed.word4->setText(word4);
+    QString word5 = seed.split(" ").at(20);
+    verifyseed.word5->setText(word5);
+    QString word6 = seed.split(" ").at(12);
+    verifyseed.word6->setText(word6);
+    QString word7 = seed.split(" ").at(16);
+    verifyseed.word7->setText(word7);
+    QString word8 = seed.split(" ").at(19);
+    verifyseed.word8->setText(word8);
+    QString word9 = seed.split(" ").at(21);
+    verifyseed.word9->setText(word9);
+    QString word10 = seed.split(" ").at(17);
+    verifyseed.word10->setText(word10);
+    QString word11 = seed.split(" ").at(14);
+    verifyseed.word11->setText(word11);
+    QString word12 = seed.split(" ").at(2);
+    verifyseed.word12->setText(word12);
+    QString word13 = seed.split(" ").at(5);
+    verifyseed.word13->setText(word13);
+    QString word14 = seed.split(" ").at(0);
+    verifyseed.word14->setText(word14);
+    QString word15 = seed.split(" ").at(10);
+    verifyseed.word15->setText(word15);
+    QString word16 = seed.split(" ").at(3);
+    verifyseed.word16->setText(word16);
+    QString word17 = seed.split(" ").at(6);
+    verifyseed.word17->setText(word17);
+    QString word18 = seed.split(" ").at(9);
+    verifyseed.word18->setText(word18);
+    QString word19 = seed.split(" ").at(22);
+    verifyseed.word19->setText(word19);
+    QString word20 = seed.split(" ").at(7);
+    verifyseed.word20->setText(word20);
+    QString word21 = seed.split(" ").at(4);
+    verifyseed.word21->setText(word21);
+    QString word22 = seed.split(" ").at(8);
+    verifyseed.word22->setText(word22);
+    QString word23 = seed.split(" ").at(18);
+    verifyseed.word23->setText(word23);
+    QString word24 = seed.split(" ").at(1);
+    verifyseed.word24->setText(word24);
 
-    if ((verifyseed.verifyText->toPlainText() == seed) && (verifyseed.verifyBirthday->toPlainText() == birthday))
+     QObject::connect(verifyseed.word1, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word1 + " ");
+         verifyseed.word1->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word1->font();
+         button.setStrikeOut(true);
+         verifyseed.word1->setFont(button);
+         verifyseed.word1->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word2, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word2);
+         verifyseed.word2->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word2->font();
+         button.setStrikeOut(true);
+         verifyseed.word2->setFont(button);
+         verifyseed.word2->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word3, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word3 + " ");
+         verifyseed.word3->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word3->font();
+         button.setStrikeOut(true);
+         verifyseed.word3->setFont(button);
+         verifyseed.word3->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word4, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word4 + " ");
+         verifyseed.word4->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word4->font();
+         button.setStrikeOut(true);
+         verifyseed.word4->setFont(button);
+         verifyseed.word4->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word5, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word5 + " ");
+         verifyseed.word5->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word5->font();
+         button.setStrikeOut(true);
+         verifyseed.word5->setFont(button);
+         verifyseed.word5->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word6, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word6 + " ");
+         verifyseed.word6->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word6->font();
+         button.setStrikeOut(true);
+         verifyseed.word6->setFont(button);
+         verifyseed.word6->setEnabled(false);
+     });
+        QObject::connect(verifyseed.word7, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word7 + " ");
+         verifyseed.word7->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word7->font();
+         button.setStrikeOut(true);
+         verifyseed.word7->setFont(button);
+         verifyseed.word7->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word8, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word8 + " ");
+         verifyseed.word8->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word8->font();
+         button.setStrikeOut(true);
+         verifyseed.word8->setFont(button);
+         verifyseed.word8->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word9, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word9 + " ");
+         verifyseed.word9->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word9->font();
+         button.setStrikeOut(true);
+         verifyseed.word9->setFont(button);
+         verifyseed.word9->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word10, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word10 + " ");
+         verifyseed.word10->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word10->font();
+         button.setStrikeOut(true);
+         verifyseed.word10->setFont(button);
+         verifyseed.word10->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word11, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word11 + " ");
+         verifyseed.word11->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word11->font();
+         button.setStrikeOut(true);
+         verifyseed.word11->setFont(button);
+         verifyseed.word11->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word12, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word12 + " ");
+         verifyseed.word12->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word12->font();
+         button.setStrikeOut(true);
+         verifyseed.word12->setFont(button);
+         verifyseed.word12->setEnabled(false);
+     });
+        QObject::connect(verifyseed.word13, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word13 + " ");
+         verifyseed.word13->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word13->font();
+         button.setStrikeOut(true);
+         verifyseed.word13->setFont(button);
+         verifyseed.word13->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word14, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word14 + " ");
+         verifyseed.word14->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word14->font();
+         button.setStrikeOut(true);
+         verifyseed.word14->setFont(button);
+         verifyseed.word14->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word15, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word15 + " ");
+         verifyseed.word15->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word15->font();
+         button.setStrikeOut(true);
+         verifyseed.word15->setFont(button);
+         verifyseed.word15->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word16, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word16 + " ");
+         verifyseed.word16->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word16->font();
+         button.setStrikeOut(true);
+         verifyseed.word16->setFont(button);
+         verifyseed.word16->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word17, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word17 + " ");
+         verifyseed.word17->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word17->font();
+         button.setStrikeOut(true);
+         verifyseed.word17->setFont(button);
+         verifyseed.word17->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word18, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word18 + " ");
+         verifyseed.word18->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word18->font();
+         button.setStrikeOut(true);
+         verifyseed.word18->setFont(button);
+         verifyseed.word18->setEnabled(false);
+     });
+        QObject::connect(verifyseed.word19, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word19 + " ");
+         verifyseed.word19->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word19->font();
+         button.setStrikeOut(true);
+         verifyseed.word19->setFont(button);
+         verifyseed.word19->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word20, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word20 + " ");
+         verifyseed.word20->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word20->font();
+         button.setStrikeOut(true);
+         verifyseed.word20->setFont(button);
+         verifyseed.word20->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word21, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word21 + " ");
+         verifyseed.word21->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word21->font();
+         button.setStrikeOut(true);
+         verifyseed.word21->setFont(button);
+         verifyseed.word21->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word22, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word22 + " ");
+         verifyseed.word22->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word22->font();
+         button.setStrikeOut(true);
+         verifyseed.word22->setFont(button);
+         verifyseed.word22->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word23, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word23 + " ");
+         verifyseed.word23->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word23->font();
+         button.setStrikeOut(true);
+         verifyseed.word23->setFont(button);
+         verifyseed.word23->setEnabled(false);
+     });
+     QObject::connect(verifyseed.word24, &QPushButton::clicked, [&] () {
+
+         verifyseed.verify->insertPlainText(word24 + " ");
+         verifyseed.word24->setStyleSheet("background-color: rgb(182,182,182);");
+         QFont button = verifyseed.word24->font();
+         button.setStrikeOut(true);
+         verifyseed.word24->setFont(button);
+         verifyseed.word24->setEnabled(false);
+     });
+
+    dialog.exec();
+
+    if ((verifyseed.verify->toPlainText() == seed) && (verifyseed.verifyBirthday->toPlainText() == birthday))
     {
     char* resp = litelib_execute("save", "");
     QString reply = litelib_process_response(resp);
@@ -349,6 +618,8 @@ bool NewSeedPage::validatePage() {
         QMessageBox::warning(this, tr("Wrong Seed"), 
             tr("Please try again") + "\n" ,
             QMessageBox::Ok);
+        form.birthday->setVisible(true);
+        form.txtSeed->setVisible(true);
         return false;
         this->validatePage();
     }

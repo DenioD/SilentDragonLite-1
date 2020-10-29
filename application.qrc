@@ -93,6 +93,7 @@
         <file>res/silentdragonlite_id.qm</file>
         <file>res/silentdragonlite_ar.qm</file>
         <file>res/silentdragonlite_ro.qm</file>
+        <file>res/silentdragonlite_ud.qm</file>
     </qresource>
     <qresource prefix="/css">
         <file>res/css/Blue.css</file>

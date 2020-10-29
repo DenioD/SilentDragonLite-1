@@ -139,6 +139,7 @@ private:
     void setupStatusBar();
     
     void clearSendForm();
+    QMenu* contextMenuChat = new QMenu();
     
 
     Tx   createTxFromSendPage();

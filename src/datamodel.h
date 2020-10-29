@@ -49,6 +49,9 @@ public:
     CAmount                    getBalVerified()          { QReadLocker locker(lock); return balVerified; }
     void                       setBalVerified(CAmount a) { QReadLocker locker(lock); this->balVerified = a; }
 
+    CAmount                    getBalSpendable()          { QReadLocker locker(lock); return balSpendable; }
+    void                       setBalSpendable(CAmount a) { QReadLocker locker(lock); this->balSpendable = a; }
+
     CAmount                    getTotalPending()          { QReadLocker locker(lock); return totalPending; }
     void                       setTotalPending(CAmount a) { QReadLocker locker(lock); this->totalPending = a; }
 
@@ -72,6 +75,7 @@ private:
     CAmount                 balT;
     CAmount                 balZ;
     CAmount                 balVerified;
+    CAmount                 balSpendable;
 
     QReadWriteLock* lock;
 };

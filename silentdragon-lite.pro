@@ -138,12 +138,12 @@ FORMS += \
     src/about.ui \
     src/confirm.ui \
     src/privkey.ui \
-    src/memodialog.ui \  
     src/verifyseed.ui \
     src/startupencryption.ui \
     src/viewalladdresses.ui \
     src/connection.ui \
     src/addressbook.ui \
+    src/memodialog.ui \
     src/mobileappconnector.ui \
     src/createhushconfdialog.ui \
     src/recurringdialog.ui \
@@ -168,6 +168,7 @@ TRANSLATIONS = res/silentdragonlite_es.ts \
                res/silentdragonlite_id.ts \
                res/silentdragonlite_ar.ts \
                res/silentdragonlite_ro.ts \
+               res/silentdragonlite_ud.ts \
                res/silentdragonlite_tr.ts 
              
 include(singleapplication/singleapplication.pri)

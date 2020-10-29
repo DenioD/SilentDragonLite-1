@@ -64,6 +64,9 @@
        <property name="horizontalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
+       <property name="plainText">
+        <string>180000</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -75,7 +78,7 @@
         </size>
        </property>
        <property name="text">
-        <string/>
+        <string>10</string>
        </property>
       </widget>
      </item>

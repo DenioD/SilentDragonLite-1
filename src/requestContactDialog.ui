@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
+    <width>764</width>
     <height>495</height>
    </rect>
   </property>
@@ -18,438 +18,562 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>850</width>
+    <width>600</width>
+    <height>495</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>764</width>
     <height>495</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Incoming Contact Request</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Memo of the request&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>10</y>
+     <width>151</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Memo of the request&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="requestMemo">
+   <property name="geometry">
+    <rect>
+     <x>355</x>
+     <y>32</y>
+     <width>400</width>
+     <height>231</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>400</width>
+     <height>231</height>
+    </size>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::AdjustToContents</enum>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
+   <property name="resizeMode">
+    <enum>QListView::Adjust</enum>
+   </property>
+   <property name="modelColumn">
+    <number>0</number>
+   </property>
+   <property name="uniformItemSizes">
+    <bool>false</bool>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>161</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Open requests from:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="requestContactOld">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>294</y>
+     <width>162</width>
+     <height>192</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>150</width>
+     <height>190</height>
+    </size>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>false</bool>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::SingleSelection</enum>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestZaddr">
+   <property name="geometry">
+    <rect>
+     <x>299</x>
+     <y>328</y>
+     <width>450</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>450</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>351</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>177</x>
+     <y>343</y>
+     <width>97</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>Request from:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestLabel">
+   <property name="geometry">
+    <rect>
+     <x>299</x>
+     <y>399</y>
+     <width>142</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="maxLength">
+    <number>25</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="zaddrnew">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>461</y>
+     <width>16</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>628</x>
+     <y>461</y>
+     <width>127</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add New Contact</string>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="requestCID">
+   <property name="geometry">
+    <rect>
+     <x>417</x>
+     <y>461</y>
+     <width>16</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>177</x>
+     <y>430</y>
+     <width>233</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose an avatar for your contact:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>177</x>
+     <y>368</y>
+     <width>68</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>My Zaddr:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="zaddrold">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>461</y>
+     <width>16</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cancel">
+   <property name="geometry">
+    <rect>
+     <x>542</x>
+     <y>461</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="baseSize">
+    <size>
+     <width>100</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBoxAvatar">
+   <property name="geometry">
+    <rect>
+     <x>417</x>
+     <y>430</y>
+     <width>106</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>106</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>106</width>
+     <height>25</height>
+    </size>
+   </property>
+   <item>
+    <property name="text">
+     <string>SDLogo</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/SDLogo.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="1" column="1" colspan="6">
-    <widget class="QListView" name="requestMemo">
-     <property name="minimumSize">
-      <size>
-       <width>500</width>
-       <height>231</height>
-      </size>
-     </property>
-     <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContents</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="modelColumn">
-      <number>0</number>
-     </property>
-     <property name="uniformItemSizes">
-      <bool>false</bool>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Duke</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Duke.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Open requests&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Denio</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Denio.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="3" column="0" rowspan="8">
-    <widget class="QListView" name="requestContactOld">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>225</width>
-       <height>190</height>
-      </size>
-     </property>
-     <property name="mouseTracking">
-      <bool>true</bool>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Berg</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Berg.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="4" column="4" colspan="3">
-    <widget class="QLineEdit" name="requestZaddr">
-     <property name="minimumSize">
-      <size>
-       <width>351</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>351</width>
-       <height>25</height>
-      </size>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Sharpee</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Sharpee.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QLabel" name="label_8">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Request from:</string>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Elsa</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normalon>:/icons/res/Elsa.png</normalon>
+     </iconset>
+    </property>
    </item>
-   <item row="6" column="4" colspan="2">
-    <widget class="QLineEdit" name="requestLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="maxLength">
-      <number>25</number>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Yoda</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Yoda.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="10" column="3">
-    <widget class="QLabel" name="zaddrnew">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Garfield</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Garfield.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="10" column="6">
-    <widget class="QPushButton" name="pushButton">
-     <property name="text">
-      <string>Add New Contact</string>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Snoopy</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Snoopy.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="10" column="2">
-    <widget class="QLabel" name="requestCID">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Popey</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Popey.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="7" column="1" colspan="3">
-    <widget class="QLabel" name="label_6">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose an avatar for your contact:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Pinguin</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Pinguin.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLabel" name="label_7">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>My Zaddr:</string>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Mickey</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Mickey.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="10" column="1">
-    <widget class="QLabel" name="zaddrold">
-     <property name="text">
-      <string notr="true"/>
-     </property>
-    </widget>
+   <item>
+    <property name="text">
+     <string>Stag</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <activeon>:/icons/res/Stag.png</activeon>
+     </iconset>
+    </property>
    </item>
-   <item row="10" column="5">
-    <widget class="QPushButton" name="cancel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Cancel</string>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="4">
-    <widget class="QComboBox" name="comboBoxAvatar">
-     <property name="minimumSize">
-      <size>
-       <width>106</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>106</width>
-       <height>25</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>SDLogo</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/SDLogo.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Duke</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Duke.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Denio</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Denio.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Berg</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Berg.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Sharpee</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Sharpee.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Elsa</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normalon>:/icons/res/Elsa.png</normalon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Yoda</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Yoda.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Garfield</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Garfield.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Snoopy</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Snoopy.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Popey</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Popey.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Pinguin</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Pinguin.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mickey</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Mickey.png</activeon>
-       </iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Stag</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <activeon>:/icons/res/Stag.png</activeon>
-       </iconset>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QListView" name="requestContact">
-     <property name="minimumSize">
-      <size>
-       <width>225</width>
-       <height>231</height>
-      </size>
-     </property>
-     <property name="mouseTracking">
-      <bool>true</bool>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Recently closed requests&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="QLabel" name="label_4">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Details of the request&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="3">
-    <widget class="QLabel" name="label_5">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Give a Nickname:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="4" colspan="3">
-    <widget class="QLineEdit" name="requestMyAddr">
-     <property name="minimumSize">
-      <size>
-       <width>351</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>351</width>
-       <height>25</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-  </layout>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>271</y>
+     <width>179</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Recently closed requests&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>177</x>
+     <y>294</y>
+     <width>157</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Details of the request&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>177</x>
+     <y>399</y>
+     <width>116</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>Give a Nickname:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="requestMyAddr">
+   <property name="geometry">
+    <rect>
+     <x>299</x>
+     <y>368</y>
+     <width>450</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>450</width>
+     <height>25</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>351</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="requestContact">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>32</y>
+     <width>321</width>
+     <height>231</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>150</width>
+     <height>231</height>
+    </size>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>false</bool>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::SingleSelection</enum>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>

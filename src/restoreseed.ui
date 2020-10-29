@@ -50,7 +50,7 @@
       <item row="3" column="0">
        <widget class="QLineEdit" name="txtBirthday">
         <property name="text">
-         <string>0</string>
+         <string>180000</string>
         </property>
        </widget>
       </item>

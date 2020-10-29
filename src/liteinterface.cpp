@@ -27,6 +27,20 @@ void LiteInterface::fetchAddresses(const std::function<void(json)>& cb) {
     conn->doRPCWithDefaultErrorHandling("addresses", "", cb);
 }
 
+void LiteInterface::importZPrivKey(QString addr, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+           
+     conn->doRPCWithDefaultErrorHandling("import", addr, cb);
+}
+
+void LiteInterface::importTPrivKey(QString addr,const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
+          conn->doRPCWithDefaultErrorHandling("timport", addr, cb);
+}
+
 
 void LiteInterface::fetchUnspent(const std::function<void(json)>& cb) {
     if (conn == nullptr)
@@ -97,6 +111,13 @@ void LiteInterface::clearWallet(const std::function<void(json)>& cb) {
         return;
 
     conn->doRPCWithDefaultErrorHandling("clear", "", cb);
+}
+
+void LiteInterface::shield(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
+    conn->doRPCWithDefaultErrorHandling("shield", "", cb);
 }
 
 void LiteInterface::unlockWallet(QString password, const std::function<void(json)>& cb) {

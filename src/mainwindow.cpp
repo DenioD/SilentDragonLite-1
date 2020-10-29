@@ -81,6 +81,11 @@ MainWindow::MainWindow(QWidget *parent) :
  
     ui->setupUi(this);
 
+    auto dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!dir.exists()){
+        QDir().mkpath(dir.absolutePath());
+    }else{}
+
     logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("silentdragonlite-wallet.log"));
       // Check for encryption
  
@@ -275,6 +280,8 @@ MainWindow::MainWindow(QWidget *parent) :
         dialog.exec();
 });
 
+// Import Privkey
+    QObject::connect(ui->actionImport_Privatkey, &QAction::triggered, this, &MainWindow::importPrivKey);
     // Address Book
     QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
 
@@ -633,6 +640,19 @@ void MainWindow::removeWalletEncryptionStartUp() {
    QDialog d(this);
     Ui_startup ed;
     ed.setupUi(&d);
+
+     QObject::connect(ed.new_restore, &QPushButton::clicked, [&] {
+
+     d.close();
+     QFile wallet(dirwallet);
+     QFile walletenc(dirwalletenc);
+
+     wallet.remove();
+     walletenc.remove();
+
+       auto cl = new ConnectionLoader(this, rpc);
+       cl->loadConnection();       
+   });
   
     if (d.exec() == QDialog::Accepted) 
     {
@@ -696,7 +716,7 @@ void MainWindow::removeWalletEncryptionStartUp() {
 
         this->doClosePw();
     }
-  
+
 }
 
 QString MainWindow::getPassword()
@@ -912,31 +932,41 @@ void MainWindow::donate() {
     ui->tabWidget->setCurrentIndex(1);
 }
 
-// void MainWindow::doImport(QList<QString>* keys) {
-//     if (rpc->getConnection() == nullptr) {
-//         // No connection, just return
-//         return;
-//     }
+ void MainWindow::doImport(QList<QString>* keys) {
+     if (rpc->getConnection() == nullptr) {
+         // No connection, just return
+         return;
+     }
 
-//     if (keys->isEmpty()) {
-//         delete keys;
-//         ui->statusBar->showMessage(tr("Private key import rescan finished"));
-//         return;
-//     }
+     if (keys->isEmpty()) {
+         delete keys;
+         ui->statusBar->showMessage(tr("Private key import rescan in progress. Your funds will be automaticly shield to a wallet seed zaddr. This will take some time"));
+        return;
+     }
 
-//     // Pop the first key
-//     QString key = keys->first();
-//     keys->pop_front();
-//     bool rescan = keys->isEmpty();
+     // Pop the first key
+     
+     QString key = keys->first();
+     QString key1 = key + QString(" ") + QString("0");
+     keys->pop_front();
+     bool rescan = keys->isEmpty();
+     
 
-//     if (key.startsWith("SK") ||
-//         key.startsWith("secret")) { // Z key
-//         rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
-//     } else {
-//         rpc->importTPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });
-//     }
-// }
+     if (key.startsWith("SK") ||
+         key.startsWith("secret")) { 
+        
+         rpc->importZPrivKey(key, [=] (auto) { this->doImport(keys); });  
+                                                   
+     } else if (key.startsWith("U")) {
 
+       rpc->importTPrivKey(key,  [=] (auto) { this->doImport(keys); });
+
+     }else{
+          QMessageBox::critical(this, tr("Wrong Privatkey format"), 
+                tr("Privatkey should start with U (for taddr) or secret- (for zaddr)") + "\n");
+        return;
+    }
+ }
 
 // Callback invoked when the RPC has finished loading all the balances, and the UI 
 // is now ready to send transactions.
@@ -1023,51 +1053,87 @@ void MainWindow::payhushURI(QString uri, QString myAddr) {
     }
 }
 
+ void MainWindow::importPrivKey() {
+     QDialog d(this);
+     Ui_PrivKey pui;
+     pui.setupUi(&d);
+     Settings::saveRestore(&d);
 
-// void MainWindow::importPrivKey() {
-//     QDialog d(this);
-//     Ui_PrivKey pui;
-//     pui.setupUi(&d);
-//     Settings::saveRestore(&d);
+     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(true);
+     pui.helpLbl->setText(QString() %
+                         tr("Please paste your private key(zs-Addr or R-addr) here, one per import") % ".\n" %
+                         tr("Caution: If this key is for Zs-addr it will be NOT inlcude in your Seed. Please send them direct to a Seed zs-addr") % ".\n" %
+                         tr("R-addr keys will be autoshield to a seed zs-addr")
+                         );  
 
-//     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
-//     pui.helpLbl->setText(QString() %
-//                         tr("Please paste your private keys (z-Addr or t-Addr) here, one per line") % ".\n" %
-//                         tr("The keys will be imported into your connected hushd node"));  
+     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
+         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
 
-//     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
-//         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
+         QList<QString> keysTmp;
+         // Filter out all the empty keys.
+         std::copy_if(rawkeys.begin(), rawkeys.end(), std::back_inserter(keysTmp), [=] (auto key) {
+             return !key.startsWith("#") && !key.trimmed().isEmpty();
+         });
 
-//         QList<QString> keysTmp;
-//         // Filter out all the empty keys.
-//         std::copy_if(rawkeys.begin(), rawkeys.end(), std::back_inserter(keysTmp), [=] (auto key) {
-//             return !key.startsWith("#") && !key.trimmed().isEmpty();
-//         });
+         auto keys = new QList<QString>();
+         std::transform(keysTmp.begin(), keysTmp.end(), std::back_inserter(*keys), [=](auto key) {
+             return key.trimmed().split(" ")[0];
+         });
 
-//         auto keys = new QList<QString>();
-//         std::transform(keysTmp.begin(), keysTmp.end(), std::back_inserter(*keys), [=](auto key) {
-//             return key.trimmed().split(" ")[0];
-//         });
+         // Special case. 
+         // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have 
+         // been pasted like that. So check to see if the whole thing is one big private key
+        if (Settings::getInstance()->isValidSaplingPrivateKey(keys->join(""))) {
+             auto multiline = keys;
+             keys = new QList<QString>();
+             keys->append(multiline->join(""));
+             delete multiline;
+         }
 
-//         // Special case. 
-//         // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have 
-//         // been pasted like that. So check to see if the whole thing is one big private key
-//         if (Settings::getInstance()->isValidSaplingPrivateKey(keys->join(""))) {
-//             auto multiline = keys;
-//             keys = new QList<QString>();
-//             keys->append(multiline->join(""));
-//             delete multiline;
-//         }
+         // Start the import. The function takes ownership of keys
+         QTimer::singleShot(1, [=]() {doImport(keys);});
 
-//         // Start the import. The function takes ownership of keys
-//         QTimer::singleShot(1, [=]() {doImport(keys);});
+        /////Rescan the Wallet (optional) and do automaticly shielding to a seed zaddr
 
-//         // Show the dialog that keys will be imported. 
-//         QMessageBox::information(this,
-//             "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
-//             QMessageBox::Ok);
-//     }
-// }
+            if((pui.rescan->isChecked() == true) && (pui.privKeyTxt->toPlainText().startsWith("U"))) {
+
+        // Show the dialog that keys will be imported and rescan is in progress.
+
+         QMessageBox::information(this,
+             "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
+             QMessageBox::Ok);
+          this->getRPC()->clearWallet([=] (auto) {
+            // Save the wallet
+            this->getRPC()->saveWallet([=] (auto) {
+                // Then reload the connection. The ConnectionLoader deletes itself.
+               auto cl = new ConnectionLoader(this, rpc);
+                cl->loadProgress();
+                         });       
+                     });    
+
+    }else if ((pui.rescan->isChecked() == true) && (pui.privKeyTxt->toPlainText().startsWith("secret"))){
+
+               // Show the dialog that keys will be imported.
+
+         QMessageBox::information(this,
+             "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
+             QMessageBox::Ok);
+          this->getRPC()->clearWallet([=] (auto) {
+            // Save the wallet
+            this->getRPC()->saveWallet([=] (auto) {
+                // Then reload the connection. The ConnectionLoader deletes itself.
+               auto cl = new ConnectionLoader(this, rpc);
+                cl->loadConnection();
+                         });       
+                     });  
+
+    }else{
+         QMessageBox::information(this,
+             "Imported", tr("The keys were imported without rescan option. The Address you imported will be visible without balance"),
+             QMessageBox::Ok);
+    }
+    }
+ }
 
 /** 
  * Export transaction history into a CSV file
@@ -1321,12 +1387,13 @@ void MainWindow::setupTransactionsTab() {
     });
 
     // Set up context menu on transactions tab
+    ui->listChat->setContextMenuPolicy(Qt::ActionsContextMenu); 
+    contextMenuChat->setObjectName("contextMenuChat");
+    QString style = "QMenu{background-color: rgb(0, 0, 255);}";   
     auto theme = Settings::getInstance()->get_theme_name();
     if (theme == "Dark" || theme == "Midnight") {
-    ui->listChat->setStyleSheet("background-image: url(:/icons/res/SDLogo.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat");
-     }
-    if (theme == "Default") {ui->listChat->setStyleSheet("background-image: url(:/icons/res/sdlogo2.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat");}
-   
+    ui->listChat->setStyleSheet("QListView{background-image: url(:/icons/res/SDLogo.png) ;background-position: center center ;background-repeat: no-repeat;} QMenu::item:selected { border-color: darkblue; background: rgba(100, 100, 100, 150);}");}
+    if (theme == "Default") {ui->listChat->setStyleSheet("QListView{background-image: url(:/icons/res/sdlogo2.png) ;background-attachment: fixed ;background-position: center center ;background-repeat: no-repeat;} QMenu::item:selected { border-color: darkblue; background: rgba(100, 100, 100, 150);}");}
     ui->listChat->setResizeMode(QListView::Adjust);
     ui->listChat->setWordWrap(true);
     ui->listChat->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -1482,25 +1549,70 @@ void MainWindow::setupchatTab() {
 
     ui->contactNameMemo->setText("");   
 
-    /////Copy Chatmessages
+    /////Setup Actions
 
-     QMenu* contextMenuChat;
-     QAction* copymessage;
+     QAction* copymessage;   
      QAction* viewexplorer;
      QAction* copytxid;
-     contextMenuChat = new QMenu(ui->listChat);
+     QAction* copylink;
+     QAction* openlink;
+     
      copymessage = new QAction("Copy message to clipboard",contextMenuChat);
      viewexplorer = new QAction("View on block explorer",contextMenuChat);
      copytxid = new QAction("Copy txid to clipboard ",contextMenuChat);
+     copylink = new QAction("Copy Hyperlink from memo ",contextMenuChat);
+     openlink = new QAction("Open Hyperlink in your browser",contextMenuChat);
     
  QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
 
-     ui->listChat->setContextMenuPolicy(Qt::ActionsContextMenu);
      ui->listChat->addAction(copymessage);
      ui->listChat->addAction(viewexplorer);
      ui->listChat->addAction(copytxid);
+     ui->listChat->addAction(copylink);
+     ui->listChat->addAction(openlink);
+    
 
  });
+
+QObject::connect(copylink, &QAction::triggered, [=] {
+
+QModelIndex index = ui->listChat->currentIndex();
+QString memo_chat = index.data(Qt::DisplayRole).toString();
+QClipboard *clipboard = QGuiApplication::clipboard();
+QRegExp rx("((?:https?|ftp)://\\S+)");
+int pos = rx.indexIn(memo_chat, 0);
+if (-1 != pos)
+{
+    QString cap = rx.cap(0);
+    cap = cap.left(cap.indexOf('\''));
+    int startPos = cap.indexOf("<p>");
+    int endPos = cap.indexOf("</p>");
+    int length = endPos - startPos;
+    QString hyperlink = cap.mid(startPos, length);
+    clipboard->setText(hyperlink);
+    ui->statusBar->showMessage(tr("Copied Hyperlink to clipboard"), 3 * 1000); 
+
+}
+});
+
+QObject::connect(openlink, &QAction::triggered, [=] {
+
+QModelIndex index = ui->listChat->currentIndex();
+QString memo_chat = index.data(Qt::DisplayRole).toString();
+QRegExp rx("((?:https?|ftp)://\\S+)");
+int pos = rx.indexIn(memo_chat, 0);
+if (-1 != pos)
+{
+    QString cap = rx.cap(0);
+    cap = cap.left(cap.indexOf('\''));
+    int startPos = cap.indexOf("<p>");
+    int endPos = cap.indexOf("</p>");
+    int length = endPos - startPos;
+    QString hyperlink = cap.mid(startPos, length);
+    QDesktopServices::openUrl(QUrl(hyperlink));
+
+}
+});
 
      QObject::connect(copymessage, &QAction::triggered, [=] {
 
@@ -1598,29 +1710,31 @@ void MainWindow::setupchatTab() {
 
 ///////// Add contextmenu 
      QMenu* contextMenu;
-     QAction* requestAction;
      QAction* editAction;
      QAction* HushAction;
-     QAction* requestHushAction;
-     QAction* subatomicAction;
      contextMenu = new QMenu(ui->listContactWidget);
      HushAction = new QAction("Send or Request Hush ",contextMenu);
      editAction = new QAction("Delete this contact",contextMenu);
-     subatomicAction = new QAction("Make a subatomic swap with a friend- coming soon",contextMenu);
-
 
 ///////// Set selected Zaddr for Chat with click
 
     QObject::connect(ui->listContactWidget, &QTableView::clicked, [=] () {
 
-     ui->listContactWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
-     ui->listContactWidget->addAction(HushAction);
-     ui->listContactWidget->addAction(editAction); 
-     ui->listContactWidget->addAction(subatomicAction);
+    ui->listContactWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+    ui->listContactWidget->addAction(HushAction);
+    ui->listContactWidget->addAction(editAction); 
+    int requestsize = DataStore::getChatDataStore()->getAllNewContactRequests().size(); 
 
-     ui->memoTxtChat->setEnabled(false);
-     ui->emojiButton->setEnabled(false);
-     ui->sendChatButton->setEnabled(false);
+    if (requestsize > 0)
+    {
+    ui->newRequest->setStyleSheet("color: red;");
+    }else{}
+    
+    ui->newRequest->setNum(requestsize);
+
+    ui->memoTxtChat->setEnabled(false);
+    ui->emojiButton->setEnabled(false);
+    ui->sendChatButton->setEnabled(false);
 
         QModelIndex index = ui->listContactWidget->currentIndex();
         QString label_contact = index.data(Qt::DisplayRole).toString();
@@ -1642,8 +1756,6 @@ void MainWindow::setupchatTab() {
         QDialog transactionDialog(this);
         transaction.setupUi(&transactionDialog);
         Settings::saveRestore(&transactionDialog);
-       // transaction.requestHush->setEnabled(false);
-       // transaction.requestHush->setVisible(false);
         transaction.amountChat->setValidator(this->getAmountValidator());
         QString icon = ":icons/res/hush-money-white.png";
         QPixmap hush(icon);
@@ -1722,6 +1834,19 @@ void MainWindow::setupchatTab() {
    
    
 ui->memoTxtChat->setLenDisplayLabelChat(ui->memoSizeChat);
+ui->newRequest->setStyleSheet("color: red;");
+
+
+////get amount of new contact request as intervall
+
+QTimer* timer = new QTimer();
+timer->setInterval(30000); 
+
+connect(timer, &QTimer::timeout, this, [=](){
+    int requestsize = DataStore::getChatDataStore()->getAllNewContactRequests().size();    
+    ui->newRequest->setNum(requestsize);
+});
+timer->start();
 
 }
 
@@ -2751,111 +2876,111 @@ void MainWindow::on_emojiButton_clicked()
         Settings::saveRestore(&emojiDialog);
 
 QObject::connect(emoji.smiley, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":smiley:");
+   ui->memoTxtChat->insertHtml(":a1");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.money, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":money_mouth:");
+   ui->memoTxtChat->insertHtml(":a2");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.laughing, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":laughing:");
+   ui->memoTxtChat->insertHtml(":a3");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.sweet_smile, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":sweet_smile:");
+   ui->memoTxtChat->insertHtml(":a4");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.joy, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":joy:");
+   ui->memoTxtChat->insertHtml(":a5");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.innocent, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":innocent:");
+   ui->memoTxtChat->insertHtml(":a6");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.partying_face, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":partying_face:");
+   ui->memoTxtChat->insertHtml(":a7");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.rolling_eyes, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":rolling_eyes:");
+   ui->memoTxtChat->insertHtml(":a8");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.tongue, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":stuck_out_tongue:");
+   ui->memoTxtChat->insertHtml(":a9");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.hearts3, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":face_with_3hearts:");
+   ui->memoTxtChat->insertHtml(":b1");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.heart_eyes, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":heart_eyes:");
+   ui->memoTxtChat->insertHtml(":b2");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.nauseated, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":nauseated:");
+   ui->memoTxtChat->insertHtml(":b3");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.poop, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":poop:");
+   ui->memoTxtChat->insertHtml(":b4");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.symbols_mouth, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":symbols_mouth:");
+   ui->memoTxtChat->insertHtml(":b5");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.sunglass, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":sunglass:");
+   ui->memoTxtChat->insertHtml(":b6");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.stuck_out, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":stuck_out:");
+   ui->memoTxtChat->insertHtml(":b7");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.hush_white, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":hush_white:");
+   ui->memoTxtChat->insertHtml(":b8");
 
-        emojiDialog.close();
+        
 });
 
 QObject::connect(emoji.sd, &QPushButton::clicked, [&] () {
-   ui->memoTxtChat->insertHtml(":sd:");
+   ui->memoTxtChat->insertHtml(":b9");
 
-        emojiDialog.close();
+        
 });
 
 

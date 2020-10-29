@@ -32,6 +32,9 @@ Controller::Controller(MainWindow* main)
     balancesTableModel = new BalancesTableModel(main->ui->balancesTable);
     main->ui->balancesTable->setModel(balancesTableModel);
 
+    // Call the supply once
+   // supplyUpdate();
+
     // Setup transactions table model
     transactionsTableModel = new TxTableModel(ui->transactionsTable);
     main->ui->transactionsTable->setModel(transactionsTableModel);
@@ -51,6 +54,13 @@ Controller::Controller(MainWindow* main)
         refresh();
     });
     timer->start(Settings::updateSpeed);    
+
+    // Set up to fetch supply
+    timer = new QTimer(main);
+    QObject::connect(timer, &QTimer::timeout, [=]() {
+        supplyUpdate();
+    });
+    timer->start(Settings::priceRefreshSpeed); 
 
     // Create the data model
     model = new DataModel();
@@ -81,6 +91,7 @@ void Controller::setConnection(Connection* c)
     // If we're allowed to get the Hush Price, get the prices
     if (Settings::getInstance()->getAllowFetchPrices())
         refreshZECPrice();
+        supplyUpdate();
 
     // If we're allowed to check for updates, check for a new release
     if (Settings::getInstance()->getCheckForUpdates())
@@ -106,22 +117,6 @@ void Controller::setConnection(Connection* c)
 
         ui->listChat->verticalScrollBar()->setValue(
         ui->listChat->verticalScrollBar()->maximum());
-}
-
-std::string Controller::encryptDecrypt(std::string toEncrypt) 
-{ 
-
-    int radomInteger = rand() % 1000000000 +100000;
-    
-     
-    char key = radomInteger;
-    std::string output = toEncrypt;
-    
-    for (int i = 0; i < toEncrypt.size(); i++)
-        output[i] = toEncrypt[i] ^ key;
-    
-    return output;
-
 }
 
 // Build the RPC JSON Parameters for this tx
@@ -153,43 +148,28 @@ void Controller::fillTxJsonParams(json& allRecepients, Tx tx)
     }
 
     DataStore::getSietchDataStore()->clear(); // clears the datastore
-
-    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-
-    int sizerandomString = rand() % 120 +10;
+    
+    const QString possibleCharacters("0123456789abcdef");
+    int sizerandomString = 512;
     const int randomStringLength = sizerandomString;
 
-    QString randomString;
-    QRandomGenerator *gen = QRandomGenerator::system();
+      for(uint8_t i = 0; i < 8; i++)
+    {
+
+        QString randomString;
+
+        QRandomGenerator *gen = QRandomGenerator::system();
+
     for(int i=0; i<randomStringLength; ++i)
     {
-       // int index = qrand() % possibleCharacters.length();
+
        int index = gen->bounded(0, possibleCharacters.length() - 1);
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
     }
-  
-   for(uint8_t i = 0; i < 8; i++)
-    {
-        int length = randomString.length(); 
-        int randomSize = rand() % 120 +10;
-        char *randomHash = NULL;
-        randomHash = new char[length+1];
-        strncpy(randomHash, randomString.toLocal8Bit(), length +1);  
-        #define MESSAGE ((const unsigned char *) randomHash)
-        #define MESSAGE_LEN length
-        #define MESSAGE_LEN1 length + randomSize
-    
-        unsigned char hash[crypto_secretstream_xchacha20poly1305_ABYTES];
 
-        crypto_generichash(hash, sizeof hash,
-                   MESSAGE, MESSAGE_LEN1,
-                   NULL, 0);
+    dust.at(i)["memo"] = randomString.toStdString();
 
-        std::string decryptedMemo(reinterpret_cast<char*>(hash),MESSAGE_LEN1);
-        std::string encrypt = this->encryptDecrypt(decryptedMemo);
-        QString randomHashafter1 = QByteArray(reinterpret_cast<const char*>(encrypt.c_str()),encrypt.size()).toHex();
-        dust.at(i)["memo"] = randomHashafter1.toStdString();
     }
 
     for(auto &it: dust)
@@ -608,29 +588,7 @@ void Controller::getInfoThenRefresh(bool force)
             bool isLocked = reply["locked"].get<json::boolean_t>();
             model->setEncryptionStatus(isEncrypted, isLocked);
         });
-          // Get the total supply and render it with thousand decimal
-        zrpc->fetchSupply([=] (const json& reply) {   
-            int supply  = reply["supply"].get<json::number_integer_t>();
-            int zfunds = reply["zfunds"].get<json::number_integer_t>();
-            int total = reply["total"].get<json::number_integer_t>();;
-            if (
-                Settings::getInstance()->get_currency_name() == "EUR" || 
-                Settings::getInstance()->get_currency_name() == "CHF" || 
-                Settings::getInstance()->get_currency_name() == "RUB"
-            ) 
-            {
-                ui->supply_taddr->setText((QLocale(QLocale::German).toString(supply)+ " Hush"));
-                ui->supply_zaddr->setText((QLocale(QLocale::German).toString(zfunds)+ " Hush"));
-                ui->supply_total->setText((QLocale(QLocale::German).toString(total)+ " Hush"));
-            }
-            else
-            {
-                ui->supply_taddr->setText("Hush " + (QLocale(QLocale::English).toString(supply)));
-                ui->supply_zaddr->setText("Hush " +(QLocale(QLocale::English).toString(zfunds)));
-                ui->supply_total->setText("Hush " +(QLocale(QLocale::English).toString(total)));
-            }
-
-        });
+   
 
         if ( doUpdate ) 
         {
@@ -723,6 +681,36 @@ void Controller::updateUI(bool anyUnconfirmed)
     );
 };
 
+void Controller::supplyUpdate() {
+
+    qDebug()<<"Supply";
+
+       // Get the total supply and render it with thousand decimal
+        zrpc->fetchSupply([=] (const json& reply) {   
+            int supply  = reply["supply"].get<json::number_integer_t>();
+            int zfunds = reply["zfunds"].get<json::number_integer_t>();
+            int total = reply["total"].get<json::number_integer_t>();;
+            if (
+                Settings::getInstance()->get_currency_name() == "EUR" || 
+                Settings::getInstance()->get_currency_name() == "CHF" || 
+                Settings::getInstance()->get_currency_name() == "RUB"
+            ) 
+            {
+                ui->supply_taddr->setText((QLocale(QLocale::German).toString(supply)+ " Hush"));
+                ui->supply_zaddr->setText((QLocale(QLocale::German).toString(zfunds)+ " Hush"));
+                ui->supply_total->setText((QLocale(QLocale::German).toString(total)+ " Hush"));
+            }
+            else
+            {
+                ui->supply_taddr->setText("Hush " + (QLocale(QLocale::English).toString(supply)));
+                ui->supply_zaddr->setText("Hush " +(QLocale(QLocale::English).toString(zfunds)));
+                ui->supply_total->setText("Hush " +(QLocale(QLocale::English).toString(total)));
+            }
+
+        });
+
+}
+
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
 void Controller::processUnspent(const json& reply, QMap<QString, CAmount>* balancesMap, QList<UnspentOutput>* unspentOutputs) {
     auto processFn = [=](const json& array) {        
@@ -758,6 +746,7 @@ void Controller::updateUIBalances()
     CAmount balT = getModel()->getBalT();
     CAmount balZ = getModel()->getBalZ();
     CAmount balVerified = getModel()->getBalVerified();
+    CAmount balSpendable = getModel()->getBalSpendable();
 
     // Reduce the BalanceZ by the pending outgoing amount. We're adding
     // here because totalPending is already negative for outgoing txns.
@@ -774,6 +763,7 @@ void Controller::updateUIBalances()
     ui->balSheilded->setText(balZ.toDecimalhushString());
     ui->balVerified->setText(balVerified.toDecimalhushString());
     ui->balTransparent->setText(balT.toDecimalhushString());
+    ui->balSpendable->setText(balSpendable.toDecimalhushString());
     ui->balTotal->setText(balTotal.toDecimalhushString());
 
     if (Settings::getInstance()->get_currency_name() == "USD") 
@@ -910,10 +900,12 @@ void Controller::refreshBalances()
         CAmount balT        = CAmount::fromqint64(reply["tbalance"].get<json::number_unsigned_t>());
         CAmount balZ        = CAmount::fromqint64(reply["zbalance"].get<json::number_unsigned_t>());
         CAmount balVerified = CAmount::fromqint64(reply["verified_zbalance"].get<json::number_unsigned_t>());
+        CAmount balSpendable = CAmount::fromqint64(reply["spendable_zbalance"].get<json::number_unsigned_t>());
         
         model->setBalT(balT);
         model->setBalZ(balZ);
         model->setBalVerified(balVerified);
+        model->setBalSpendable(balSpendable);
 
         // This is for the websockets
         AppDataModel::getInstance()->setBalances(balT, balZ);
@@ -1205,7 +1197,7 @@ void Controller::refreshTransactions() {
                 QString memo;
                 if (!it["memo"].is_null()) {
                     memo = QString::fromStdString(it["memo"]);
-
+                }
                 items.push_back(TransactionItemDetail{
                         address,
                     CAmount::fromqint64(it["amount"].get<json::number_integer_t>()),
@@ -1217,7 +1209,7 @@ void Controller::refreshTransactions() {
                 };
 
                 txdata.push_back(tx);
-               }
+               
 
            
                     QString type;

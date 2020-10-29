@@ -14,14 +14,21 @@
    <string>Private Keys</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="3">
     <widget class="QPlainTextEdit" name="privKeyTxt">
      <property name="plainText">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="helpLbl">
+     <property name="text">
+      <string notr="true">TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -31,10 +38,10 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="helpLbl">
+   <item row="2" column="1">
+    <widget class="QRadioButton" name="rescan">
      <property name="text">
-      <string notr="true">TextLabel</string>
+      <string>Rescan Wallet</string>
      </property>
     </widget>
    </item>

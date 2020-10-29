@@ -63,6 +63,7 @@ public:
 
     void saveWallet(const std::function<void(json)>& cb);
     void clearWallet(const std::function<void(json)>& cb);
+    void shield(const std::function<void(json)>& cb);
 
     void fetchWalletEncryptionStatus(const std::function<void(json)>& cb);
     void fetchSupply(const std::function<void(json)>& cb);
@@ -70,8 +71,8 @@ public:
     void unlockWallet(QString password, const std::function<void(json)>& cb);
     void removeWalletEncryption(QString password, const std::function<void(json)>& cb);
 
-    //void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
-    //void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
+    void importZPrivKey(QString addr, const std::function<void(json)>& cb);
+    void importTPrivKey(QString addr, const std::function<void(json)>& cb);
     
    
     void sendTransaction(QString params, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
